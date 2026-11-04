@@ -85,31 +85,15 @@ $waMsg = fn(string $t) => $wa . '?text=' . rawurlencode($t);
 </section>
 
 <?php
-function viewer_block(array $items, string $kind, callable $ask): void {
-  if (!$items) return;
-  $c = $kind === 'apps' ? 'viewer vapp' : 'viewer'; ?>
-  <div class="<?= $c ?>" data-viewer>
-    <div class="vtabs" role="tablist"><?php foreach ($items as $i => $l):
-      $src = ($l['html'] !== '' && is_file(SHOWCASE_DIR . '/' . basename($l['html']))) ? 'muestras/' . rawurlencode($l['html']) : '';
-      $im = array_map(fn($x) => 'uploads/' . rawurlencode($x), $l['images']);
-      [$ask_url, $ask_label] = $ask($l); ?>
-      <button type="button" role="tab" class="<?= $i === 0 ? 'on' : '' ?>" data-src="<?= h($src) ?>" data-imgs="<?= h(json_encode($im, JSON_UNESCAPED_SLASHES)) ?>" data-title="<?= h($l['title']) ?>" data-desc="<?= h($l['desc']) ?>" data-tags="<?= h(implode('|', $l['tags'])) ?>" data-link="<?= h($ask_url) ?>" data-label="<?= h($ask_label) ?>" data-price="<?= h($l['price'] ?? '') ?>"><?= h($l['title']) ?></button>
-    <?php endforeach; ?></div>
-    <div class="vtools"><span class="vname"></span><div class="vdev"><button type="button" class="on" data-dev="d">Computadora</button><button type="button" data-dev="m">Celular</button></div><a class="btn o sm vopen" href="#" target="_blank" rel="noopener">Abrir completa ↗</a></div>
-    <div class="browser"><div class="bbar"><i></i><i></i><i></i><b class="vurl">tu-negocio.com</b></div>
-      <div class="vp"><div class="vfr"><div class="vph"></div></div></div></div>
-    <div class="vfoot"><div><p class="vdesc"></p><div class="atags vtags"></div></div><div class="vbuy"><div class="vprice" hidden><small>Desde aprox.</small><b></b><em>El precio es una aproximación: depende de qué tan a medida sea el pedido.</em></div><a class="btn vask" href="#" target="_blank" rel="noopener"></a></div></div>
-  </div>
-<?php } ?>
-<?php
 function app_band(array $a, int $n, string $kind, callable $ask): void {
   $im = array_map(fn($x) => 'uploads/' . rawurlencode($x), $a['images']);
   $src = ($a['html'] !== '' && is_file(SHOWCASE_DIR . '/' . basename($a['html']))) ? 'muestras/' . rawurlencode($a['html']) : '';
   [$askUrl, $askLabel] = $ask($a);
-  $label = $kind === 'micro' ? 'Micro app' : 'App web'; ?>
+  $label = ['micro' => 'Micro app', 'landings' => 'Landing'][$kind] ?? 'App web'; ?>
   <article class="app pad" data-app data-src="<?= h($src) ?>" data-imgs="<?= h(json_encode($im, JSON_UNESCAPED_SLASHES)) ?>" data-title="<?= h($a['title']) ?>">
     <div class="app-info"><div class="k"><?= $label ?> · <?= str_pad((string)($n + 1), 2, '0', STR_PAD_LEFT) ?></div>
       <h3><?= h($a['title']) ?></h3><p><?= h($a['desc']) ?></p>
+      <?php if (($a['price'] ?? '') !== ''): ?><div class="aprice"><small>Desde aprox.</small><b><?= h($a['price']) ?></b><em>Es una aproximación: depende de qué tan a medida sea el pedido.</em></div><?php endif; ?>
       <?php if ($a['tags']): ?><div class="atags"><?php foreach ($a['tags'] as $t): ?><span><?= h($t) ?></span><?php endforeach; ?></div><?php endif; ?>
       <div class="row"><a class="btn" href="<?= h($askUrl) ?>" target="_blank" rel="noopener"><?= h($askLabel) ?></a>
         <?php if ($src !== ''): ?><a class="btn o vopen" href="demo.php?f=<?= h(rawurlencode(basename($a['html']))) ?>" target="_blank" rel="noopener">Abrir demo completa ↗</a><?php endif; ?>
@@ -133,11 +117,11 @@ $askLand = fn($l) => [$l['link'] !== '' ? $l['link'] : $waMsg('Hola! Me gustó l
   <?php foreach ($apps as $n => $a) app_band($a, $n, 'apps', $askApp); ?>
 </section>
 
-<section id="landings" class="panel msec lands pad" hidden aria-label="Landings a medida"><div class="wrap">
-  <div class="k" style="color:var(--acc)">03 · Landings a medida</div><h2>Landings que <span class="serif">convierten.</span></h2>
-  <p class="lead">Páginas de una sola pantalla pensadas para vender o presentar tu negocio. Abajo las ves funcionando, tal cual quedan.</p>
-  <?php if (!$landings): ?><div class="soon"><b>Muy pronto</b><span>Acá vas a ver ejemplos de landings funcionando, dentro de un visor.</span></div><?php endif; ?>
-  <?php viewer_block($landings, 'landings', $askLand); ?>
+<section id="landings" class="panel lands apps" hidden aria-label="Landings a medida">
+  <div class="sechead pad"><div class="k">03 · Landings a medida</div><h2>Landings que <span class="serif">convierten.</span></h2><p>Páginas de una sola pantalla pensadas para vender o presentar tu negocio. Mirá cómo quedan funcionando.</p></div>
+  <?php if (!$landings): ?><div class="soon pad"><b>Muy pronto</b><span>Acá vas a ver ejemplos de landings funcionando.</span></div><?php endif; ?>
+  <?php foreach ($landings as $n => $l) app_band($l, $n, 'landings', $askLand); ?>
+  <div class="incl-wrap pad">
   <div class="incl">
     <div class="incl-main"><h3>Qué incluye tu landing</h3>
       <ul>
@@ -156,7 +140,8 @@ $askLand = fn($l) => [$l['link'] !== '' ? $l['link'] : $waMsg('Hola! Me gustó l
     </div>
     <p class="incl-note"><b>Dominio:</b> la dirección de tu página (ej. tunegocio.com). <b>Hosting:</b> el lugar en internet donde vive tu página para que se vea las 24 horas.</p>
   </div>
-</div></section>
+  </div>
+</section>
 
 <section id="micro" class="panel micro apps" hidden aria-label="Micro apps a medida">
   <div class="sechead pad"><div class="k">04 · Micro apps a medida</div><h2>Herramientas chicas, <span class="serif">hechas para vos.</span></h2><p>Calculadoras, paneles, formularios y utilidades pensadas para una tarea puntual de tu negocio. Mirá cómo funcionan.</p></div>

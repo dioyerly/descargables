@@ -216,3 +216,21 @@ footer{margin-top:80px;padding-top:22px;border-top:1px solid var(--line);display
 
 /* bordes suaves: cada producto se funde con el crema de la página en vez de cortarse */
 .pbg{--ft:0px;--fb:0px;-webkit-mask-image:linear-gradient(to bottom,transparent 0,#000 var(--ft),#000 calc(100% - var(--fb)),transparent 100%);mask-image:linear-gradient(to bottom,transparent 0,#000 var(--ft),#000 calc(100% - var(--fb)),transparent 100%)}
+/* tamaños más contenidos y todas las pestañas con la misma estructura */
+.sechead{padding-top:48px}
+.sechead h2,.msec h2{font-size:clamp(30px,3.4vw,52px);line-height:1;margin:8px 0 10px}
+.sechead p{font-size:16px;max-width:60ch}
+.app{min-height:min(100svh,740px);padding-top:56px;padding-bottom:56px}
+.app-info h3{font-size:clamp(28px,3vw,46px);line-height:1;margin:10px 0 14px}
+.app-info p{font-size:16px;line-height:1.55}
+.app-info .row{margin-top:20px}.app-info .btn{padding:12px 18px;font-size:15px}
+.app-demo .vp{height:min(62vh,560px)}
+.aprice{margin-top:18px;padding:14px 16px;border-radius:16px;background:#fff;border:1px solid var(--line);max-width:340px}
+.aprice small{display:block;font:600 11px var(--sans);letter-spacing:.14em;text-transform:uppercase;color:var(--mut)}
+.aprice b{display:block;font:800 28px/1.15 var(--sans);letter-spacing:-.03em}
+.aprice em{display:block;font:italic 400 15px var(--serif);color:var(--mut);margin-top:4px}
+.incl-wrap{margin-left:max(22px,5vw);margin-right:max(22px,5vw);padding:20px 0 90px}
+.incl-wrap .incl{margin-top:0}
+.lands.apps .app:nth-of-type(odd){background:radial-gradient(60% 70% at 78% 50%,rgba(106,79,196,.12),transparent 70%)}
+@media(max-width:860px){.incl-wrap{margin-left:16px;margin-right:16px;padding-bottom:50px}.sechead{padding-top:36px}.app{min-height:0}.app-demo .vp{height:60vh}}
+.app{min-height:0;padding-top:40px;padding-bottom:40px}
