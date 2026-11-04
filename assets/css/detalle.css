@@ -50,3 +50,6 @@ body.solo{background:var(--paper)}
 .thanks p b{color:var(--ink)}
 .thanks .row{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px}
 .thanks small{display:block;color:var(--mut);font-size:14px;margin-top:14px}
+
+.btn[disabled]{opacity:.45;cursor:not-allowed;transform:none!important}
+.buy .soon{margin-top:14px}

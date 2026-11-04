@@ -28,7 +28,7 @@ $typeLbl = types()[$p['type']] ?? '';
 </head>
 <body class="det" style="<?= h(theme_style((string)$p['theme'])) ?>">
 <header class="pad solid" id="hdr"><a class="logo" href="<?= h($B) ?>/"><i>e</i>EstrategIA<small>Descargables</small></a>
-<nav class="nav"><a class="t" href="<?= h($B) ?>/#catalogo">← Catálogo</a><?php if ($sale): ?><a class="btn" href="#comprar">Comprar</a><?php endif; ?></nav></header>
+<nav class="nav"><a class="t" href="<?= h($B) ?>/#catalogo">← Catálogo</a><a class="btn" href="#comprar">Comprar</a></nav></header>
 
 <main class="dwrap">
   <section class="gal" aria-label="Fotos del producto">
@@ -56,8 +56,9 @@ $typeLbl = types()[$p['type']] ?? '';
       </form>
       <ul class="trust"><li>Pago seguro con Mercado Pago</li><li>Descarga al instante</li><li>Producto digital: no se envía nada físico</li></ul>
     <?php else: ?>
-      <p class="soon">Pronto vas a poder comprarlo acá. Si lo querés ya, escribinos.</p>
-      <p class="row"><a class="btn" href="https://wa.me/5491126425994" target="_blank" rel="noopener">Escribir por WhatsApp</a></p>
+      <button class="btn big" type="button" disabled aria-disabled="true"><?= $p['price'] > 0 ? 'Comprar · ' . h(format_price($p['price'])) : 'Comprar' ?></button>
+      <p class="soon">No disponible por ahora. Si lo querés ya, escribinos y te lo pasamos.</p>
+      <p class="row"><a class="btn o" href="https://wa.me/5491126425994" target="_blank" rel="noopener">Escribir por WhatsApp</a></p>
     <?php endif; ?>
     </div>
   </section>
