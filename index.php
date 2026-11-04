@@ -105,12 +105,28 @@ function viewer_block(array $items, string $kind, callable $ask): void {
 $askApp = fn($a) => $a['link'] !== '' ? [$a['link'], 'Ver app ↗'] : [$waMsg('Hola! Me interesa la app "' . $a['title'] . '".'), 'Me interesa'];
 $askLand = fn($l) => [$l['link'] !== '' ? $l['link'] : $waMsg('Hola! Me gustó la landing "' . $l['title'] . '". Quiero una para mi negocio.'), 'Quiero una igual'];
 ?>
-<section id="apps" class="panel msec apps pad" hidden aria-label="Apps web"><div class="wrap">
-  <div class="k">02 · Apps web</div><h2>Apps que <span class="serif">resuelven</span> tu día a día.</h2>
-  <p class="lead">Sistemas web hechos para que un negocio se ordene: gestión, stock, turnos, cuentas. Probá la demo, se usa desde cualquier dispositivo.</p>
-  <?php if (!$apps): ?><div class="soon"><b>Muy pronto</b><span>Acá vas a poder probar las demos de las apps web.</span></div><?php endif; ?>
-  <?php viewer_block($apps, 'apps', $askApp); ?>
-</div></section>
+<section id="apps" class="panel apps" hidden aria-label="Apps web">
+  <div class="sechead pad"><div class="k">02 · Apps web</div><h2>Apps que <span class="serif">resuelven</span> tu día a día.</h2><p>Sistemas web hechos para que un negocio se ordene: gestión, stock, turnos, cuentas. Probá la demo, se usa desde cualquier dispositivo.</p></div>
+  <?php if (!$apps): ?><div class="soon pad"><b>Muy pronto</b><span>Acá vas a poder probar las demos de las apps web.</span></div><?php endif; ?>
+  <?php foreach ($apps as $n => $a):
+    $im = array_map(fn($x) => 'uploads/' . rawurlencode($x), $a['images']);
+    $src = ($a['html'] !== '' && is_file(SHOWCASE_DIR . '/' . basename($a['html']))) ? 'muestras/' . rawurlencode($a['html']) : '';
+    [$askUrl, $askLabel] = $askApp($a); ?>
+  <article class="app pad" data-app data-src="<?= h($src) ?>" data-imgs="<?= h(json_encode($im, JSON_UNESCAPED_SLASHES)) ?>" data-title="<?= h($a['title']) ?>">
+    <div class="app-info"><div class="k">App web · <?= str_pad((string)($n + 1), 2, '0', STR_PAD_LEFT) ?></div>
+      <h3><?= h($a['title']) ?></h3><p><?= h($a['desc']) ?></p>
+      <?php if ($a['tags']): ?><div class="atags"><?php foreach ($a['tags'] as $t): ?><span><?= h($t) ?></span><?php endforeach; ?></div><?php endif; ?>
+      <div class="row"><a class="btn" href="<?= h($askUrl) ?>" target="_blank" rel="noopener"><?= h($askLabel) ?></a>
+        <?php if ($src !== ''): ?><a class="btn o vopen" href="demo.php?f=<?= h(rawurlencode(basename($a['html']))) ?>" target="_blank" rel="noopener">Abrir demo completa ↗</a><?php endif; ?>
+        <?php if (count($im) > 1 || ($src !== '' && $im)): ?><button type="button" class="btn o" data-open="0">Ver fotos</button><?php endif; ?></div></div>
+    <div class="app-demo">
+      <div class="vtools"><div class="vdev"><button type="button" class="on" data-dev="d">Computadora</button><button type="button" data-dev="m">Celular</button></div></div>
+      <div class="browser"><div class="bbar"><i></i><i></i><i></i><b class="vurl"><?= h(trim(preg_replace('~[^a-z0-9]+~', '-', strtolower(iconv('UTF-8', 'ASCII//TRANSLIT', $a['title']) ?: 'app')), '-')) ?>.com</b></div>
+        <div class="vp"><div class="vfr"><div class="vph"<?= $src === '' && $im ? ' style="background-image:url(\'' . h($im[0]) . '\')" data-open="0"' : '' ?>></div></div></div></div>
+    </div>
+  </article>
+  <?php endforeach; ?>
+</section>
 
 <section id="landings" class="panel msec lands pad" hidden aria-label="Landings a medida"><div class="wrap">
   <div class="k" style="color:var(--acc)">03 · Landings a medida</div><h2>Landings que <span class="serif">convierten.</span></h2>

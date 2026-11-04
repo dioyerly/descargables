@@ -70,6 +70,12 @@ $$('[data-viewer]').forEach(vw=>{const q=c=>vw.querySelector(c),tabs=$$('.vtabs 
   const load=()=>{if(!loaded&&!vw.closest('[hidden]')){loaded=true;pick(tabs[0])}};
   new IntersectionObserver(en=>{if(en[0].isIntersecting)load()},{rootMargin:'300px'}).observe(vw);
   new MutationObserver(load).observe(vw.closest('.panel')||vw,{attributes:true,attributeFilter:['hidden']})});
+/* demos de apps (a todo el ancho, como agendas) */
+$$('[data-app]').forEach(ap=>{const fr=ap.querySelector('.vfr'),vp=ap.querySelector('.vp'),src=ap.dataset.src;let on=false;
+  const load=()=>{if(on||!src||ap.closest('[hidden]'))return;on=true;const ph=ap.querySelector('.vph');if(ph)ph.style.display='none';const f=document.createElement('iframe');f.src='demo.php?f='+encodeURIComponent(src.split('/').pop());f.title='Demo: '+ap.dataset.title;f.setAttribute('sandbox','allow-scripts allow-forms allow-popups allow-modals');fr.appendChild(f)};
+  new IntersectionObserver(en=>{if(en[0].isIntersecting)load()},{rootMargin:'400px'}).observe(ap);
+  new MutationObserver(load).observe(ap.closest('.panel'),{attributes:true,attributeFilter:['hidden']});
+  $$('.vdev button',ap).forEach(b=>b.addEventListener('click',()=>{$$('.vdev button',ap).forEach(x=>x.classList.toggle('on',x===b));vp.classList.toggle('mob',b.dataset.dev==='m')}))});
 /* categorías: se cambia el panel en el lugar, sin recorrer la página */
 const IDS=['agendas','apps','landings','micro'],tabsEl=$('tabs'),tl=$$('a',tabsEl);
 function hdrH(){return $('hdr').offsetHeight||64}
@@ -79,5 +85,5 @@ function activate(id,jump){if(!IDS.includes(id))id='agendas';IDS.forEach(k=>{con
   if(jump)goTop(null);try{history.replaceState(null,'','#'+id)}catch(e){}}
 document.addEventListener('click',e=>{const a=e.target.closest('a[href^="#"]');if(!a)return;const id=a.getAttribute('href').slice(1);if(!id)return;e.preventDefault();
   if(IDS.includes(id))activate(id,true);else if(id==='top')scrollTo({top:0,behavior:'instant'});else{const t=$(id);if(t)scrollTo({top:t.getBoundingClientRect().top+scrollY-hdrH(),behavior:'instant'})}});
-if(IDS.includes(location.hash.slice(1)))activate(location.hash.slice(1),true);
+if(IDS.includes(location.hash.slice(1))){const h0=location.hash.slice(1);activate(h0,true);addEventListener('load',()=>setTimeout(()=>goTop(null),80))}
 })();

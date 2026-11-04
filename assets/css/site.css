@@ -201,3 +201,22 @@ footer{margin-top:80px;padding-top:22px;border-top:1px solid var(--line);display
 .incl-side{display:grid;gap:16px;align-content:start;color:var(--mut);line-height:1.5}.incl-side b{color:var(--ink)}.incl-side .btn{justify-self:start}
 .incl-note{grid-column:1/-1;border-top:1px solid var(--line);padding-top:18px;color:var(--mut);font-size:14px}
 @media(max-width:860px){.incl{grid-template-columns:1fr;padding:24px;gap:22px}.vbuy{justify-content:flex-start}.vprice{text-align:left}.vprice em{margin-left:0}}
+
+/* apps: a todo el ancho, info de un lado y demo del otro (como agendas) */
+.panel.apps{padding:0;background:#14121c;color:#f4f1ea}
+.apps .sechead{padding-top:70px;padding-bottom:10px}.apps .sechead .k{color:#a893ff;font:600 13px var(--sans);letter-spacing:.16em;text-transform:uppercase}.apps .sechead p{color:#b9b4c9}
+.apps .soon{margin:30px max(22px,5vw) 90px}
+.app{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.3fr);gap:4vw;align-items:center;min-height:100vh;min-height:100svh;padding-top:90px;padding-bottom:70px;padding-left:max(22px,5vw);padding-right:max(22px,5vw);position:relative}
+.app:nth-of-type(odd){background:radial-gradient(60% 70% at 75% 50%,#2a2250,transparent 70%),#14121c}
+.app:nth-of-type(even){background:radial-gradient(60% 70% at 75% 50%,#1f3a43,transparent 70%),#101419}
+.app-info .k{color:#a893ff;font:600 13px var(--sans);letter-spacing:.16em;text-transform:uppercase}
+.app-info h3{font:800 clamp(40px,4.6vw,80px)/.95 var(--sans);letter-spacing:-.045em;margin:14px 0 18px}
+.app-info p{color:#c8c3d8;font-size:18px;max-width:44ch}
+.app-info .atags{margin-top:18px}.app-info .row{display:flex;gap:10px;flex-wrap:wrap;margin-top:26px}
+.app-info .btn{background:#a893ff;color:#14121c}.app-info .btn.o{background:transparent;color:#f4f1ea;border-color:#4a4466}
+.app-demo{min-width:0}.app-demo .vtools{justify-content:flex-end;margin-bottom:12px}
+.app-demo .vdev{background:#26223a}.app-demo .vdev button{color:#b9b4c9}.app-demo .vdev button.on{background:#a893ff;color:#14121c;box-shadow:none}
+.app-demo .browser{border-color:#2e2940;box-shadow:0 50px 90px -40px #000}
+.app-demo .vp{height:min(68vh,640px)}
+.apps .sechead h2{color:#f4f1ea}
+@media(max-width:860px){.app{grid-template-columns:1fr;min-height:0;gap:26px;padding-top:56px;padding-bottom:50px}.app-info h3{font-size:38px}.app-info p{font-size:16px}.app-demo .vp{height:62vh}}
