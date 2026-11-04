@@ -2,7 +2,7 @@
 declare(strict_types=1);
 // Muestras del inicio: apps web, landings a medida y micro apps a medida (las agendas siguen siendo "productos").
 
-const SHOWCASE_DIR = APP_ROOT . '/muestras';
+const SHOWCASE_DIR = APP_ROOT . '/private/muestras'; // dentro de private/: el deploy de Git no lo borra y nadie lo abre directo
 const SHOWCASE_MAX_IMAGES = 8;
 
 function showcase_sections(): array {
@@ -85,7 +85,7 @@ function showcase_delete(array $s): void {
     db()->prepare('DELETE FROM showcase WHERE slug = ?')->execute([$s['id']]);
 }
 
-/** Guarda el HTML de una landing en /muestras con nombre aleatorio. Devuelve el nombre o lanza excepción. */
+/** Guarda el HTML de una landing en private/muestras con nombre aleatorio. Devuelve el nombre o lanza excepción. */
 function showcase_store_html(array $f, string $prefix): string {
     if (($f['error'] ?? UPLOAD_ERR_NO_FILE) !== UPLOAD_ERR_OK) throw new RuntimeException('no se pudo subir (supera el límite del hosting o hubo un error).');
     $ext = strtolower(pathinfo((string)$f['name'], PATHINFO_EXTENSION));

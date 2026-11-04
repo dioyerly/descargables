@@ -79,7 +79,7 @@ admin_head($isNew ? 'Nueva muestra' : 'Editar muestra'); ?>
 <div class="card">
   <?php if ($secKey === 'landings' || $secKey === 'apps'): ?>
   <h2><?= $secKey === 'apps' ? 'HTML de la demo' : 'HTML de la landing' ?></h2>
-  <?php if ($s['html'] !== ''): ?><p class="muted" style="margin:6px 0">📄 <b><?= h($s['html']) ?></b> <a href="../muestras/<?= h(rawurlencode($s['html'])) ?>" target="_blank" rel="noopener">Ver ↗</a>
+  <?php if ($s['html'] !== ''): ?><p class="muted" style="margin:6px 0">📄 <b><?= h($s['html']) ?></b> <a href="../demo.php?f=<?= h(rawurlencode($s['html'])) ?>" target="_blank" rel="noopener">Ver ↗</a>
     <label class="mini rm"><input type="checkbox" name="rm_html" value="1"> Quitar</label></p><?php else: ?><p class="muted">Todavía no hay HTML.</p><?php endif; ?>
   <label class="drop"><?= $s['html'] !== '' ? 'Reemplazar el HTML' : 'Subir el HTML' ?><input type="file" name="html" accept=".html,.htm,text/html">
     <small>Un solo archivo .html (hasta 12 MB). Conviene que tenga todo adentro: estilos, imágenes y fuentes. Se muestra en vivo dentro del visor del inicio (la demo de la app se ve en un visor más chico), sin poder tocar el resto del sitio.</small></label>

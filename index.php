@@ -90,7 +90,7 @@ function viewer_block(array $items, string $kind, callable $ask): void {
   $c = $kind === 'apps' ? 'viewer vapp' : 'viewer'; ?>
   <div class="<?= $c ?>" data-viewer>
     <div class="vtabs" role="tablist"><?php foreach ($items as $i => $l):
-      $src = $l['html'] !== '' ? 'muestras/' . rawurlencode($l['html']) : '';
+      $src = ($l['html'] !== '' && is_file(SHOWCASE_DIR . '/' . basename($l['html']))) ? 'muestras/' . rawurlencode($l['html']) : '';
       $im = array_map(fn($x) => 'uploads/' . rawurlencode($x), $l['images']);
       [$ask_url, $ask_label] = $ask($l); ?>
       <button type="button" role="tab" class="<?= $i === 0 ? 'on' : '' ?>" data-src="<?= h($src) ?>" data-imgs="<?= h(json_encode($im, JSON_UNESCAPED_SLASHES)) ?>" data-title="<?= h($l['title']) ?>" data-desc="<?= h($l['desc']) ?>" data-tags="<?= h(implode('|', $l['tags'])) ?>" data-link="<?= h($ask_url) ?>" data-label="<?= h($ask_label) ?>" data-price="<?= h($l['price'] ?? '') ?>"><?= h($l['title']) ?></button>

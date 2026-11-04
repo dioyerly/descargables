@@ -5,3 +5,8 @@ data/*.tmp
 private/files/*
 !private/files/.gitkeep
 .DS_Store
+# Subidas desde el admin: el deploy de Git borra lo que no esté versionado ni ignorado
+private/muestras/*
+!private/muestras/.gitkeep
+uploads/*
+!uploads/.htaccess

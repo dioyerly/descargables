@@ -1,9 +1,0 @@
-# Landings de ejemplo (HTML subido desde el panel). Nunca ejecutar código del servidor.
-Options -Indexes
-<FilesMatch "\.(?i:php\d?|phtml|phar|pl|py|cgi|sh)$">
-  Require all denied
-</FilesMatch>
-<IfModule mod_headers.c>
-  Header always set Content-Security-Policy "sandbox allow-scripts allow-forms allow-popups allow-modals"
-  Header always set Cache-Control "no-cache"
-</IfModule>
