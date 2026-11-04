@@ -6,7 +6,7 @@ const RM=matchMedia('(prefers-reduced-motion:reduce)').matches;
 
 /* hero: piezas sueltas que vuelan a su dispositivo (tablet, notebook, navegador, celular) */
 const ds=$('dstage');let SETS={};try{SETS=JSON.parse(ds.dataset.sets||'{}')}catch(e){}
-const CAT=['agendas','apps','landings','micro'],SCAT={agendas:190,apps:280,landings:260,micro:96};
+const CAT=['agendas','apps','landings','micro'],SCAT={agendas:190,apps:280,landings:100,micro:260};
 const R=(s=>()=>(s=(s*16807)%2147483647)/2147483647)(11);
 const devs=$$('.dev',ds),scrs=devs.map(d=>d.querySelector('.scr'));
 const bars=n=>Array.from({length:n},(_,i)=>`<i style="height:${30+((i*37)%60)}%"></i>`).join('');
@@ -16,9 +16,9 @@ const MOCK={
  landings:j=>`<div class="mk mk-land v${j}"><i class="nv"></i><div class="hx"><b>${j?'Tu estudio,<br>online.':'Café de<br>barrio.'}</b><i class="bt"></i></div><i class="ph"></i></div>`,
  micro:j=>`<div class="mk mk-mic v${j}"><b>${j?'Pedidos':'Turnos'}</b>${'<p><i></i><span></span></p>'.repeat(4)}<i class="fab"></i></div>`};
 const PS=[];const layer=$('pieces');
-CAT.forEach((c,ci)=>{let l=(SETS[c]||[]).slice(0,c==='agendas'?7:4);const mock=!l.length;if(mock)l=[0,1];
+CAT.forEach((c,ci)=>{let l=(SETS[c]||[]).slice(0,c==='agendas'?7:4);if(c==='landings')l=['vid:'+(ds.dataset.vland||'')].concat(l).slice(0,4);const mock=!l.length;if(mock)l=[0,1];
   l.forEach((u,j)=>{const e=document.createElement('div');e.className='piece p-'+c+(mock?' mock':'');
-    if(mock)e.innerHTML=MOCK[c](j);else e.style.backgroundImage=`url('${u}')`;layer.appendChild(e);
+    if(mock)e.innerHTML=MOCK[c](j);else if(typeof u==='string'&&u.startsWith('vid:')){e.classList.add('vid');e.innerHTML=`<video src="${u.slice(4)}" poster="${u.slice(4).replace('.mp4','.jpg')}" muted loop playsinline autoplay preload="auto"></video>`}else e.style.backgroundImage=`url('${u}')`;layer.appendChild(e);
     PS.push({e,c,ci,j,n:l.length,x:R(),y:R(),r:(R()-.5)*44,d:R(),w:0,h:0})})});
 PS.sort((a,b)=>a.d-b.d).forEach((s,i)=>s.z=i);
 const rot=$('rot'),words=rot?$$('b',rot):[],w2=$$('#rot2 b');let wi=0,w2i=0;

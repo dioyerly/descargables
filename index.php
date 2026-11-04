@@ -31,7 +31,7 @@ $waMsg = fn(string $t) => $wa . '?text=' . rawurlencode($t);
 
 <main id="top">
 <section id="desk" aria-label="Presentación">
-  <div class="dstage" id="dstage" data-sets="<?= h(json_encode($heroSets, JSON_UNESCAPED_SLASHES)) ?>">
+  <div class="dstage" id="dstage" data-vland="assets/img/hero/landing-ember.mp4" data-sets="<?= h(json_encode($heroSets, JSON_UNESCAPED_SLASHES)) ?>">
     <div class="glowbg" id="glowbg"></div>
     <div class="htxt" id="htxt"><div class="k" style="color:var(--acc)">EstrategIA · Productos digitales</div>
       <h1>Productos digitales que <span class="rot serif" id="rot" aria-live="polite"><b class="on">organizan.</b><b>solucionan.</b><b>venden.</b></span></h1>
@@ -42,8 +42,8 @@ $waMsg = fn(string $t) => $wa . '?text=' . rawurlencode($t);
     <div class="devs" id="devs">
       <a class="dev d-tab" href="#agendas" style="--c:#6a4fc4"><i class="halo"></i><div class="frame"><div class="scr"></div></div><div class="cap"><b>01</b><span>Agendas e imprimibles</span><small><?= count($products) ? count($products) . ' productos' : 'Muy pronto' ?></small></div></a>
       <a class="dev d-lap" href="#apps" style="--c:#2f8f83"><i class="halo"></i><div class="frame"><div class="scr"></div></div><div class="cap"><b>02</b><span>Apps web</span><small><?= count($apps) ? count($apps) . ' apps' : 'Muy pronto' ?></small></div></a>
-      <a class="dev d-web" href="#landings" style="--c:#e0714f"><i class="halo"></i><div class="frame"><div class="scr"></div></div><div class="cap"><b>03</b><span>Landings a medida</span><small><?= count($landings) ? count($landings) . ' ejemplos' : 'Muy pronto' ?></small></div></a>
-      <a class="dev d-pho" href="#micro" style="--c:#c9962b"><i class="halo"></i><div class="frame"><div class="scr"></div></div><div class="cap"><b>04</b><span>Micro apps a medida</span><small><?= count($micro) ? count($micro) . ' ejemplos' : 'Muy pronto' ?></small></div></a>
+      <a class="dev d-pho" href="#landings" style="--c:#e0714f"><i class="halo"></i><div class="frame"><div class="scr"></div></div><div class="cap"><b>03</b><span>Landings a medida</span><small><?= count($landings) ? count($landings) . ' ejemplos' : 'Muy pronto' ?></small></div></a>
+      <a class="dev d-web" href="#micro" style="--c:#c9962b"><i class="halo"></i><div class="frame"><div class="scr"></div></div><div class="cap"><b>04</b><span>Micro apps a medida</span><small><?= count($micro) ? count($micro) . ' ejemplos' : 'Muy pronto' ?></small></div></a>
     </div>
     <div class="pieces" id="pieces"></div>
     <div class="stamp" id="stamp"><i></i>Bajá y mirá todo</div>

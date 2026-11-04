@@ -299,3 +299,11 @@ footer{margin-top:80px;padding-top:22px;border-top:1px solid var(--line);display
  .rot2{height:2.3em}.rot2 b{white-space:normal}
 }
 @media(prefers-reduced-motion:reduce){.piece,.rot2 b{transition:none}}
+
+/* landings en celular (video real), micro apps en ventana */
+.devs{grid-template-columns:22fr 34fr 11fr 30fr}
+.p-landings.in{border-radius:14px}.p-micro.in{border-radius:0 0 8px 8px}
+.piece.vid{background:#1b120c}.piece.vid video{width:100%;height:100%;object-fit:cover;object-position:top;display:block}
+.mk-mic{padding:5cqw 6cqw}.mk-mic b{font-size:5.4cqw}.mk-mic p{margin-top:2.6cqw;padding:1.8cqw 2.4cqw;border-radius:1.6cqw;gap:2.4cqw}
+.mk-mic p i{width:5cqw;height:5cqw}.mk-mic p span{height:1.5cqw}.mk-mic .fab{width:8cqw;height:8cqw;right:5cqw;bottom:6cqh}
+@media(max-width:860px){.devs{grid-template-columns:1fr 1fr}}
