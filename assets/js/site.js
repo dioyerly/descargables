@@ -16,7 +16,7 @@ const MOCK={
  landings:j=>`<div class="mk mk-land v${j}"><i class="nv"></i><div class="hx"><b>${j?'Tu estudio,<br>online.':'Café de<br>barrio.'}</b><i class="bt"></i></div><i class="ph"></i></div>`,
  micro:j=>`<div class="mk mk-mic v${j}"><b>${j?'Pedidos':'Turnos'}</b>${'<p><i></i><span></span></p>'.repeat(4)}<i class="fab"></i></div>`};
 const PS=[];const layer=$('pieces');
-CAT.forEach((c,ci)=>{let l=(SETS[c]||[]).slice(0,c==='agendas'?7:4);if(c==='landings')l=['vid:'+(ds.dataset.vland||'')].concat(l).slice(0,4);const mock=!l.length;if(mock)l=[0,1];
+CAT.forEach((c,ci)=>{let l=(SETS[c]||[]).slice(0,c==='agendas'?7:4);const vv=c==='landings'?ds.dataset.vland:c==='micro'?ds.dataset.vmicro:'';if(vv)l=l.slice(0,3).concat(['vid:'+vv]);const mock=!l.length;if(mock)l=[0,1];
   l.forEach((u,j)=>{const e=document.createElement('div');e.className='piece p-'+c+(mock?' mock':'');
     if(mock)e.innerHTML=MOCK[c](j);else if(typeof u==='string'&&u.startsWith('vid:')){e.classList.add('vid');e.innerHTML=`<video src="${u.slice(4)}" poster="${u.slice(4).replace('.mp4','.jpg')}" muted loop playsinline autoplay preload="auto"></video>`}else e.style.backgroundImage=`url('${u}')`;layer.appendChild(e);
     PS.push({e,c,ci,j,n:l.length,x:R(),y:R(),r:(R()-.5)*44,d:R(),w:0,h:0})})});

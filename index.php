@@ -31,7 +31,7 @@ $waMsg = fn(string $t) => $wa . '?text=' . rawurlencode($t);
 
 <main id="top">
 <section id="desk" aria-label="Presentación">
-  <div class="dstage" id="dstage" data-vland="assets/img/hero/landing-ember.mp4" data-sets="<?= h(json_encode($heroSets, JSON_UNESCAPED_SLASHES)) ?>">
+  <div class="dstage" id="dstage" data-vland="assets/img/hero/landing-ember.mp4" data-vmicro="assets/img/hero/micro-nimm.mp4" data-sets="<?= h(json_encode($heroSets, JSON_UNESCAPED_SLASHES)) ?>">
     <div class="glowbg" id="glowbg"></div>
     <div class="htxt" id="htxt"><div class="k" style="color:var(--acc)">EstrategIA · Productos digitales</div>
       <h1>Productos digitales que <span class="rot serif" id="rot" aria-live="polite"><b class="on">organizan.</b><b>solucionan.</b><b>venden.</b></span></h1>
