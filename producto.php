@@ -5,7 +5,7 @@ $slug = (string)($_GET['s'] ?? '');
 $p = find_product(load_products(), $slug);
 if (!$p || !$p['visible'] || !$p['images']) { http_response_code(404); $nf = true; }
 if ($p && !empty($p['landing']) && safe_url((string)$p['landing'])) { header('Location: ' . $p['landing'], true, 302); exit; }
-$v = '1'; $B = base_path();
+$v = (string)@filemtime(__DIR__ . '/assets/js/site.js'); $B = base_path();
 if (!empty($nf)) { ?><!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>No encontrado · EstrategIA Descargables</title>
 <link rel="stylesheet" href="<?= h($B) ?>/assets/css/site.css?v=<?= $v ?>"><link rel="stylesheet" href="<?= h($B) ?>/assets/css/detalle.css?v=<?= $v ?>"></head><body class="solo">
 <header class="pad solid"><a class="logo" href="<?= h($B) ?>/"><i>e</i>EstrategIA<small>Descargables</small></a></header>

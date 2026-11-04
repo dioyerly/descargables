@@ -6,7 +6,7 @@ $themes = themes();
 $totalPages = array_sum(array_map(fn($p) => (int)($p['pages'] ?? 0), $products));
 $heroImgs = [];
 foreach ($products as $p) foreach ($p['images'] as $im) $heroImgs[] = 'uploads/' . rawurlencode($im);
-$v = '1';
+$v = (string)@filemtime(__DIR__ . '/assets/js/site.js');
 ?><!doctype html>
 <html lang="es">
 <head>

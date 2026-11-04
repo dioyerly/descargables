@@ -12,7 +12,7 @@ if ($order && $order['status'] !== 'paid') {
     } catch (Throwable $e) { error_log('gracias: ' . $e->getMessage()); }
 }
 $state = !$order ? 'none' : ($order['status'] === 'paid' ? 'paid' : ($order['status'] === 'pending' ? 'pending' : 'fail'));
-$v = '1';
+$v = (string)@filemtime(__DIR__ . '/assets/js/site.js');
 ?><!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex,nofollow"><title>Tu compra · EstrategIA Descargables</title>
 <link rel="stylesheet" href="<?= h(base_path()) ?>/assets/css/site.css?v=<?= $v ?>"><link rel="stylesheet" href="<?= h(base_path()) ?>/assets/css/detalle.css?v=<?= $v ?>"></head>

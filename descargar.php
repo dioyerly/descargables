@@ -28,7 +28,7 @@ $pick = (string)($_GET['f'] ?? '');
 if ($pick === '' && count($items) === 1) $pick = $items[0]['k'];
 
 if ($pick === '') {   // varios archivos: lista de descarga
-    $v = '1'; $B = base_path(); ?><!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+    $v = (string)@filemtime(__DIR__ . '/assets/js/site.js'); $B = base_path(); ?><!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex,nofollow"><title>Tus descargas · EstrategIA Descargables</title>
 <link rel="stylesheet" href="<?= h($B) ?>/assets/css/site.css?v=<?= $v ?>"><link rel="stylesheet" href="<?= h($B) ?>/assets/css/detalle.css?v=<?= $v ?>"></head>
 <body class="solo"><header class="pad solid"><a class="logo" href="<?= h($B) ?>/"><i>e</i>EstrategIA<small>Descargables</small></a></header>
