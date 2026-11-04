@@ -108,8 +108,12 @@ function hdrH(){return $('hdr').offsetHeight||64}
 function goTop(el,inner){const base=inner&&el?el.getBoundingClientRect().top+scrollY-tabsEl.offsetHeight-hdrH()-8:$('desk').offsetTop+$('desk').offsetHeight-hdrH()+1;scrollTo({top:Math.max(0,base),behavior:'instant'})}
 function activate(id,jump){if(!IDS.includes(id))id='agendas';IDS.forEach(k=>{const e=$(k);const on=k===id;if(on&&e.hidden){e.hidden=false;e.classList.remove('enter');void e.offsetWidth;if(!RM)e.classList.add('enter')}else if(!on)e.hidden=true});
   tl.forEach(a=>a.classList.toggle('on',a.getAttribute('href')==='#'+id));
-  if(jump)goTop(null);try{history.replaceState(null,'','#'+id)}catch(e){}}
+  if(jump)goTop(null)}
 document.addEventListener('click',e=>{const a=e.target.closest('a[href^="#"]');if(!a)return;const id=a.getAttribute('href').slice(1);if(!id)return;e.preventDefault();
   if(IDS.includes(id))activate(id,true);else if(id==='top')scrollTo({top:0,behavior:'instant'});else{const t=$(id);if(t)scrollTo({top:t.getBoundingClientRect().top+scrollY-hdrH(),behavior:'instant'})}});
-if(IDS.includes(location.hash.slice(1))){const h0=location.hash.slice(1);activate(h0,true);addEventListener('load',()=>setTimeout(()=>goTop(null),80))}
+/* siempre empezar arriba: si la URL trae #agendas etc. se elige esa pestaña pero no se salta */
+try{history.scrollRestoration='manual'}catch(e){}
+if(IDS.includes(location.hash.slice(1)))activate(location.hash.slice(1),false);
+if(location.hash){try{history.replaceState(null,'',location.pathname+location.search)}catch(e){}}
+scrollTo(0,0);addEventListener('load',()=>setTimeout(()=>scrollTo(0,0),0));addEventListener('pageshow',e=>{if(e.persisted)scrollTo(0,0)});
 })();
