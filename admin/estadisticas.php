@@ -63,6 +63,31 @@ $dev = ['m' => 0, 'd' => 0]; foreach ($q("SELECT dev, COUNT(DISTINCT sid) c FROM
 $tl = ['wa' => 'WhatsApp', 'demo' => 'Abrió demo', 'photos' => 'Vio fotos', 'click' => 'Botón', 'buy' => 'Comprar', 'tab' => 'Pestaña'];
 $topClicks = []; foreach ($q("SELECT t, n, COUNT(*) c FROM events WHERE ts >= ? AND t IN ('wa','demo','photos','click','buy') GROUP BY t, n ORDER BY c DESC LIMIT 12", [$from]) as $r) $topClicks[] = $r;
 
+// últimas visitas: cada sesión con lo que hizo
+$recent = [];
+$sids = $q("SELECT sid, MIN(ts) ini, MAX(ts) fin, MAX(dev) dev, MAX(src) src, MAX(vid) vid FROM events WHERE ts >= ? AND sid <> '' GROUP BY sid ORDER BY fin DESC LIMIT 40", [$from])->fetchAll();
+if ($sids) {
+    $in = implode(',', array_fill(0, count($sids), '?'));
+    $ev = []; foreach ($q("SELECT sid, t, n, page FROM events WHERE sid IN ($in) ORDER BY id", array_column($sids, 'sid')) as $r) $ev[$r['sid']][] = $r;
+    $vc = []; foreach ($q("SELECT vid, COUNT(DISTINCT sid) c FROM events WHERE vid IN (" . implode(',', array_fill(0, count($sids), '?')) . ") GROUP BY vid", array_column($sids, 'vid')) as $r) $vc[$r['vid']] = (int)$r['c'];
+    $tabN = ['agendas' => 'Agendas', 'apps' => 'Apps web', 'landings' => 'Landings', 'micro' => 'Micro apps'];
+    foreach ($sids as $s) {
+        $acts = []; $pv = 0;
+        foreach ($ev[$s['sid']] ?? [] as $e) {
+            if ($e['t'] === 'pv') { $pv++; $x = $e['page'] === 'detalle' ? 'Abrió el detalle de ' . $e['n'] : ($e['page'] === 'legales' ? 'Leyó los legales' : ($e['page'] === 'inicio' ? 'Entró al inicio' : '')); }
+            elseif ($e['t'] === 'tab') $x = 'Pestaña ' . ($tabN[$e['n']] ?? $e['n']);
+            elseif ($e['t'] === 'seen') $x = 'Vio ' . $e['n'];
+            elseif ($e['t'] === 'wa') $x = 'Tocó WhatsApp' . ($e['n'] !== '' && !in_array($e['n'], ['inicio', 'detalle'], true) ? ' (' . $e['n'] . ')' : '');
+            elseif ($e['t'] === 'demo') $x = 'Abrió la demo de ' . $e['n'];
+            elseif ($e['t'] === 'photos') $x = 'Miró fotos' . ($e['n'] !== '' ? ' de ' . $e['n'] : '');
+            elseif ($e['t'] === 'buy') $x = '🛒 Tocó Comprar en ' . $e['n'];
+            else $x = 'Tocó «' . $e['n'] . '»';
+            if ($x !== '' && end($acts) !== $x) $acts[] = $x;
+        }
+        $min = max(0, (int)round((strtotime($s['fin']) - strtotime($s['ini'])) / 60));
+        $recent[] = ['ini' => $s['ini'], 'dev' => $s['dev'] === 'm' ? 'Celular' : 'Computadora', 'src' => source_label((string)$s['src']), 'acts' => $acts, 'min' => $min, 'ret' => ($vc[$s['vid']] ?? 1) > 1];
+    }
+}
 $fmt = fn(float $n) => number_format($n, 0, ',', '.');
 $delta = function (float $now, float $prev): string {
     if ($prev <= 0) return $now > 0 ? '<em class="up">nuevo</em>' : '';
@@ -133,6 +158,13 @@ admin_head('Estadísticas'); ?>
   <div class="card st-card"><h2>Pestañas más vistas</h2><p class="muted sm">Veces que tocaron cada categoría.</p><?= $bars($tabs) ?></div>
   <div class="card st-card"><h2>Clics más tocados</h2><p class="muted sm">Botones, WhatsApp, demos y fotos.</p>
     <?php if (!$topClicks): ?><p class="muted sm">Todavía no hay datos en este período.</p><?php else: $rows = []; foreach ($topClicks as $r) $rows[($tl[$r['t']] ?? $r['t']) . ($r['n'] !== '' ? ' · ' . $r['n'] : '')] = (int)$r['c']; echo $bars($rows, '#e0714f'); endif; ?></div>
+</div>
+<div class="card st-card" style="margin-top:16px">
+  <h2>Últimas visitas</h2><p class="muted sm">Cada visita con la hora, el aparato, de dónde vino y qué hizo. Si reconocés una tuya, entrá al admin desde ese aparato para que no se cuente más.</p>
+  <?php if (!$recent): ?><p class="muted sm">Todavía no hay visitas en este período.</p><?php else: ?><div class="rv">
+  <?php foreach ($recent as $r): ?><details class="rvi"><summary><span class="rt"><?= h(date('d/m H:i', strtotime($r['ini']))) ?></span><span class="rd"><?= $r['dev'] === 'Celular' ? '📱' : '💻' ?> <?= h($r['dev']) ?></span><span class="rs"><?= h($r['src']) ?></span><span class="rx"><?= count($r['acts']) ?> acciones · <?= $r['min'] < 1 ? 'menos de 1 min' : $r['min'] . ' min' ?><?= $r['ret'] ? ' · <b>volvió</b>' : '' ?></span></summary>
+    <ol><?php foreach ($r['acts'] as $x): ?><li><?= h($x) ?></li><?php endforeach; ?></ol></details><?php endforeach; ?>
+  </div><?php endif; ?>
 </div>
 <p class="muted sm" style="margin-top:18px">Las estadísticas son anónimas: no se guarda la IP ni datos personales. Los datos de más de 18 meses se borran solos.</p>
 <?php admin_foot();
