@@ -33,7 +33,24 @@ function db_ready(): bool {
     // Actualiza solo la estructura si una versión nueva agregó columnas (no borra nada)
     try { $pdo->query('SELECT landing_url, files FROM products LIMIT 1'); }
     catch (Throwable $e) { try { db_install($pdo); } catch (Throwable $e2) { error_log('DB migrate: ' . $e2->getMessage()); return $ok = false; } }
-    return $ok = true;
+    $ok = true;
+    // Aplica solas las fichas de seed/fichas que cambiaron desde la última vez (así no hace falta apretar ningún botón)
+    try { db_apply_fichas_nuevas(); } catch (Throwable $e) { error_log('Fichas: ' . $e->getMessage()); }
+    return true;
+}
+
+/** Aplica solo las fichas cuyo archivo cambió desde la última aplicación (se recuerda en data/fichas-aplicadas.json). */
+function db_apply_fichas_nuevas(): void {
+    $reg = DATA_DIR . '/fichas-aplicadas.json';
+    $seen = is_file($reg) ? (json_decode((string)file_get_contents($reg), true) ?: []) : [];
+    $changed = false;
+    foreach (glob(APP_ROOT . '/seed/fichas/*.json') ?: [] as $f) {
+        $h = md5((string)file_get_contents($f)); $k = basename($f);
+        if (($seen[$k] ?? '') === $h) continue;
+        db_apply_fichas($f);
+        $seen[$k] = $h; $changed = true;
+    }
+    if ($changed) @file_put_contents($reg, json_encode($seen), LOCK_EX);
 }
 
 function db_install(PDO $pdo): void {
@@ -88,9 +105,9 @@ function db_install(PDO $pdo): void {
 }
 
 /** Aplica las fichas de seed/fichas/*.json a productos que ya existen (no toca precio, archivo ni visibilidad). Devuelve los títulos actualizados. */
-function db_apply_fichas(): array {
+function db_apply_fichas(?string $only = null): array {
     $done = [];
-    foreach (glob(APP_ROOT . '/seed/fichas/*.json') ?: [] as $f) {
+    foreach ($only ? [$only] : (glob(APP_ROOT . '/seed/fichas/*.json') ?: []) as $f) {
         $j = json_decode((string)file_get_contents($f), true);
         if (!is_array($j) || empty($j['id'])) continue;
         $p = find_product(load_products(), (string)$j['id']);
