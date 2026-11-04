@@ -104,7 +104,7 @@ function db_install(PDO $pdo): void {
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci");
 }
 
-/** Aplica las fichas de seed/fichas/*.json a productos que ya existen (no toca precio, archivo ni visibilidad). Devuelve los títulos actualizados. */
+/** Aplica las fichas de seed/fichas/*.json a productos que ya existen (el precio solo si la ficha lo trae; no toca archivos ni visibilidad). Devuelve los títulos actualizados. */
 function db_apply_fichas(?string $only = null): array {
     $done = [];
     foreach ($only ? [$only] : (glob(APP_ROOT . '/seed/fichas/*.json') ?: []) as $f) {
@@ -112,7 +112,7 @@ function db_apply_fichas(?string $only = null): array {
         if (!is_array($j) || empty($j['id'])) continue;
         $p = find_product(load_products(), (string)$j['id']);
         if (!$p) continue;
-        foreach (['title','kicker','type','theme','pages','ar','desc','long','meta','feats','images'] as $k) if (array_key_exists($k, $j)) $p[$k] = $j[$k];
+        foreach (['title','kicker','type','theme','pages','ar','desc','long','meta','feats','images','price'] as $k) if (array_key_exists($k, $j)) $p[$k] = $j[$k];
         product_update($p);
         $done[] = strip_tags(str_replace('*', '', (string)$p['title']));
     }

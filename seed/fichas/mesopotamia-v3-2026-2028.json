@@ -1,36 +1,37 @@
 {
   "id": "mesopotamia-v3-2026-2028",
   "title": "Mesopotamia · V3 2026-2028",
-  "kicker": "Agenda interactiva · HTML · Manual PDF",
+  "kicker": "Atlas interactivo · HTML · Manual PDF",
   "type": "both",
   "theme": "grafito",
   "ar": "900/1000",
-  "desc": "Una agenda astral para organizar tu vida mirando el cielo. Elegí el año y el mes y tené la carátula del mes, el almanaque con las fases de la Luna y los retrógrados, la semana y una ficha para cada día. Escribí, decorala con más de 200 stickers e imprimí lo que necesites.",
-  "long": "Una agenda para organizar tu vida mirando el cielo. Es un solo archivo HTML que se abre en el navegador de tu computadora, tablet o celular, sin instalar nada ni crear cuentas. Elegís el año (de 2016 a 2028) y el mes, y la agenda te muestra el cielo de esa fecha.\n\nCada mes empieza con su carátula: un arquetipo, la raíz babilónica del mes, la dirección de la voluntad y los hábitos, un ritual de apertura y tus tres intenciones. Después viene el almanaque astral, un calendario con las fases de la Luna de cada día, los planetas retrógrados y una clave de Ptolomeo con una tablilla babilónica de presagios.\n\nPara el día a día: la Semana a la vista, con los siete días, un ritual de hábitos por día, la Balanza de Shamash (tus finanzas de la semana) y la Alquimia de hábitos y estudio sagrado. Y una ficha para cada Día Ritual, con la fase de la Luna, los tránsitos y retrógrados, un cronograma horario de 06:00 a 22:00 y un cierre para anotar qué aprendiste.\n\nEs tuya para completar: escribís directamente en todos los campos y decorás con más de 200 stickers (zodíaco, lunas, planetas, motivos mesopotámicos y más) que podés arrastrar a donde quieras. Podés cambiar entre modo oscuro (astral) y modo claro (papiro).\n\nSi preferís el papel, el módulo de impresión te deja elegir qué imprimir (página activa, carátula, almanaque, semana, día, mes completo o agenda anual) y revisar la vista previa en tamaño A4 antes de imprimir o guardar como PDF. Incluye además un manual de uso en PDF con el paso a paso.\n\nPara tener en cuenta: lo que escribas y pegues se guarda en el dispositivo y navegador que uses, así que si borrás los datos del navegador se pierde; usá siempre el mismo dispositivo. Para imprimir o exportar a PDF, hacelo desde una computadora.\n\nProducto digital: recibís los archivos al instante después de pagar. No se envía nada físico.",
+  "price": 7500,
+  "desc": "Un atlas interactivo para organizar tu vida mirando el cielo, de 2026 a 2028. Portada ilustrada de cada mes con su signo, planificación por mes, semana y día, hábitos, finanzas, cuaderno y las lunas y retrógrados. Escribí, decorala con stickers e imprimí en A4, Carta, A5 o Media carta.",
+  "long": "Una agenda para organizar tu vida mirando el cielo. Es un atlas interactivo en un solo archivo HTML que se abre en el navegador de tu computadora, tablet o celular, y funciona sin conexión a internet. Cubre tres años completos: 2026, 2027 y 2028.\n\nCada mes tiene su portada ilustrada con el signo que lo abre: sus fechas, elemento y modalidad, regente, símbolo, una pregunta del ciclo, curiosidades y un espacio para tu intención del mes. Es la parte más linda para abrir cada mes.\n\nPara planificar elegís el nivel de detalle: Mes, con el panorama mensual, las fases lunares y los planetas retrógrados; Semana, con enfoque, presupuesto y un espacio por día; o Día, con tu intención, cómo llegás al día, tareas, citas y horarios, notas libres, gratitud y cierre, y un recordatorio para mañana. El selector de fecha te lleva directo a cualquier día.\n\nAdemás hay un registro de Hábitos para medir tu constancia, una sección de Finanzas con ingresos, gastos, balance del mes, objetivo de ahorro y pagos y vencimientos, y un Cuaderno para ideas, listas y sueños. En Cielo y saberes consultás las lunas, los signos y los movimientos retrógrados de cada mes.\n\nEs tuya para completar: escribís directamente en las páginas, marcás tareas y hábitos, y decorás con stickers de ilustraciones zodiacales y etiquetas de planificación (con buscador). Los podés mover, agrandar y quitar. Hay modo claro y oscuro.\n\nSi preferís el papel, elegís el tamaño (A4, Carta, A5 o Media carta), el período (un día, un mes, un año o los tres años) y las secciones que querés imprimir. Se prepara todo listo para imprimir o guardar como PDF. Incluye un manual de uso en PDF con el paso a paso y los ajustes recomendados.\n\nPara tener en cuenta: lo que escribís se guarda en el navegador del dispositivo que uses. Para llevar tus notas a otro dispositivo o no perderlas, usá los botones Respaldar y Restaurar. Para imprimir o guardar en PDF te recomendamos usar una computadora.\n\nProducto digital: recibís los archivos (la agenda en HTML y el manual en PDF) al instante después de pagar. No se envía nada físico.",
   "meta": [
-    "Años 2016 a 2028",
-    "Modo oscuro y claro",
-    "200+ stickers",
-    "Impresión A4",
+    "Años 2026, 2027 y 2028",
+    "Modo claro y oscuro",
+    "Stickers con buscador",
+    "A4 · Carta · A5 · Media carta",
     "Incluye manual PDF"
   ],
   "feats": [
-    "Carátula de cada mes con ritual e intenciones",
-    "Almanaque con fases lunares y planetas retrógrados",
-    "Semana a la vista con hábitos y finanzas",
-    "Ficha de cada día con horario de 06:00 a 22:00",
-    "Más de 200 stickers, modo claro y oscuro, impresión A4"
+    "Portada ilustrada de cada mes con su signo",
+    "Mes, semana y día con lunas y planetas retrógrados",
+    "Hábitos, finanzas y cuaderno",
+    "Respaldo y restauración de tus datos",
+    "Impresión por período y secciones, en 4 tamaños"
   ],
   "images": [
-    "mesopotamia-v3-2026-2028-b01-27033975.webp",
-    "mesopotamia-v3-2026-2028-b02-5f4c4f55.webp",
-    "mesopotamia-v3-2026-2028-b03-2efd1bdd.webp",
-    "mesopotamia-v3-2026-2028-b04-898014e5.webp",
-    "mesopotamia-v3-2026-2028-b05-924c421f.webp",
-    "mesopotamia-v3-2026-2028-b06-50a37046.webp",
-    "mesopotamia-v3-2026-2028-b07-ab9f52c7.webp",
-    "mesopotamia-v3-2026-2028-b08-bf69e373.webp",
-    "mesopotamia-v3-2026-2028-b09-78a9d219.webp",
-    "mesopotamia-v3-2026-2028-b10-0722b69a.webp"
+    "mesopotamia-v3-2026-2028-c01-56e24d90.webp",
+    "mesopotamia-v3-2026-2028-c02-baf0a521.webp",
+    "mesopotamia-v3-2026-2028-c03-49f6ad63.webp",
+    "mesopotamia-v3-2026-2028-c04-139869c8.webp",
+    "mesopotamia-v3-2026-2028-c05-809bf437.webp",
+    "mesopotamia-v3-2026-2028-c06-566a43ef.webp",
+    "mesopotamia-v3-2026-2028-c07-3a310a02.webp",
+    "mesopotamia-v3-2026-2028-c08-bab81a9b.webp",
+    "mesopotamia-v3-2026-2028-c09-c566064d.webp",
+    "mesopotamia-v3-2026-2028-c10-01da9075.webp"
   ]
 }
