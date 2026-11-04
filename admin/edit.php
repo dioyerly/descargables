@@ -16,6 +16,14 @@ $lines = fn(string $s, int $max) => array_slice(array_values(array_filter(array_
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     csrf_check();
     $p['title'] = trim((string)($_POST['title'] ?? ''));
+    // Palabra en cursiva: se escribe aparte y se marca sola dentro del nombre
+    $ital = trim(str_replace('*', '', (string)($_POST['italic'] ?? '')));
+    if ($ital !== '') {
+        $plain = str_replace('*', '', $p['title']);
+        $pos = mb_stripos($plain, $ital);
+        if ($pos !== false) { $len = mb_strlen($ital); $p['title'] = mb_substr($plain, 0, $pos) . '*' . mb_substr($plain, $pos, $len) . '*' . mb_substr($plain, $pos + $len); }
+        else { $errors[] = 'La palabra en cursiva tiene que estar escrita dentro del nombre.'; }
+    }
     $p['kicker'] = trim((string)($_POST['kicker'] ?? ''));
     $p['desc'] = trim((string)($_POST['desc'] ?? ''));
     $p['type'] = array_key_exists($_POST['type'] ?? '', types()) ? $_POST['type'] : 'print';
@@ -95,8 +103,9 @@ admin_head($isNew ? 'Nuevo producto' : 'Editar producto'); ?>
 <form method="post" enctype="multipart/form-data" class="grid"><?= csrf_field() ?><input type="hidden" name="id" value="<?= h($p['id']) ?>">
 <div class="card">
   <h2>Datos del producto</h2>
-  <label>Nombre<input name="title" maxlength="80" required value="<?= h($p['title']) ?>" placeholder="Agenda *Michis* 2027">
-    <small>Poné entre *asteriscos* la palabra que querés en cursiva. Ej: Agenda *Michis* 2027</small></label>
+  <label>Nombre<input name="title" maxlength="80" required value="<?= h(str_replace('*', '', $p['title'])) ?>" placeholder="Agenda Michis 2027"></label>
+  <label>Palabra en cursiva (opcional)<input name="italic" maxlength="40" value="<?= h(preg_match('/\*(.+?)\*/u', (string)$p['title'], $mi) ? $mi[1] : '') ?>" placeholder="Michis">
+    <small>Escribí una palabra del nombre y se muestra en cursiva y de color, como en “Agenda <i>Michis</i> 2027”. Dejalo vacío si no querés cursiva. No hace falta poner asteriscos.</small></label>
   <label>Línea superior (chiquita)<input name="kicker" maxlength="60" value="<?= h($p['kicker']) ?>" placeholder="Imprimible · PDF · A4"></label>
   <label>Descripción<textarea name="desc" rows="4" maxlength="400" placeholder="Para quién es y qué tiene, en 2 o 3 frases."><?= h($p['desc']) ?></textarea></label>
   <label>Link de la página propia del producto (opcional)<input name="landing" type="url" value="<?= h($p['landing']) ?>" placeholder="https://miapp.estrategia.site">
