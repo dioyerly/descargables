@@ -102,18 +102,13 @@ function viewer_block(array $items, string $kind, callable $ask): void {
   </div>
 <?php } ?>
 <?php
-$askApp = fn($a) => $a['link'] !== '' ? [$a['link'], 'Ver app ↗'] : [$waMsg('Hola! Me interesa la app "' . $a['title'] . '".'), 'Me interesa'];
-$askLand = fn($l) => [$l['link'] !== '' ? $l['link'] : $waMsg('Hola! Me gustó la landing "' . $l['title'] . '". Quiero una para mi negocio.'), 'Quiero una igual'];
-?>
-<section id="apps" class="panel apps" hidden aria-label="Apps web">
-  <div class="sechead pad"><div class="k">02 · Apps web</div><h2>Apps que <span class="serif">resuelven</span> tu día a día.</h2><p>Sistemas web hechos para que un negocio se ordene: gestión, stock, turnos, cuentas. Probá la demo, se usa desde cualquier dispositivo.</p></div>
-  <?php if (!$apps): ?><div class="soon pad"><b>Muy pronto</b><span>Acá vas a poder probar las demos de las apps web.</span></div><?php endif; ?>
-  <?php foreach ($apps as $n => $a):
-    $im = array_map(fn($x) => 'uploads/' . rawurlencode($x), $a['images']);
-    $src = ($a['html'] !== '' && is_file(SHOWCASE_DIR . '/' . basename($a['html']))) ? 'muestras/' . rawurlencode($a['html']) : '';
-    [$askUrl, $askLabel] = $askApp($a); ?>
+function app_band(array $a, int $n, string $kind, callable $ask): void {
+  $im = array_map(fn($x) => 'uploads/' . rawurlencode($x), $a['images']);
+  $src = ($a['html'] !== '' && is_file(SHOWCASE_DIR . '/' . basename($a['html']))) ? 'muestras/' . rawurlencode($a['html']) : '';
+  [$askUrl, $askLabel] = $ask($a);
+  $label = $kind === 'micro' ? 'Micro app' : 'App web'; ?>
   <article class="app pad" data-app data-src="<?= h($src) ?>" data-imgs="<?= h(json_encode($im, JSON_UNESCAPED_SLASHES)) ?>" data-title="<?= h($a['title']) ?>">
-    <div class="app-info"><div class="k">App web · <?= str_pad((string)($n + 1), 2, '0', STR_PAD_LEFT) ?></div>
+    <div class="app-info"><div class="k"><?= $label ?> · <?= str_pad((string)($n + 1), 2, '0', STR_PAD_LEFT) ?></div>
       <h3><?= h($a['title']) ?></h3><p><?= h($a['desc']) ?></p>
       <?php if ($a['tags']): ?><div class="atags"><?php foreach ($a['tags'] as $t): ?><span><?= h($t) ?></span><?php endforeach; ?></div><?php endif; ?>
       <div class="row"><a class="btn" href="<?= h($askUrl) ?>" target="_blank" rel="noopener"><?= h($askLabel) ?></a>
@@ -123,9 +118,19 @@ $askLand = fn($l) => [$l['link'] !== '' ? $l['link'] : $waMsg('Hola! Me gustó l
       <div class="vtools"><div class="vdev"><button type="button" class="on" data-dev="d">Computadora</button><button type="button" data-dev="m">Celular</button></div></div>
       <div class="browser"><div class="bbar"><i></i><i></i><i></i><b class="vurl"><?= h(trim(preg_replace('~[^a-z0-9]+~', '-', strtolower(iconv('UTF-8', 'ASCII//TRANSLIT', $a['title']) ?: 'app')), '-')) ?>.com</b></div>
         <div class="vp"><div class="vfr"><div class="vph"<?= $src === '' && $im ? ' style="background-image:url(\'' . h($im[0]) . '\')" data-open="0"' : '' ?>></div></div></div></div>
+      <?php if (count($im) > 1): ?><div class="athumbs"><?php foreach (array_slice($im, 0, 6) as $i => $u): ?><button type="button" data-open="<?= $i ?>" aria-label="Ampliar foto <?= $i + 1 ?>" style="background-image:url('<?= h($u) ?>')"></button><?php endforeach; ?></div><?php endif; ?>
     </div>
   </article>
-  <?php endforeach; ?>
+<?php } ?>
+<?php
+$askApp = fn($a) => $a['link'] !== '' ? [$a['link'], 'Ver app ↗'] : [$waMsg('Hola! Me interesa la app "' . $a['title'] . '".'), 'Me interesa'];
+$askMicro = fn($m) => [$waMsg('Hola! Me gustó la micro app "' . $m['title'] . '". Quiero algo así para mi negocio.'), 'Quiero algo así'];
+$askLand = fn($l) => [$l['link'] !== '' ? $l['link'] : $waMsg('Hola! Me gustó la landing "' . $l['title'] . '". Quiero una para mi negocio.'), 'Quiero una igual'];
+?>
+<section id="apps" class="panel apps" hidden aria-label="Apps web">
+  <div class="sechead pad"><div class="k">02 · Apps web</div><h2>Apps que <span class="serif">resuelven</span> tu día a día.</h2><p>Sistemas web hechos para que un negocio se ordene: gestión, stock, turnos, cuentas. Probá la demo, se usa desde cualquier dispositivo.</p></div>
+  <?php if (!$apps): ?><div class="soon pad"><b>Muy pronto</b><span>Acá vas a poder probar las demos de las apps web.</span></div><?php endif; ?>
+  <?php foreach ($apps as $n => $a) app_band($a, $n, 'apps', $askApp); ?>
 </section>
 
 <section id="landings" class="panel msec lands pad" hidden aria-label="Landings a medida"><div class="wrap">
@@ -153,15 +158,11 @@ $askLand = fn($l) => [$l['link'] !== '' ? $l['link'] : $waMsg('Hola! Me gustó l
   </div>
 </div></section>
 
-<section id="micro" class="panel msec micro pad" hidden aria-label="Micro apps a medida"><div class="wrap">
-  <div class="k">04 · Micro apps a medida</div><h2>Herramientas chicas, <span class="serif">hechas para vos.</span></h2>
-  <p class="lead">Calculadoras, paneles, formularios y utilidades pensadas para una tarea puntual de tu negocio.</p>
-  <?php if (!$micro): ?><div class="soon"><b>Muy pronto</b><span>Acá vas a ver capturas de las micro apps que ya hicimos.</span></div><?php endif; ?>
-  <?php $mimgs = []; $mcap = []; foreach ($micro as $m) foreach ($m['images'] as $im) { $mimgs[] = 'uploads/' . rawurlencode($im); $mcap[] = $m['title']; } ?>
-  <div class="mgrid" id="mgrid" data-imgs="<?= h(json_encode($mimgs, JSON_UNESCAPED_SLASHES)) ?>" data-caps="<?= h(json_encode($mcap, JSON_UNESCAPED_UNICODE)) ?>">
-  <?php foreach ($mimgs as $i => $src): ?><button type="button" class="mtile" data-open="<?= $i ?>" aria-label="Ampliar: <?= h($mcap[$i]) ?>"><img src="<?= h($src) ?>" alt="<?= h($mcap[$i]) ?>" loading="lazy"><span><?= h($mcap[$i]) ?></span></button><?php endforeach; ?>
-  </div>
-</div></section>
+<section id="micro" class="panel micro apps" hidden aria-label="Micro apps a medida">
+  <div class="sechead pad"><div class="k">04 · Micro apps a medida</div><h2>Herramientas chicas, <span class="serif">hechas para vos.</span></h2><p>Calculadoras, paneles, formularios y utilidades pensadas para una tarea puntual de tu negocio. Mirá cómo funcionan.</p></div>
+  <?php if (!$micro): ?><div class="soon pad"><b>Muy pronto</b><span>Acá vas a ver las micro apps que ya hicimos.</span></div><?php endif; ?>
+  <?php foreach ($micro as $n => $m) app_band($m, $n, 'micro', $askMicro); ?>
+</section>
 
 </div>
 

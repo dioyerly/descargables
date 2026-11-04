@@ -220,3 +220,5 @@ footer{margin-top:80px;padding-top:22px;border-top:1px solid var(--line);display
 .app-demo .vp{height:min(68vh,640px)}
 .apps .sechead h2{color:#f4f1ea}
 @media(max-width:860px){.app{grid-template-columns:1fr;min-height:0;gap:26px;padding-top:56px;padding-bottom:50px}.app-info h3{font-size:38px}.app-info p{font-size:16px}.app-demo .vp{height:62vh}}
+.app-demo .athumbs{grid-template-columns:repeat(auto-fill,minmax(70px,1fr));padding:12px 0 0;gap:8px}.app-demo .athumbs button{opacity:.75;border:1px solid #2e2940}.app-demo .athumbs button:hover{opacity:1}
+.vph[data-open]{cursor:zoom-in}

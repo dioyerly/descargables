@@ -46,7 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!empty($_FILES['html']['name']) && ($_FILES['html']['error'] ?? 0) !== UPLOAD_ERR_NO_FILE) {
         try { $s['html'] = showcase_store_html($_FILES['html'], $base); } catch (RuntimeException $e) { $errors[] = 'El HTML ' . $e->getMessage(); }
     }
-    if ($secKey === 'micro' && !$s['images']) $errors[] = 'Subí al menos una foto.';
+    if ($secKey === 'micro' && !$s['images'] && $s['html'] === '') $errors[] = 'Subí el HTML de la demo o al menos una foto.';
     if ($secKey === 'apps' && !$s['images'] && $s['html'] === '') $errors[] = 'Subí el HTML de la demo o al menos una foto de la app.';
     if ($secKey === 'landings' && $s['html'] === '' && !$s['images']) $warns[] = 'Todavía no subiste el HTML de la landing.';
     $s['section'] = $secKey;
@@ -68,7 +68,7 @@ admin_head($isNew ? 'Nueva muestra' : 'Editar muestra'); ?>
 <div class="card">
   <h2><?= h($sec['single']) ?></h2>
   <label>Título<input name="title" maxlength="80" required value="<?= h($s['title']) ?>" placeholder="<?= $secKey === 'landings' ? 'Landing de un estudio contable' : ($secKey === 'apps' ? 'Gestión de tienda de ropa' : 'Control de stock') ?>"></label>
-  <?php if ($secKey !== 'micro'): ?><label>Descripción<textarea name="desc" rows="4" maxlength="600" placeholder="Qué es y para quién, en 2 o 3 frases."><?= h($s['desc']) ?></textarea></label>
+  <?php if (true): ?><label>Descripción<textarea name="desc" rows="4" maxlength="600" placeholder="Qué es y para quién, en 2 o 3 frases."><?= h($s['desc']) ?></textarea></label>
   <label>Etiquetas (hasta 5, separadas por coma)<input name="tags" value="<?= h(implode(', ', $s['tags'])) ?>" placeholder="PHP, MySQL, Mercado Pago"></label><?php else: ?>
   <label>Texto corto (opcional)<textarea name="desc" rows="2" maxlength="600" placeholder="Una frase que acompaña las fotos."><?= h($s['desc']) ?></textarea></label><?php endif; ?>
   <?php if ($secKey === 'apps'): ?><label>Link de la app<input name="link" type="url" value="<?= h($s['link']) ?>" placeholder="https://miapp.estrategia.site"><small>El botón “Ver app” lleva acá. Dejalo vacío si todavía no tiene link.</small></label>
@@ -77,14 +77,14 @@ admin_head($isNew ? 'Nueva muestra' : 'Editar muestra'); ?>
   <label class="chk"><input type="checkbox" name="visible" value="1"<?= $s['visible'] ? ' checked' : '' ?>> Visible en el sitio</label>
 </div>
 <div class="card">
-  <?php if ($secKey === 'landings' || $secKey === 'apps'): ?>
-  <h2><?= $secKey === 'apps' ? 'HTML de la demo' : 'HTML de la landing' ?></h2>
+  <?php if ($secKey !== ''): ?>
+  <h2><?= $secKey === 'landings' ? 'HTML de la landing' : 'HTML de la demo (opcional)' ?></h2>
   <?php if ($s['html'] !== ''): ?><p class="muted" style="margin:6px 0">📄 <b><?= h($s['html']) ?></b> <a href="../demo.php?f=<?= h(rawurlencode($s['html'])) ?>" target="_blank" rel="noopener">Ver ↗</a>
     <label class="mini rm"><input type="checkbox" name="rm_html" value="1"> Quitar</label></p><?php else: ?><p class="muted">Todavía no hay HTML.</p><?php endif; ?>
   <label class="drop"><?= $s['html'] !== '' ? 'Reemplazar el HTML' : 'Subir el HTML' ?><input type="file" name="html" accept=".html,.htm,text/html">
     <small>Un solo archivo .html (hasta 12 MB). Conviene que tenga todo adentro: estilos, imágenes y fuentes. Se muestra en vivo dentro del visor del inicio (la demo de la app se ve en un visor más chico), sin poder tocar el resto del sitio.</small></label>
   <?php endif; ?>
-  <h2 style="margin-top:22px"><?= $secKey === 'landings' ? 'Foto de portada (opcional)' : ($secKey === 'apps' ? 'Fotos (opcionales si subís la demo)' : 'Fotos') ?> <small class="muted">(máximo <?= $secKey === 'landings' ? 1 : SHOWCASE_MAX_IMAGES ?>)</small></h2>
+  <h2 style="margin-top:22px"><?= $secKey === 'landings' ? 'Foto de portada (opcional)' : 'Fotos (opcionales si subís la demo)' ?> <small class="muted">(máximo <?= $secKey === 'landings' ? 1 : SHOWCASE_MAX_IMAGES ?>)</small></h2>
   <?php if ($s['images']): ?><div class="imgs"><?php foreach ($s['images'] as $i => $im): ?>
     <div class="im"><img src="../uploads/<?= h(rawurlencode($im)) ?>" alt="">
       <label class="mini"><input type="radio" name="cover" value="<?= h($im) ?>"<?= $i === 0 ? ' checked' : '' ?>> Portada</label>
