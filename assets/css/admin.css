@@ -113,3 +113,4 @@ input:focus,textarea:focus,select:focus{outline:2px solid var(--acc);border-colo
 .rt{font-weight:800}.rs{color:var(--mut);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.rx{font-size:13px;color:var(--mut);text-align:right}.rx b{color:#1e8a4c}
 .rvi ol{margin:0 14px 12px 34px;font-size:13.5px;display:grid;gap:3px;color:#3a3630}
 @media(max-width:760px){.rvi summary{grid-template-columns:auto 1fr auto;gap:4px 10px}.rs{grid-column:1/-1;grid-row:2}.rx{grid-column:2/-1;text-align:right}.rvi summary:after{grid-column:3;grid-row:1}}
+.mine{margin:0 14px 12px}.reset{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-top:18px}

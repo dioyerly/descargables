@@ -90,7 +90,29 @@ function usd_to_ars(float $usd, ?float $rate = null): float {
 
 /* ---------- Estadísticas ---------- */
 function is_owner_device(): bool { return ($_COOKIE[OWNER_COOKIE] ?? '') === '1'; }
+/** Huella de la conexión (IP con sal, nunca la IP en claro) */
+function ip_hash(): string { return substr(hash('sha256', 'est|' . ($_SERVER['REMOTE_ADDR'] ?? '') . '|' . (string)cfg('db.name', '')), 0, 20); }
+function owner_ips(): array { $a = json_decode(setting('owner_ips', '{}'), true); return is_array($a) ? $a : []; }
+function owner_vids(): array { $a = json_decode(setting('owner_vids', '[]'), true); return is_array($a) ? $a : []; }
+/** Recuerda la conexión del dueño 45 días (así tampoco cuentan el celular o el navegador de Instagram en el mismo wifi) */
+function remember_owner_ip(): void {
+    if (!extras_ready()) return;
+    $a = array_filter(owner_ips(), fn($t) => time() - (int)$t < 45 * 86400);
+    $a[ip_hash()] = time(); arsort($a); setting_set('owner_ips', json_encode(array_slice($a, 0, 30, true)));
+}
+function add_owner_vid(string $vid): void {
+    if (!extras_ready() || !preg_match('/^[a-z0-9]{6,16}$/', $vid)) return;
+    $a = owner_vids(); if (!in_array($vid, $a, true)) $a[] = $vid; setting_set('owner_vids', json_encode(array_slice($a, -200)));
+}
+/** ¿Este pedido viene del dueño? (cookie, conexión reciente o aparato marcado como suyo) */
+function is_owner_request(string $vid = ''): bool {
+    if (is_owner_device()) return true;
+    $t = owner_ips()[ip_hash()] ?? 0; if ($t && time() - (int)$t < 45 * 86400) return true;
+    return $vid !== '' && in_array($vid, owner_vids(), true);
+}
 function mark_owner_device(bool $on): void {
+    if ($on) remember_owner_ip();
+    elseif (extras_ready()) { $a = owner_ips(); unset($a[ip_hash()]); setting_set('owner_ips', json_encode($a)); }
     $https = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off');
     setcookie(OWNER_COOKIE, $on ? '1' : '', ['expires' => $on ? time() + 3 * 365 * 86400 : time() - 3600, 'path' => '/', 'secure' => $https, 'httponly' => false, 'samesite' => 'Lax']);
     $_COOKIE[OWNER_COOKIE] = $on ? '1' : '';

@@ -32,7 +32,7 @@ admin_head('Ajustes'); ?>
 </div>
 <div class="card">
   <h2>No contarme en las estadísticas</h2>
-  <p class="muted" style="margin-bottom:14px">Cuando entrás al panel, ese navegador queda marcado y tus visitas no se cuentan. Si mirás la página desde otro celular o navegador, entrá al panel desde ahí una vez o tocá este botón en ese dispositivo.</p>
+  <p class="muted" style="margin-bottom:14px">Cuando entrás al panel no se cuentan tus visitas: ni desde este navegador ni desde otros aparatos conectados a la misma red (tu wifi) durante 45 días. Si igual aparece una visita tuya (por ejemplo desde datos móviles), en Estadísticas → Últimas visitas tocá “Era yo”.</p>
   <?php if (is_owner_device()): ?>
     <p style="margin-bottom:12px">✅ Este dispositivo <b>no se cuenta</b>.</p>
     <form method="post"><?= csrf_field() ?><input type="hidden" name="act" value="owner_off"><button class="btn o" type="submit">Volver a contar este dispositivo</button></form>

@@ -6,6 +6,17 @@ require_login();
 if (!db_ready()) { header('Location: setup.php'); exit; }
 extras_ready();
 mark_owner_device(true); // quien mira el panel no se cuenta
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    csrf_check();
+    $act = (string)($_POST['act'] ?? '');
+    if ($act === 'mine') {
+        $vid = (string)($_POST['vid'] ?? '');
+        if (preg_match('/^[a-z0-9]{6,16}$/', $vid)) { add_owner_vid($vid); $n = db()->prepare('DELETE FROM events WHERE vid=?'); $n->execute([$vid]); flash('Listo: borré esas visitas y ese aparato ya no se cuenta.'); }
+    } elseif ($act === 'reset') {
+        $n = (int)db()->exec('DELETE FROM events'); flash('Estadísticas en cero (' . $n . ' registros borrados). Empiezan a contar desde ahora.');
+    }
+    header('Location: estadisticas.php?d=' . (int)($_GET['d'] ?? 30)); exit;
+}
 
 $ranges = [1 => 'Hoy', 7 => '7 días', 30 => '30 días', 90 => '90 días', 365 => '1 año'];
 $d = (int)($_GET['d'] ?? 30); if (!isset($ranges[$d])) $d = 30;
@@ -85,7 +96,7 @@ if ($sids) {
             if ($x !== '' && end($acts) !== $x) $acts[] = $x;
         }
         $min = max(0, (int)round((strtotime($s['fin']) - strtotime($s['ini'])) / 60));
-        $recent[] = ['ini' => $s['ini'], 'dev' => $s['dev'] === 'm' ? 'Celular' : 'Computadora', 'src' => source_label((string)$s['src']), 'acts' => $acts, 'min' => $min, 'ret' => ($vc[$s['vid']] ?? 1) > 1];
+        $recent[] = ['vid' => (string)$s['vid'], 'ini' => $s['ini'], 'dev' => $s['dev'] === 'm' ? 'Celular' : 'Computadora', 'src' => source_label((string)$s['src']), 'acts' => $acts, 'min' => $min, 'ret' => ($vc[$s['vid']] ?? 1) > 1];
     }
 }
 $fmt = fn(float $n) => number_format($n, 0, ',', '.');
@@ -163,8 +174,10 @@ admin_head('Estadísticas'); ?>
   <h2>Últimas visitas</h2><p class="muted sm">Cada visita con la hora, el aparato, de dónde vino y qué hizo. Si reconocés una tuya, entrá al admin desde ese aparato para que no se cuente más.</p>
   <?php if (!$recent): ?><p class="muted sm">Todavía no hay visitas en este período.</p><?php else: ?><div class="rv">
   <?php foreach ($recent as $r): ?><details class="rvi"><summary><span class="rt"><?= h(date('d/m H:i', strtotime($r['ini']))) ?></span><span class="rd"><?= $r['dev'] === 'Celular' ? '📱' : '💻' ?> <?= h($r['dev']) ?></span><span class="rs"><?= h($r['src']) ?></span><span class="rx"><?= count($r['acts']) ?> acciones · <?= $r['min'] < 1 ? 'menos de 1 min' : $r['min'] . ' min' ?><?= $r['ret'] ? ' · <b>volvió</b>' : '' ?></span></summary>
-    <ol><?php foreach ($r['acts'] as $x): ?><li><?= h($x) ?></li><?php endforeach; ?></ol></details><?php endforeach; ?>
+    <ol><?php foreach ($r['acts'] as $x): ?><li><?= h($x) ?></li><?php endforeach; ?></ol>
+    <?php if ($r['vid'] !== ''): ?><form method="post" class="mine" onsubmit="return confirm('¿Borrar las visitas de este aparato y no contarlo más?')"><?= csrf_field() ?><input type="hidden" name="act" value="mine"><input type="hidden" name="vid" value="<?= h($r['vid']) ?>"><button class="btn sm o" type="submit">Era yo · borrar y no contar este aparato</button></form><?php endif; ?></details><?php endforeach; ?>
   </div><?php endif; ?>
 </div>
+<form method="post" class="reset" onsubmit="return confirm('¿Borrar TODAS las visitas registradas hasta ahora? Las ventas no se tocan.')"><?= csrf_field() ?><input type="hidden" name="act" value="reset"><button class="btn sm o" type="submit">Poner las estadísticas en cero</button><span class="muted sm">Útil antes de lanzar: borra las visitas de prueba. Las ventas y pedidos no se tocan.</span></form>
 <p class="muted sm" style="margin-top:18px">Las estadísticas son anónimas: no se guarda la IP ni datos personales. Los datos de más de 18 meses se borran solos.</p>
 <?php admin_foot();
