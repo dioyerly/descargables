@@ -8,6 +8,9 @@ $heroImgs = [];
 foreach ($products as $p) foreach ($p['images'] as $im) $heroImgs[] = 'uploads/' . rawurlencode($im);
 $v = (string)@filemtime(__DIR__ . '/assets/js/site.js');
 $apps = showcase_load('apps', true); $landings = showcase_load('landings', true); $micro = showcase_load('micro', true);
+$extra = [];
+foreach ([$apps, $landings, $micro] as $grp) foreach ($grp as $it) foreach (array_slice($it['images'] ?? [], 0, 2) as $im) $extra[] = 'uploads/' . rawurlencode($im);
+if ($extra) { $mix = []; $n = max(count($heroImgs), count($extra)); for ($i = 0; $i < $n; $i++) { if (isset($heroImgs[$i])) $mix[] = $heroImgs[$i]; if (isset($extra[$i])) $mix[] = $extra[$i]; } $heroImgs = $mix; }
 $wa = 'https://wa.me/5491126425994';
 $waMsg = fn(string $t) => $wa . '?text=' . rawurlencode($t);
 ?><!doctype html>
