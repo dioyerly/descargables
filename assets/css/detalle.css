@@ -1,0 +1,52 @@
+/* Página de detalle del producto + gracias. Usa los colores del tema del producto. */
+body.det{background:var(--bg);color:var(--fg);min-height:100vh;background-image:radial-gradient(60% 50% at 80% 10%,var(--glow),transparent 70%);background-repeat:no-repeat}
+body.det header.solid{background:color-mix(in srgb,var(--bg) 88%,transparent);box-shadow:0 1px 0 color-mix(in srgb,var(--fg) 14%,transparent)}
+body.det .logo i{background:var(--fg);color:var(--bg)}
+body.det .logo small{color:var(--fg2)}
+body.det .nav .t{color:var(--fg2)}
+body.det .btn{background:var(--fg);color:var(--bg)}
+body.det .btn.o{background:transparent;color:var(--fg)}
+.dwrap{max-width:1180px;margin:0 auto;padding:110px max(22px,4vw) 60px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(28px,5vw,72px);align-items:start}
+.gal{position:sticky;top:96px}
+.gal .main{display:block;width:100%;border:0;padding:0;background:#fff;border-radius:8px;cursor:zoom-in;aspect-ratio:var(--ar,3/4);max-height:78vh;margin:0 auto;overflow:hidden;box-shadow:0 2px 4px rgba(0,0,0,.12),0 40px 70px -30px rgba(0,0,0,.55)}
+.gal .main img{width:100%;height:100%;object-fit:contain;display:block}
+.thumbs{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap;justify-content:center}
+.thumbs .th{width:64px;height:64px;border:2px solid transparent;border-radius:8px;padding:0;background:#fff;cursor:pointer;overflow:hidden;opacity:.7;transition:opacity .2s,border-color .2s}
+.thumbs .th img{width:100%;height:100%;object-fit:cover;display:block}
+.thumbs .th.on,.thumbs .th:hover{opacity:1;border-color:var(--tag)}
+.dinfo h1{font:800 clamp(40px,4.6vw,72px)/.95 var(--sans);letter-spacing:-.045em;margin:14px 0 18px}
+.dinfo h1 .serif{font-style:italic;font-weight:400;letter-spacing:-.01em;color:var(--tag)}
+.dinfo h2{font:800 22px var(--sans);letter-spacing:-.02em;margin:30px 0 4px}
+.price{font:800 clamp(34px,3.6vw,48px)/1 var(--sans);letter-spacing:-.03em;margin:0 0 18px}
+.price small{display:block;font:600 13px var(--sans);letter-spacing:.06em;text-transform:uppercase;color:var(--fg2);margin-top:8px}
+.dinfo .meta{margin:0 0 20px}
+.dinfo .lead{font-size:20px;color:var(--fg);margin-bottom:14px}
+.dinfo .body{color:var(--fg2);font-size:17px;margin-bottom:12px}
+.dinfo .feats{margin-top:12px}
+.buy{margin-top:34px;padding:26px;border-radius:22px;background:var(--chip);scroll-margin-top:100px}
+.buy label{display:block;font:600 14px var(--sans);margin-bottom:14px}
+.buy input[type=email]{display:block;width:100%;margin-top:8px;padding:15px 16px;border-radius:14px;border:1.5px solid color-mix(in srgb,var(--fg) 25%,transparent);background:color-mix(in srgb,var(--bg) 70%,#fff);color:#1c1a17;font:400 17px var(--sans)}
+.buy input[type=email]:focus{outline:3px solid var(--tag);outline-offset:2px}
+.buy small{display:block;margin-top:6px;font:400 13px var(--sans);color:var(--fg2)}
+.btn.big{width:100%;justify-content:center;padding:18px 24px;font-size:18px}
+.hp{position:absolute;left:-9999px;width:1px;height:1px;opacity:0}
+.trust{list-style:none;margin-top:16px;display:grid;gap:6px;font-size:14px;color:var(--fg2)}
+.trust li:before{content:"✓ ";color:var(--tag);font-weight:800}
+.alert{background:#fff1f0;color:#8a1c12;border-radius:12px;padding:12px 14px;margin-bottom:14px;font:600 14px var(--sans)}
+.soon{color:var(--fg2);margin-bottom:14px}
+.buy .row{display:flex;gap:10px;flex-wrap:wrap}
+.dfoot{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;max-width:1180px;margin:0 auto;padding-bottom:40px;color:var(--fg2);font-size:14px}
+.dfoot a{text-decoration:underline}
+.lb .cap{white-space:nowrap}
+@media(max-width:860px){.dwrap{grid-template-columns:1fr;padding-top:92px}.gal{position:static}.gal .main{max-height:60vh;max-width:420px}}
+
+/* gracias / 404 */
+body.solo{background:var(--paper)}
+.thanks{min-height:100vh;display:grid;place-items:center;padding:100px 22px 40px}
+.thanks .card{max-width:560px;background:#fff;border-radius:26px;padding:clamp(26px,5vw,44px);box-shadow:0 30px 70px -40px rgba(40,30,20,.5)}
+.thanks h1{font:800 clamp(34px,5vw,52px)/1 var(--sans);letter-spacing:-.04em;margin:12px 0 16px}
+.thanks h1 .serif{font-style:italic;font-weight:400;color:var(--acc)}
+.thanks p{color:var(--mut);margin-bottom:12px}
+.thanks p b{color:var(--ink)}
+.thanks .row{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px}
+.thanks small{display:block;color:var(--mut);font-size:14px;margin-top:14px}

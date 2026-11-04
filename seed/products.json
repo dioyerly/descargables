@@ -1,0 +1,118 @@
+[
+  {
+    "id": "agenda-mesopotamia-2026",
+    "order": 10,
+    "visible": true,
+    "url": "",
+    "images": [
+      "meso-0.webp",
+      "meso-1.webp",
+      "meso-2.webp",
+      "meso-3.webp"
+    ],
+    "ar": "720/1034",
+    "type": "print",
+    "kicker": "Imprimible · HTML · A4",
+    "title": "Agenda *Mesopotamia* 2026",
+    "theme": "noche",
+    "pages": 141,
+    "desc": "Una agenda astral inspirada en la sabiduría babilónica: lunas, efemérides y tránsitos de cada mes, junto a tu planificación semanal y tus finanzas.",
+    "meta": [
+      "141 páginas",
+      "A4",
+      "Imprimí lo que quieras"
+    ],
+    "feats": [
+      "Visión del año con eclipses y retrogradaciones",
+      "Ingresos planetarios y fases lunares",
+      "Semanas, metas y finanzas mensuales"
+    ]
+  },
+  {
+    "id": "mi-ano-de-michis-2027",
+    "order": 20,
+    "visible": true,
+    "url": "",
+    "images": [
+      "michis-0.webp",
+      "michis-1.webp",
+      "michis-2.webp",
+      "michis-3.webp"
+    ],
+    "ar": "720/1019",
+    "type": "print",
+    "kicker": "Imprimible · PDF + HTML · A4",
+    "title": "Mi Año de *Michis* 2027",
+    "theme": "rosa",
+    "pages": 387,
+    "desc": "Para quienes organizan su año con un gato al lado. Calendarios con retos michi, páginas diarias fechadas, hábitos, finanzas y la libreta de salud de tu gato.",
+    "meta": [
+      "387 páginas",
+      "365 días fechados",
+      "A4"
+    ],
+    "feats": [
+      "Metas, datos personales y 12 meses",
+      "Planificador semanal, hábitos y finanzas",
+      "Salud y veterinario de tu michi"
+    ]
+  },
+  {
+    "id": "agenda-yoyir-2027",
+    "order": 30,
+    "visible": true,
+    "url": "",
+    "images": [
+      "yoyir-0.webp",
+      "yoyir-1.webp",
+      "yoyir-2.webp",
+      "yoyir-3.webp"
+    ],
+    "ar": "720/960",
+    "type": "digital",
+    "kicker": "Agenda digital interactiva · YOYI'R",
+    "title": "Agenda *YOYI'R* 2027",
+    "theme": "lavanda",
+    "pages": 290,
+    "desc": "Una agenda serena para planificar con intención. Pensada para tablet, con índice y pestañas que te llevan a cada sección con un toque.",
+    "meta": [
+      "290 páginas",
+      "Con hipervínculos",
+      "Tablet"
+    ],
+    "feats": [
+      "Metas por categoría y cumpleaños",
+      "Presupuesto mensual y seguimiento de hábitos",
+      "Semanas del año listas para completar"
+    ]
+  },
+  {
+    "id": "planificador-digital-2026-2028",
+    "order": 40,
+    "visible": true,
+    "url": "",
+    "images": [
+      "digital-0.webp",
+      "digital-1.webp",
+      "digital-2.webp",
+      "digital-3.webp"
+    ],
+    "ar": "720/1280",
+    "type": "digital",
+    "kicker": "Planificador digital · YOYI'R",
+    "title": "Planificador *digital* 2026–2028",
+    "theme": "crema",
+    "pages": 1534,
+    "desc": "Tres años en un solo archivo. Elegís el año, el mes o el día desde pestañas de colores y tenés objetivos, proyectos, bienestar y finanzas siempre a mano.",
+    "meta": [
+      "1.534 páginas",
+      "3 años",
+      "Tablet"
+    ],
+    "feats": [
+      "Calendario anual y páginas diarias",
+      "Objetivos, proyectos y productividad",
+      "Bienestar, finanzas, estudio y notas"
+    ]
+  }
+]

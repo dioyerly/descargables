@@ -1,0 +1,7 @@
+# Datos y secretos: quedan solo en el hosting
+config.php
+data/*.json
+data/*.tmp
+private/files/*
+!private/files/.gitkeep
+.DS_Store
