@@ -11,7 +11,7 @@ $s = $id !== '' ? showcase_find($id) : null;
 $isNew = $s === null;
 $secKey = (string)($_GET['s'] ?? $_POST['section'] ?? ($s['section'] ?? 'apps'));
 if (!isset($secs[$secKey])) $secKey = 'apps';
-$s = $s ?? ['id' => '', 'section' => $secKey, 'order' => 0, 'visible' => true, 'title' => '', 'desc' => '', 'link' => '', 'tags' => [], 'images' => [], 'html' => ''];
+$s = $s ?? ['id' => '', 'section' => $secKey, 'order' => 0, 'visible' => true, 'title' => '', 'desc' => '', 'link' => '', 'tags' => [], 'images' => [], 'html' => '', 'price' => ''];
 $errors = []; $warns = [];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -19,6 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $s['title'] = trim((string)($_POST['title'] ?? ''));
     $s['desc'] = trim((string)($_POST['desc'] ?? ''));
     $s['visible'] = !empty($_POST['visible']);
+    $s['price'] = mb_substr(trim((string)($_POST['price'] ?? '')), 0, 60);
     $s['tags'] = array_slice(array_values(array_filter(array_map('trim', preg_split('/\r?\n|,/', (string)($_POST['tags'] ?? '')) ?: []), fn($x) => $x !== '')), 0, 5);
     $lu = trim((string)($_POST['link'] ?? '')); $s['link'] = safe_url($lu);
     if ($lu !== '' && $s['link'] === '') $errors[] = 'El link debe empezar con https://';
@@ -71,7 +72,8 @@ admin_head($isNew ? 'Nueva muestra' : 'Editar muestra'); ?>
   <label>Etiquetas (hasta 5, separadas por coma)<input name="tags" value="<?= h(implode(', ', $s['tags'])) ?>" placeholder="PHP, MySQL, Mercado Pago"></label><?php else: ?>
   <label>Texto corto (opcional)<textarea name="desc" rows="2" maxlength="600" placeholder="Una frase que acompaña las fotos."><?= h($s['desc']) ?></textarea></label><?php endif; ?>
   <?php if ($secKey === 'apps'): ?><label>Link de la app<input name="link" type="url" value="<?= h($s['link']) ?>" placeholder="https://miapp.estrategia.site"><small>El botón “Ver app” lleva acá. Dejalo vacío si todavía no tiene link.</small></label>
-  <?php elseif ($secKey === 'landings'): ?><label>Link para pedir una igual (opcional)<input name="link" type="url" value="<?= h($s['link']) ?>" placeholder="https://wa.me/..."><small>Si lo dejás vacío, el botón usa tu WhatsApp.</small></label><?php endif; ?>
+  <?php elseif ($secKey === 'landings'): ?><label>Precio aproximado (opcional)<input name="price" maxlength="60" value="<?= h($s['price']) ?>" placeholder="USD 150  ·  o  ·  $185.000"><small>Lo escribís como quieras. En el sitio sale como “Desde aprox.” con la aclaración de que depende de qué tan a medida sea el pedido. Vacío = no muestra precio.</small></label>
+  <label>Link para pedir una igual (opcional)<input name="link" type="url" value="<?= h($s['link']) ?>" placeholder="https://wa.me/..."><small>Si lo dejás vacío, el botón usa tu WhatsApp.</small></label><?php endif; ?>
   <label class="chk"><input type="checkbox" name="visible" value="1"<?= $s['visible'] ? ' checked' : '' ?>> Visible en el sitio</label>
 </div>
 <div class="card">

@@ -93,12 +93,12 @@ function viewer_block(array $items, string $kind, callable $ask): void {
       $src = $l['html'] !== '' ? 'muestras/' . rawurlencode($l['html']) : '';
       $im = array_map(fn($x) => 'uploads/' . rawurlencode($x), $l['images']);
       [$ask_url, $ask_label] = $ask($l); ?>
-      <button type="button" role="tab" class="<?= $i === 0 ? 'on' : '' ?>" data-src="<?= h($src) ?>" data-imgs="<?= h(json_encode($im, JSON_UNESCAPED_SLASHES)) ?>" data-title="<?= h($l['title']) ?>" data-desc="<?= h($l['desc']) ?>" data-tags="<?= h(implode('|', $l['tags'])) ?>" data-link="<?= h($ask_url) ?>" data-label="<?= h($ask_label) ?>"><?= h($l['title']) ?></button>
+      <button type="button" role="tab" class="<?= $i === 0 ? 'on' : '' ?>" data-src="<?= h($src) ?>" data-imgs="<?= h(json_encode($im, JSON_UNESCAPED_SLASHES)) ?>" data-title="<?= h($l['title']) ?>" data-desc="<?= h($l['desc']) ?>" data-tags="<?= h(implode('|', $l['tags'])) ?>" data-link="<?= h($ask_url) ?>" data-label="<?= h($ask_label) ?>" data-price="<?= h($l['price'] ?? '') ?>"><?= h($l['title']) ?></button>
     <?php endforeach; ?></div>
     <div class="vtools"><span class="vname"></span><div class="vdev"><button type="button" class="on" data-dev="d">Computadora</button><button type="button" data-dev="m">Celular</button></div><a class="btn o sm vopen" href="#" target="_blank" rel="noopener">Abrir completa ↗</a></div>
     <div class="browser"><div class="bbar"><i></i><i></i><i></i><b class="vurl">tu-negocio.com</b></div>
       <div class="vp"><div class="vfr"><div class="vph"></div></div></div></div>
-    <div class="vfoot"><div><p class="vdesc"></p><div class="atags vtags"></div></div><a class="btn vask" href="#" target="_blank" rel="noopener"></a></div>
+    <div class="vfoot"><div><p class="vdesc"></p><div class="atags vtags"></div></div><div class="vbuy"><div class="vprice" hidden><small>Desde aprox.</small><b></b><em>El precio es una aproximación: depende de qué tan a medida sea el pedido.</em></div><a class="btn vask" href="#" target="_blank" rel="noopener"></a></div></div>
   </div>
 <?php } ?>
 <?php
@@ -117,6 +117,24 @@ $askLand = fn($l) => [$l['link'] !== '' ? $l['link'] : $waMsg('Hola! Me gustó l
   <p class="lead">Páginas de una sola pantalla pensadas para vender o presentar tu negocio. Abajo las ves funcionando, tal cual quedan.</p>
   <?php if (!$landings): ?><div class="soon"><b>Muy pronto</b><span>Acá vas a ver ejemplos de landings funcionando, dentro de un visor.</span></div><?php endif; ?>
   <?php viewer_block($landings, 'landings', $askLand); ?>
+  <div class="incl">
+    <div class="incl-main"><h3>Qué incluye tu landing</h3>
+      <ul>
+        <li>Diseño a medida de tu negocio: colores, textos y fotos.</li>
+        <li>Se ve bien en celular y en computadora.</li>
+        <li>Botones directos a tu WhatsApp e Instagram.</li>
+        <li><b>Hosting y dominio incluidos el primer año</b>, con el dominio registrado a tu nombre.</li>
+        <li>Una revisión y actualización por mes, sin cargo, durante los 3 primeros meses.</li>
+        <li>Panel admin opcional, para que cargues y modifiques tus productos, precios y fotos vos mismo (se cotiza aparte).</li>
+      </ul></div>
+    <div class="incl-side">
+      <div><b>Tu página es tuya.</b> Si no querés seguir trabajando conmigo, te entrego los archivos de la página ya paga y el dominio a tu nombre. Nada más.</div>
+      <div><b>Después de los 3 meses</b> podés seguir con un mantenimiento mensual opcional, para modificaciones no complejas (textos, precios, fotos, horarios).</div>
+      <div><b>Primero lo ves, después decidís.</b> Con tu permiso te armo una página demo con datos o imágenes de tu negocio para que veas un adelanto, antes de pagar nada.</div>
+      <a class="btn" href="<?= h($waMsg('Hola! Quiero que me armen una demo de landing para mi negocio.')) ?>" target="_blank" rel="noopener">Pedí tu demo</a>
+    </div>
+    <p class="incl-note"><b>Dominio:</b> la dirección de tu página (ej. tunegocio.com). <b>Hosting:</b> el lugar en internet donde vive tu página para que se vea las 24 horas.</p>
+  </div>
 </div></section>
 
 <section id="micro" class="panel msec micro pad" hidden aria-label="Micro apps a medida"><div class="wrap">
