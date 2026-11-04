@@ -105,7 +105,7 @@ function app_band(array $a, int $n, string $kind, callable $ask): void {
   <article class="app pad" data-app data-src="<?= h($src) ?>" data-imgs="<?= h(json_encode($im, JSON_UNESCAPED_SLASHES)) ?>" data-title="<?= h($a['title']) ?>">
     <div class="app-info"><div class="k"><?= $label ?> · <?= str_pad((string)($n + 1), 2, '0', STR_PAD_LEFT) ?></div>
       <h3><?= h($a['title']) ?></h3><p><?= h($a['desc']) ?></p>
-      <?php if (($a['price'] ?? '') !== ''): ?><div class="aprice"><small>Desde aprox.</small><b><?= h($a['price']) ?></b><em>Es una aproximación: depende de qué tan a medida sea el pedido.</em></div><?php endif; ?>
+      <?php if (($a['price'] ?? '') !== ''): $uv = usd_amount((string)$a['price']); $ars = $uv > 0 ? usd_to_ars($uv) : 0; ?><div class="aprice"><small>Desde aprox.</small><b><?= h($uv > 0 ? usd_label($uv) : $a['price']) ?></b><?php if ($ars > 0): ?><span class="ars">≈ <?= h(format_price($ars)) ?> al dólar de hoy</span><?php endif; ?><em>Es una aproximación: depende de qué tan a medida sea el pedido.</em></div><?php endif; ?>
       <?php if ($a['tags']): ?><div class="atags"><?php foreach ($a['tags'] as $t): ?><span><?= h($t) ?></span><?php endforeach; ?></div><?php endif; ?>
       <div class="row"><a class="btn" href="<?= h($askUrl) ?>" target="_blank" rel="noopener"><?= h($askLabel) ?></a>
         <?php if ($src !== ''): ?><a class="btn o vopen" href="demo.php?f=<?= h(rawurlencode(basename($a['html']))) ?>" target="_blank" rel="noopener">Abrir demo completa ↗</a><?php endif; ?>

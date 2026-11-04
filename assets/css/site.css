@@ -321,3 +321,5 @@ footer{margin-top:80px;padding-top:22px;border-top:1px solid var(--line);display
 .totop.on{opacity:1;transform:none;pointer-events:auto}
 .totop:hover{background:var(--acc)}
 @media(max-width:860px){.totop{width:44px;height:44px;padding:0;justify-content:center;opacity:0}.totop.on{opacity:.92}.totop span{display:none}}
+
+.aprice .ars{display:block;font:600 15px var(--sans);color:var(--acc);margin-top:2px}

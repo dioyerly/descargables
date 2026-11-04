@@ -20,6 +20,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $s['desc'] = trim((string)($_POST['desc'] ?? ''));
     $s['visible'] = !empty($_POST['visible']);
     $s['price'] = mb_substr(trim((string)($_POST['price'] ?? '')), 0, 60);
+    $usdIn = str_replace(',', '.', trim(str_replace(['USD', 'usd', 'US$', 'U$S', '$', ' '], '', (string)($_POST['price_usd'] ?? ''))));
+    if ($usdIn !== '') {
+        if (!is_numeric($usdIn) || (float)$usdIn <= 0 || (float)$usdIn > 1000000) $errors[] = 'El precio en dólares debe ser un número (por ejemplo 150).';
+        else $s['price'] = usd_label(round((float)$usdIn, 2));
+    }
     $s['tags'] = array_slice(array_values(array_filter(array_map('trim', preg_split('/\r?\n|,/', (string)($_POST['tags'] ?? '')) ?: []), fn($x) => $x !== '')), 0, 5);
     $lu = trim((string)($_POST['link'] ?? '')); $s['link'] = safe_url($lu);
     if ($lu !== '' && $s['link'] === '') $errors[] = 'El link debe empezar con https://';
@@ -72,7 +77,15 @@ admin_head($isNew ? 'Nueva muestra' : 'Editar muestra'); ?>
   <label>Etiquetas (hasta 5, separadas por coma)<input name="tags" value="<?= h(implode(', ', $s['tags'])) ?>" placeholder="PHP, MySQL, Mercado Pago"></label><?php else: ?>
   <label>Texto corto (opcional)<textarea name="desc" rows="2" maxlength="600" placeholder="Una frase que acompaña las fotos."><?= h($s['desc']) ?></textarea></label><?php endif; ?>
   <?php if ($secKey === 'apps'): ?><label>Link de la app<input name="link" type="url" value="<?= h($s['link']) ?>" placeholder="https://miapp.estrategia.site"><small>El botón “Ver app” lleva acá. Dejalo vacío si todavía no tiene link.</small></label>
-  <?php elseif ($secKey === 'landings'): ?><label>Precio aproximado (opcional)<input name="price" maxlength="60" value="<?= h($s['price']) ?>" placeholder="USD 150  ·  o  ·  $185.000"><small>Lo escribís como quieras. En el sitio sale como “Desde aprox.” con la aclaración de que depende de qué tan a medida sea el pedido. Vacío = no muestra precio.</small></label>
+  <?php elseif ($secKey === 'landings'): $dr = dolar_rate(); $rv = (float)($dr['valor'] ?? 0); $uv = usd_amount((string)$s['price']); ?>
+  <div class="two">
+    <label>Precio en dólares (USD)<input name="price_usd" id="lusd" inputmode="decimal" value="<?= $uv > 0 ? h(rtrim(rtrim(number_format($uv, 2, '.', ''), '0'), '.')) : '' ?>" placeholder="150" data-rate="<?= h((string)$rv) ?>">
+      <small id="lusdh"><?= $rv > 0 ? 'Dólar ' . h(strtolower(explode(' (', dolar_types()[$dr['tipo']] ?? 'oficial')[0])) . ' hoy: <b>' . h(format_price($rv)) . '</b>. En el sitio se muestra en USD y en pesos, recalculado cada día.' : 'No se pudo leer la cotización ahora; en el sitio se muestra solo en USD hasta que se actualice.' ?></small></label>
+    <label>O escribilo como quieras<input name="price" id="ltxt" maxlength="60" value="<?= $uv > 0 ? '' : h($s['price']) ?>" placeholder="$185.000"><small>Solo si no usás el campo en dólares. Vacíos los dos = no muestra precio.</small></label>
+  </div>
+  <script>(function(){var u=document.getElementById('lusd'),t=document.getElementById('ltxt'),hh=document.getElementById('lusdh');if(!u)return;var r=parseFloat(u.dataset.rate)||0,base=hh.innerHTML;
+  function up(){var v=parseFloat((u.value||'').replace(',','.'));if(v>0){t.value='';t.disabled=true;if(r>0)hh.innerHTML='En el sitio se verá: <b>USD '+v.toLocaleString('es-AR')+'</b> ≈ <b>$ '+(Math.ceil(v*r/100)*100).toLocaleString('es-AR')+'</b> (dólar de hoy $ '+r.toLocaleString('es-AR')+'). Se recalcula solo cada día.'}else{t.disabled=false;hh.innerHTML=base}}
+  u.addEventListener('input',up);up()})();</script>
   <label>Link para pedir una igual (opcional)<input name="link" type="url" value="<?= h($s['link']) ?>" placeholder="https://wa.me/..."><small>Si lo dejás vacío, el botón usa tu WhatsApp.</small></label><?php endif; ?>
   <label class="chk"><input type="checkbox" name="visible" value="1"<?= $s['visible'] ? ' checked' : '' ?>> Visible en el sitio</label>
 </div>
