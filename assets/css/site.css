@@ -143,19 +143,6 @@ footer{margin-top:80px;padding-top:22px;border-top:1px solid var(--line);display
 .msec .k{font:600 13px var(--sans);letter-spacing:.16em;text-transform:uppercase}
 .soon{margin-top:36px;border:1.5px dashed var(--line);border-radius:24px;padding:48px 24px;text-align:center;display:grid;gap:6px}
 .soon b{font:400 italic 32px var(--serif);color:var(--acc)}.soon span{color:var(--mut)}
-/* apps (oscuro) */
-.msec.apps{background:#14121c;color:#f4f1ea}.apps .k{color:#a893ff}.apps .lead{color:#b9b4c9}.apps .soon{border-color:#3a3550}.apps .soon span{color:#b9b4c9}
-.agrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:22px;margin-top:44px}
-.acard{background:#1d1a29;border:1px solid #2e2940;border-radius:26px;overflow:hidden;display:flex;flex-direction:column;transition:transform .3s,border-color .3s}
-.acard:hover{transform:translateY(-6px);border-color:#6a4fc4}
-.amain{border:0;width:100%;aspect-ratio:16/10;background:#0e0c14 center/cover no-repeat;cursor:zoom-in}
-.athumbs{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;padding:6px 6px 0}
-.athumbs button{border:0;aspect-ratio:16/10;border-radius:10px;background:#0e0c14 center/cover;cursor:zoom-in;opacity:.8}.athumbs button:hover{opacity:1}
-.abody{padding:20px 22px 24px;display:flex;flex-direction:column;gap:10px;flex:1}
-.abody h3{font:700 22px var(--sans);letter-spacing:-.02em}.abody p{color:#b9b4c9;font-size:15px;line-height:1.5}
-.atags{display:flex;gap:6px;flex-wrap:wrap}.atags span{font:600 12px var(--sans);padding:5px 10px;border-radius:99px;background:#2a2540;color:#cfc6ff}
-.abody .btn{margin-top:auto;align-self:flex-start}.btn.dis{opacity:.5;pointer-events:none}.btn svg{width:16px;height:16px;margin-left:6px;vertical-align:-3px}
-.apps .btn{background:#a893ff;color:#14121c}
 /* landings: visor */
 .viewer{margin-top:40px}
 .vtabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
@@ -182,11 +169,6 @@ footer{margin-top:80px;padding-top:22px;border-top:1px solid var(--line);display
 /* demo de app: visor más compacto, sobre fondo oscuro */
 .vapp{max-width:960px}
 .vapp .vp{height:min(58vh,520px)}
-.apps .vtabs button{background:#1d1a29;border-color:#2e2940;color:#b9b4c9}.apps .vtabs button.on{background:#a893ff;color:#14121c;border-color:#a893ff}
-.apps .vname{color:#f4f1ea}.apps .vdev{background:#26223a}.apps .vdev button{color:#b9b4c9}.apps .vdev button.on{background:#a893ff;color:#14121c;box-shadow:none}
-.apps .btn.o{color:#f4f1ea;border-color:#4a4466;background:transparent}
-.apps .browser{border-color:#2e2940;box-shadow:0 40px 80px -40px #000}
-.apps .vfoot p{color:#b9b4c9}.vfoot .atags{margin-top:10px}
 @media(max-width:860px){.vapp .vp{height:62vh}}
 
 .vbuy{display:flex;align-items:center;gap:18px;flex-wrap:wrap;justify-content:flex-end}
@@ -202,23 +184,35 @@ footer{margin-top:80px;padding-top:22px;border-top:1px solid var(--line);display
 .incl-note{grid-column:1/-1;border-top:1px solid var(--line);padding-top:18px;color:var(--mut);font-size:14px}
 @media(max-width:860px){.incl{grid-template-columns:1fr;padding:24px;gap:22px}.vbuy{justify-content:flex-start}.vprice{text-align:left}.vprice em{margin-left:0}}
 
-/* apps: a todo el ancho, info de un lado y demo del otro (como agendas) */
-.panel.apps{padding:0;background:#14121c;color:#f4f1ea}
-.apps .sechead{padding-top:70px;padding-bottom:10px}.apps .sechead .k{color:#a893ff;font:600 13px var(--sans);letter-spacing:.16em;text-transform:uppercase}.apps .sechead p{color:#b9b4c9}
-.apps .soon{margin:30px max(22px,5vw) 90px}
-.app{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.3fr);gap:4vw;align-items:center;min-height:100vh;min-height:100svh;padding-top:90px;padding-bottom:70px;padding-left:max(22px,5vw);padding-right:max(22px,5vw);position:relative}
-.app:nth-of-type(odd){background:radial-gradient(60% 70% at 75% 50%,#2a2250,transparent 70%),#14121c}
-.app:nth-of-type(even){background:radial-gradient(60% 70% at 75% 50%,#1f3a43,transparent 70%),#101419}
-.app-info .k{color:#a893ff;font:600 13px var(--sans);letter-spacing:.16em;text-transform:uppercase}
-.app-info h3{font:800 clamp(40px,4.6vw,80px)/.95 var(--sans);letter-spacing:-.045em;margin:14px 0 18px}
-.app-info p{color:#c8c3d8;font-size:18px;max-width:44ch}
-.app-info .atags{margin-top:18px}.app-info .row{display:flex;gap:10px;flex-wrap:wrap;margin-top:26px}
-.app-info .btn{background:#a893ff;color:#14121c}.app-info .btn.o{background:transparent;color:#f4f1ea;border-color:#4a4466}
-.app-demo{min-width:0}.app-demo .vtools{justify-content:flex-end;margin-bottom:12px}
-.app-demo .vdev{background:#26223a}.app-demo .vdev button{color:#b9b4c9}.app-demo .vdev button.on{background:#a893ff;color:#14121c;box-shadow:none}
-.app-demo .browser{border-color:#2e2940;box-shadow:0 50px 90px -40px #000}
-.app-demo .vp{height:min(68vh,640px)}
-.apps .sechead h2{color:#f4f1ea}
 @media(max-width:860px){.app{grid-template-columns:1fr;min-height:0;gap:26px;padding-top:56px;padding-bottom:50px}.app-info h3{font-size:38px}.app-info p{font-size:16px}.app-demo .vp{height:62vh}}
-.app-demo .athumbs{grid-template-columns:repeat(auto-fill,minmax(70px,1fr));padding:12px 0 0;gap:8px}.app-demo .athumbs button{opacity:.75;border:1px solid #2e2940}.app-demo .athumbs button:hover{opacity:1}
+.app-demo .athumbs{grid-template-columns:repeat(auto-fill,minmax(70px,1fr));padding:12px 0 0;gap:8px}.app-demo .athumbs button{opacity:.8;border:1px solid var(--line)}.app-demo .athumbs button:hover{opacity:1}
 .vph[data-open]{cursor:zoom-in}
+
+/* apps y micro apps: mismo fondo crema que el resto, una banda por app */
+.panel.apps{padding:0}
+.apps .sechead{padding-top:56px;padding-bottom:6px}
+.apps .sechead .k{font:600 13px var(--sans);letter-spacing:.16em;text-transform:uppercase;color:var(--acc)}
+.apps .soon{margin:30px max(22px,5vw) 90px}
+.app{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.3fr);gap:4vw;align-items:center;min-height:100vh;min-height:100svh;padding-top:70px;padding-bottom:70px;padding-left:max(22px,5vw);padding-right:max(22px,5vw);position:relative}
+.app:nth-of-type(odd){background:radial-gradient(60% 70% at 78% 50%,rgba(106,79,196,.12),transparent 70%)}
+.app:nth-of-type(even){background:radial-gradient(60% 70% at 78% 50%,rgba(214,170,120,.18),transparent 70%)}
+.app-info .k{color:var(--acc);font:600 13px var(--sans);letter-spacing:.16em;text-transform:uppercase}
+.app-info h3{font:800 clamp(40px,4.6vw,80px)/.95 var(--sans);letter-spacing:-.045em;margin:14px 0 18px}
+.app-info p{color:var(--mut);font-size:18px;max-width:44ch}
+.app-info .atags{margin-top:18px}.app-info .atags span{background:#ece8f6;color:#4b3a8f}
+.app-info .row{display:flex;gap:10px;flex-wrap:wrap;margin-top:26px}
+.app-demo{min-width:0}.app-demo .vtools{justify-content:flex-end;margin-bottom:12px}
+.app-demo .browser{box-shadow:0 40px 80px -40px rgba(30,20,80,.45)}
+.app-demo .vp{height:min(68vh,640px)}
+@media(max-width:860px){.app{grid-template-columns:1fr;min-height:0;gap:26px;padding-top:50px;padding-bottom:44px}.app-info h3{font-size:38px}.app-info p{font-size:16px}.app-demo .vp{height:62vh}}
+/* filtro de agendas: texto simple, no otra barra */
+.bar{justify-content:flex-start;padding:14px max(22px,5vw) 0}
+.chips{background:none;box-shadow:none;padding:0;gap:20px;align-items:baseline}
+.chips:before{content:"Mostrar:";font:500 14px var(--sans);color:var(--mut)}
+.chips button{padding:4px 0;border-radius:0;font:600 15px var(--sans);border-bottom:2px solid transparent;background:none}
+.chips button.on{background:none;color:var(--ink);border-bottom-color:var(--acc)}
+/* cierre claro, sin salto a negro */
+.how{background:#ebe5d8;color:var(--ink)}.st{border-color:var(--line);background:rgba(255,255,255,.5)}.st p{color:var(--mut)}
+
+/* bordes suaves: cada producto se funde con el crema de la página en vez de cortarse */
+.pbg{--ft:0px;--fb:0px;-webkit-mask-image:linear-gradient(to bottom,transparent 0,#000 var(--ft),#000 calc(100% - var(--fb)),transparent 100%);mask-image:linear-gradient(to bottom,transparent 0,#000 var(--ft),#000 calc(100% - var(--fb)),transparent 100%)}

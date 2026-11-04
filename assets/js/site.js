@@ -36,7 +36,7 @@ function fans(){const M=innerWidth<=860;
       const o2=off<0?-.45+off*.06:off*.62;const x=lerp((i-1.5)*3,o2*spread,open),y=lerp(i*-4,(off<0?10:Math.abs(off)*18),open),rot=lerp((i-1.5)*3,off<0?-8+off:off*7,open),s=lerp(1,off===0?1.1:(off<0?.86:.9),open);
       e.style.transform=`translate(${x}px,calc(-50% + ${y}px)) rotate(${rot}deg) scale(${s})`;e.style.zIndex=off<0?5+i:10-off;e.style.filter=`brightness(${1-.08*Math.abs(off)*open})`});
     $$('.dots i',sec).forEach((d,i)=>d.classList.toggle('on',i===act));
-    const info=sec.querySelector('.info');const iv=ss(innerHeight*.55,0,r.top);info.style.opacity=iv;info.style.translate=`0 ${(1-iv)*30}px`;
+    const bg=sec.querySelector('.pbg');const vh=innerHeight;const ein=ss(vh*.95,vh*.35,r.top),eout=ss(vh*.05,vh*.6,r.bottom),ev=ein*eout;bg.style.setProperty('--ft',(vh*.24*ss(0,vh*.35,r.top)).toFixed(1)+'px');bg.style.setProperty('--fb',(vh*.24*ss(0,vh*.35,vh-r.bottom)).toFixed(1)+'px');const info=sec.querySelector('.info');const iv=ss(vh*.55,0,r.top)*eout;info.style.opacity=iv;info.style.translate=`0 ${(1-iv)*30}px`;
   })}
 function frame(){hero();fans();$('hdr').classList.toggle('solid',scrollY>40);requestAnimationFrame(frame)}
 requestAnimationFrame(frame);

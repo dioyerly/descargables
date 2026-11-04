@@ -87,7 +87,16 @@ function showcase_delete(array $s): void {
 
 /** Guarda el HTML de una landing en private/muestras con nombre aleatorio. Devuelve el nombre o lanza excepción. */
 function showcase_store_html(array $f, string $prefix): string {
-    if (($f['error'] ?? UPLOAD_ERR_NO_FILE) !== UPLOAD_ERR_OK) throw new RuntimeException('no se pudo subir (supera el límite del hosting o hubo un error).');
+    $err = $f['error'] ?? UPLOAD_ERR_NO_FILE;
+    if ($err !== UPLOAD_ERR_OK) {
+        $lim = ini_get('upload_max_filesize') . ' / ' . ini_get('post_max_size');
+        throw new RuntimeException(match ($err) {
+            UPLOAD_ERR_INI_SIZE, UPLOAD_ERR_FORM_SIZE => 'es más grande de lo que permite el hosting (límite actual: ' . $lim . ').',
+            UPLOAD_ERR_PARTIAL => 'se cortó la subida. Probá de nuevo.',
+            UPLOAD_ERR_NO_FILE => 'no se eligió ningún archivo.',
+            default => 'no se pudo guardar en el servidor (código ' . $err . ').',
+        });
+    }
     $ext = strtolower(pathinfo((string)$f['name'], PATHINFO_EXTENSION));
     if (!in_array($ext, ['html', 'htm'], true)) throw new RuntimeException('tiene que ser un archivo .html');
     if (($f['size'] ?? 0) > 12 * 1024 * 1024) throw new RuntimeException('supera los 12 MB.');

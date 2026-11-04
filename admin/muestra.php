@@ -82,7 +82,7 @@ admin_head($isNew ? 'Nueva muestra' : 'Editar muestra'); ?>
   <?php if ($s['html'] !== ''): ?><p class="muted" style="margin:6px 0">📄 <b><?= h($s['html']) ?></b> <a href="../demo.php?f=<?= h(rawurlencode($s['html'])) ?>" target="_blank" rel="noopener">Ver ↗</a>
     <label class="mini rm"><input type="checkbox" name="rm_html" value="1"> Quitar</label></p><?php else: ?><p class="muted">Todavía no hay HTML.</p><?php endif; ?>
   <label class="drop"><?= $s['html'] !== '' ? 'Reemplazar el HTML' : 'Subir el HTML' ?><input type="file" name="html" accept=".html,.htm,text/html">
-    <small>Un solo archivo .html (hasta 12 MB). Conviene que tenga todo adentro: estilos, imágenes y fuentes. Se muestra en vivo dentro del visor del inicio (la demo de la app se ve en un visor más chico), sin poder tocar el resto del sitio.</small></label>
+    <small>Un solo archivo .html (hasta 12 MB). Conviene que tenga todo adentro: estilos, imágenes y fuentes. Se muestra en vivo dentro del visor del inicio, sin poder tocar el resto del sitio. Límite del hosting ahora: <?= h(ini_get('upload_max_filesize')) ?>.</small></label>
   <?php endif; ?>
   <h2 style="margin-top:22px"><?= $secKey === 'landings' ? 'Foto de portada (opcional)' : 'Fotos (opcionales si subís la demo)' ?> <small class="muted">(máximo <?= $secKey === 'landings' ? 1 : SHOWCASE_MAX_IMAGES ?>)</small></h2>
   <?php if ($s['images']): ?><div class="imgs"><?php foreach ($s['images'] as $i => $im): ?>
