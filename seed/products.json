@@ -81,27 +81,37 @@
     "visible": true,
     "url": "",
     "images": [
-      "yoyir-0.webp",
-      "yoyir-1.webp",
-      "yoyir-2.webp",
-      "yoyir-3.webp"
+      "agenda-yoyir-2027-01-428a5a57.webp",
+      "agenda-yoyir-2027-02-c2be21c3.webp",
+      "agenda-yoyir-2027-03-8258822d.webp",
+      "agenda-yoyir-2027-04-6da7fddd.webp",
+      "agenda-yoyir-2027-05-2d9e690c.webp",
+      "agenda-yoyir-2027-06-80cba955.webp",
+      "agenda-yoyir-2027-07-b8fc19ad.webp",
+      "agenda-yoyir-2027-08-79c506ce.webp",
+      "agenda-yoyir-2027-09-789f5f65.webp",
+      "agenda-yoyir-2027-10-9ea68527.webp"
     ],
     "ar": "720/960",
     "type": "digital",
-    "kicker": "Agenda digital interactiva · YOYI'R",
+    "kicker": "Agenda digital interactiva · PDF · YOYI'R",
     "title": "Agenda *YOYI'R* 2027",
     "theme": "lavanda",
     "pages": 290,
-    "desc": "Una agenda serena para planificar con intención. Pensada para tablet, con índice y pestañas que te llevan a cada sección con un toque.",
+    "desc": "Una agenda serena para planificar tu 2027 con intención. Pensada para tablet, con índice y pestañas que te llevan a cada sección con un toque. Meses, semanas del año, finanzas, bienestar, estudios, notas y stickers para completar con tu lápiz digital.",
     "meta": [
       "290 páginas",
-      "Con hipervínculos",
-      "Tablet"
+      "Año 2027",
+      "PDF con hipervínculos",
+      "Para tablet",
+      "Stickers incluidos"
     ],
     "feats": [
-      "Metas por categoría y cumpleaños",
-      "Presupuesto mensual y seguimiento de hábitos",
-      "Semanas del año listas para completar"
+      "Calendario 2027, metas por categoría y vision board",
+      "12 meses con calendario, hábitos, presupuesto y cierre",
+      "Una página para cada semana del año",
+      "Finanzas, productividad, bienestar y estudios",
+      "Notas y biblioteca de stickers en 14 categorías"
     ]
   },
   {
