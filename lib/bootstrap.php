@@ -10,6 +10,9 @@ const AUTH_FILE = DATA_DIR . '/auth.json';
 const MAX_IMAGES = 10;
 const MAX_UPLOAD_BYTES = 8 * 1024 * 1024;
 
+// Las páginas PHP cambian seguido (productos, precios): que el CDN/navegador no las guarde de más
+if (!headers_sent()) { header('Cache-Control: no-cache, must-revalidate'); header('X-LiteSpeed-Cache-Control: no-cache'); }
+
 require_once __DIR__ . '/config.php';
 require_once __DIR__ . '/db.php';
 require_once __DIR__ . '/products.php';
