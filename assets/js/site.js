@@ -77,7 +77,7 @@ function goTop(el,inner){const base=inner&&el?el.getBoundingClientRect().top+scr
 function activate(id,jump){if(!IDS.includes(id))id='agendas';IDS.forEach(k=>{const e=$(k);const on=k===id;if(on&&e.hidden){e.hidden=false;e.classList.remove('enter');void e.offsetWidth;if(!RM)e.classList.add('enter')}else if(!on)e.hidden=true});
   tl.forEach(a=>a.classList.toggle('on',a.getAttribute('href')==='#'+id));
   if(jump)goTop(null);try{history.replaceState(null,'','#'+id)}catch(e){}}
-$$('a[href^="#"]').forEach(a=>a.addEventListener('click',e=>{const id=a.getAttribute('href').slice(1);if(!id)return;e.preventDefault();
-  if(IDS.includes(id))activate(id,true);else if(id==='top')scrollTo({top:0,behavior:'instant'});else{const t=$(id);if(t)scrollTo({top:t.getBoundingClientRect().top+scrollY-hdrH(),behavior:'instant'})}}));
+document.addEventListener('click',e=>{const a=e.target.closest('a[href^="#"]');if(!a)return;const id=a.getAttribute('href').slice(1);if(!id)return;e.preventDefault();
+  if(IDS.includes(id))activate(id,true);else if(id==='top')scrollTo({top:0,behavior:'instant'});else{const t=$(id);if(t)scrollTo({top:t.getBoundingClientRect().top+scrollY-hdrH(),behavior:'instant'})}});
 if(IDS.includes(location.hash.slice(1)))activate(location.hash.slice(1),true);
 })();
