@@ -14,6 +14,7 @@ function db(): ?PDO {
             (string)$c['user'], (string)$c['pass'],
             [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION, PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC, PDO::ATTR_EMULATE_PREPARES => false]
         );
+        try { $pdo->exec("SET time_zone = '-03:00'"); } catch (Throwable $e) {} // hora de Argentina
     } catch (Throwable $e) {
         error_log('DB: ' . $e->getMessage());
         $GLOBALS['db_error'] = $e->getMessage();

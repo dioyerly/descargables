@@ -10,12 +10,13 @@ function row_to_product(array $r): array {
         'id' => $r['slug'], 'order' => (int)$r['sort_order'], 'visible' => (bool)$r['visible'], 'type' => $r['type'],
         'kicker' => $r['kicker'], 'title' => $r['title'], 'theme' => $r['theme'], 'pages' => (int)$r['pages'], 'ar' => $r['ar'],
         'desc' => $r['short_desc'], 'long' => $r['long_desc'], 'meta' => $j($r['meta']), 'feats' => $j($r['feats']), 'images' => $j($r['images']),
-        'price' => (float)$r['price'], 'files' => $files, 'file' => $files[0]['stored'] ?? '', 'file_orig' => $files[0]['orig'] ?? '', 'ext_url' => $r['ext_url'], 'landing' => $r['landing_url'] ?? '', 'pk' => (int)$r['id'],
+        'price' => ((float)($r['price_usd'] ?? 0) > 0 && ($ars = usd_to_ars((float)$r['price_usd'])) > 0) ? $ars : (float)$r['price'], 'price_usd' => (float)($r['price_usd'] ?? 0), 'files' => $files, 'file' => $files[0]['stored'] ?? '', 'file_orig' => $files[0]['orig'] ?? '', 'ext_url' => $r['ext_url'], 'landing' => $r['landing_url'] ?? '', 'pk' => (int)$r['id'],
     ];
 }
 
 function load_products(): array {
     if (db_ready()) {
+        extras_ready();
         $rows = db()->query('SELECT * FROM products ORDER BY sort_order, id')->fetchAll();
         return array_map('row_to_product', $rows);
     }
@@ -38,19 +39,21 @@ function product_params(array $p): array {
         ':visible' => !empty($p['visible']) ? 1 : 0, ':type' => $p['type'], ':kicker' => $p['kicker'], ':title' => $p['title'],
         ':theme' => $p['theme'], ':pages' => (int)$p['pages'], ':ar' => $p['ar'], ':short_desc' => $p['desc'], ':long_desc' => $p['long'],
         ':meta' => $js($p['meta']), ':feats' => $js($p['feats']), ':images' => $js($p['images']),
-        ':price' => round((float)$p['price'], 2), ':files' => $js($p['files'] ?? []), ':file_name' => $p['files'][0]['stored'] ?? '', ':file_orig' => $p['files'][0]['orig'] ?? '', ':ext_url' => $p['ext_url'], ':landing_url' => $p['landing'] ?? '',
+        ':price' => round((float)$p['price'], 2), ':price_usd' => round((float)($p['price_usd'] ?? 0), 2), ':files' => $js($p['files'] ?? []), ':file_name' => $p['files'][0]['stored'] ?? '', ':file_orig' => $p['files'][0]['orig'] ?? '', ':ext_url' => $p['ext_url'], ':landing_url' => $p['landing'] ?? '',
     ];
 }
 
 function product_insert(array $p): void {
-    $st = db()->prepare('INSERT INTO products (slug, sort_order, visible, type, kicker, title, theme, pages, ar, short_desc, long_desc, meta, feats, images, price, file_name, file_orig, ext_url, landing_url, files)
-        VALUES (:slug, :sort_order, :visible, :type, :kicker, :title, :theme, :pages, :ar, :short_desc, :long_desc, :meta, :feats, :images, :price, :file_name, :file_orig, :ext_url, :landing_url, :files)');
+    extras_ready();
+    $st = db()->prepare('INSERT INTO products (slug, sort_order, visible, type, kicker, title, theme, pages, ar, short_desc, long_desc, meta, feats, images, price, price_usd, file_name, file_orig, ext_url, landing_url, files)
+        VALUES (:slug, :sort_order, :visible, :type, :kicker, :title, :theme, :pages, :ar, :short_desc, :long_desc, :meta, :feats, :images, :price, :price_usd, :file_name, :file_orig, :ext_url, :landing_url, :files)');
     $st->execute(product_params($p) + [':slug' => $p['id'], ':sort_order' => (int)($p['order'] ?? 0)]);
 }
 
 function product_update(array $p): void {
+    extras_ready();
     $st = db()->prepare('UPDATE products SET visible=:visible, type=:type, kicker=:kicker, title=:title, theme=:theme, pages=:pages, ar=:ar, short_desc=:short_desc, long_desc=:long_desc,
-        meta=:meta, feats=:feats, images=:images, price=:price, file_name=:file_name, file_orig=:file_orig, ext_url=:ext_url, landing_url=:landing_url, files=:files WHERE slug=:slug');
+        meta=:meta, feats=:feats, images=:images, price=:price, price_usd=:price_usd, file_name=:file_name, file_orig=:file_orig, ext_url=:ext_url, landing_url=:landing_url, files=:files WHERE slug=:slug');
     $st->execute(product_params($p) + [':slug' => $p['id']]);
 }
 

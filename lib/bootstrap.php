@@ -1,6 +1,7 @@
 <?php
 declare(strict_types=1);
 // EstrategIA Descargables — núcleo compartido
+date_default_timezone_set('America/Argentina/Buenos_Aires');
 const APP_ROOT = __DIR__ . '/..';
 const DATA_DIR = APP_ROOT . '/data';
 const UPLOAD_DIR = APP_ROOT . '/uploads';
@@ -18,6 +19,7 @@ require_once __DIR__ . '/db.php';
 require_once __DIR__ . '/products.php';
 require_once __DIR__ . '/mp.php';
 require_once __DIR__ . '/showcase.php';
+require_once __DIR__ . '/extras.php';
 
 function h(?string $s): string { return htmlspecialchars((string)$s, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); }
 

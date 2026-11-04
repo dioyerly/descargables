@@ -309,3 +309,15 @@ footer{margin-top:80px;padding-top:22px;border-top:1px solid var(--line);display
 @media(max-width:860px){.devs{grid-template-columns:1fr 1fr}}
 
 .p-micro.vid{background:#f5efeb}
+
+/* ===== Pie con legales + volver arriba ===== */
+.sfoot{margin-top:80px;padding:22px max(22px,env(safe-area-inset-left,0px)) 34px;border-top:1px solid var(--line);color:var(--mut);font-size:14px;display:grid;gap:12px}
+.end .sfoot{padding-left:0;padding-right:0}
+.sf-row{display:flex;justify-content:space-between;gap:8px 16px;flex-wrap:wrap}
+.sf-links{display:flex;flex-wrap:wrap;gap:6px 18px}
+.sf-links a{color:var(--ink);text-decoration:underline;text-decoration-color:var(--line);text-underline-offset:3px;font-weight:500}
+.sf-links a:hover{text-decoration-color:var(--acc);color:var(--acc)}
+.totop{position:fixed;right:max(16px,env(safe-area-inset-right,0px));bottom:max(18px,env(safe-area-inset-bottom,0px));z-index:60;display:flex;align-items:center;gap:6px;height:46px;padding:0 16px 0 13px;border:0;border-radius:99px;background:var(--ink);color:#fff;font:600 14px var(--sans);cursor:pointer;box-shadow:0 12px 28px -10px rgba(28,26,23,.55);opacity:0;transform:translateY(16px) scale(.9);pointer-events:none;transition:opacity .25s,transform .25s,background .2s}
+.totop.on{opacity:1;transform:none;pointer-events:auto}
+.totop:hover{background:var(--acc)}
+@media(max-width:860px){.totop{width:44px;height:44px;padding:0;justify-content:center;opacity:0}.totop.on{opacity:.92}.totop span{display:none}}

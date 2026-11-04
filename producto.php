@@ -26,7 +26,7 @@ $typeLbl = types()[$p['type']] ?? '';
 <link rel="preload" href="<?= h($B) ?>/assets/fonts/bricolage-grotesque-latin-800-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="<?= h($B) ?>/assets/css/site.css?v=<?= $v ?>"><link rel="stylesheet" href="<?= h($B) ?>/assets/css/detalle.css?v=<?= $v ?>">
 </head>
-<body class="det" style="<?= h(theme_style((string)$p['theme'])) ?>">
+<body class="det" style="<?= h(theme_style((string)$p['theme'])) ?>" data-page="detalle" data-base="<?= h($B) ?>" data-title="<?= h($plain) ?>">
 <header class="pad solid" id="hdr"><a class="logo" href="<?= h($B) ?>/"><i>e</i>EstrategIA<small>Descargables</small></a>
 <nav class="nav"><a class="t" href="<?= h($B) ?>/#catalogo">← Catálogo</a><a class="btn" href="#comprar">Comprar</a></nav></header>
 
@@ -64,9 +64,10 @@ $typeLbl = types()[$p['type']] ?? '';
   </section>
 </main>
 
-<footer class="pad dfoot"><span>© <?= date('Y') ?> EstrategIA · Descargables</span><a href="<?= h($B) ?>/#catalogo">Ver más productos</a></footer>
+<?php $footBack = true; include __DIR__ . '/lib/footer.php'; ?>
 
 <div class="lb" id="lb" role="dialog" aria-modal="true" aria-label="Vista ampliada"><img id="lbi" alt=""><button class="x" id="lbx" aria-label="Cerrar">✕</button><button class="pv" id="lbp" aria-label="Anterior">‹</button><button class="nx" id="lbn" aria-label="Siguiente">›</button><div class="cap" id="lbc"></div></div>
 <script>window.__IMGS=<?= json_encode($imgs, JSON_UNESCAPED_SLASHES) ?>;window.__TITLE=<?= json_encode($plain, JSON_UNESCAPED_UNICODE) ?>;</script>
 <script src="<?= h($B) ?>/assets/js/detalle.js?v=<?= $v ?>" defer></script>
+<script src="<?= h($B) ?>/assets/js/track.js?v=<?= $v ?>" defer></script>
 </body></html>

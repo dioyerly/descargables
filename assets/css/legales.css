@@ -1,0 +1,18 @@
+.legal{background:var(--paper)}
+.legal #hdr{position:sticky;top:0;z-index:20}
+.lg{max-width:860px;margin:0 auto;padding-top:48px;padding-bottom:20px}
+.lg-head h1{font:800 clamp(34px,5vw,58px)/1.02 var(--sans);letter-spacing:-.04em;margin:12px 0 14px}
+.lg-head h1 .serif{font-style:italic;font-weight:400;color:var(--acc)}
+.lg-head p{color:var(--mut);font-size:16px}
+.lg-head a,.lg section a{color:var(--acc);text-underline-offset:3px}
+.lg-toc{display:flex;flex-wrap:wrap;gap:8px;margin-top:22px}
+.lg-toc a{font:600 13px var(--sans);padding:8px 14px;border-radius:99px;background:#fff;border:1px solid var(--line);color:var(--ink)!important;text-decoration:none}
+.lg-toc a:hover{border-color:var(--acc)}
+.lg section{background:#fff;border:1px solid var(--line);border-radius:22px;padding:26px clamp(18px,3vw,34px);margin-top:20px;scroll-margin-top:90px}
+.lg h2{font:800 22px var(--sans);letter-spacing:-.02em;margin-bottom:12px}
+.lg section p{font-size:15.5px;line-height:1.65;margin-top:10px;color:#3a3630}
+.lg section p b{color:var(--ink)}
+.lg .note{font-size:13px!important;color:var(--mut)!important;background:var(--paper);padding:12px 14px;border-radius:12px}
+.lg .row{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+.lg .row .btn{color:#fff!important;text-decoration:none}
+.legal .sfoot{max-width:860px;margin:30px auto 0}

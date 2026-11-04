@@ -9,7 +9,7 @@ $list = load_products();
 $id = (string)($_GET['id'] ?? $_POST['id'] ?? '');
 $p = $id !== '' ? find_product($list, $id) : null;
 $isNew = $p === null;
-$p = $p ?? ['id'=>'','visible'=>true,'type'=>'print','kicker'=>'','title'=>'','desc'=>'','long'=>'','price'=>0,'file'=>'','file_orig'=>'','files'=>[],'ext_url'=>'','landing'=>'','meta'=>[],'feats'=>[],'theme'=>'lavanda','pages'=>0,'images'=>[],'ar'=>'3/4'];
+$p = $p ?? ['id'=>'','visible'=>true,'type'=>'print','kicker'=>'','title'=>'','desc'=>'','long'=>'','price'=>0,'price_usd'=>0,'file'=>'','file_orig'=>'','files'=>[],'ext_url'=>'','landing'=>'','meta'=>[],'feats'=>[],'theme'=>'lavanda','pages'=>0,'images'=>[],'ar'=>'3/4'];
 $errors = []; $warns = [];
 $lines = fn(string $s, int $max) => array_slice(array_values(array_filter(array_map('trim', preg_split('/\r?\n|,/', $s) ?: []), fn($x) => $x !== '')), 0, $max);
 
@@ -41,6 +41,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $p['price'] = is_numeric($priceRaw) ? max(0, (float)$priceRaw) : 0;
     if (!is_numeric($priceRaw)) $errors[] = 'El precio debe ser un número (por ejemplo 4500).';
     if ($p['price'] > 99999999) $errors[] = 'El precio es demasiado alto.';
+    $usdRaw = str_replace(['US$', 'USD', 'u$s', '$', ' '], '', (string)($_POST['price_usd'] ?? ''));
+    $usdRaw = str_replace(',', '.', $usdRaw);
+    if ($usdRaw !== '' && (!is_numeric($usdRaw) || (float)$usdRaw < 0 || (float)$usdRaw > 100000)) $errors[] = 'El precio en dólares debe ser un número (por ejemplo 9.99).';
+    $p['price_usd'] = is_numeric($usdRaw) ? round(max(0, (float)$usdRaw), 2) : 0;
+    if ($p['price_usd'] > 0) {
+        $ars = usd_to_ars($p['price_usd']);
+        if ($ars > 0) $p['price'] = $ars;
+        elseif ($p['price'] <= 0) $errors[] = 'No pude consultar la cotización del dólar ahora. Cargá también el precio en pesos (se usa mientras tanto).';
+    }
     $rawUrl = trim((string)($_POST['ext_url'] ?? ''));
     $p['ext_url'] = safe_url($rawUrl);
     if ($rawUrl !== '' && $p['ext_url'] === '') $errors[] = 'El link de descarga debe empezar con https://';
@@ -112,7 +121,10 @@ admin_head($isNew ? 'Nuevo producto' : 'Editar producto'); ?>
     <small>Si lo completás, el botón “Ver detalle” lleva a ese link (por ejemplo una app que ya tiene su propia página) y no se usa la página de detalle ni la compra de acá. Dejalo vacío para vender con detalle y Mercado Pago.</small></label>
   <label>Detalle completo (se ve en la página del producto)<textarea name="long" rows="8" maxlength="8000" placeholder="Contá todo: para quién es, cómo se usa, qué hojas trae. Separá los párrafos con una línea en blanco."><?= h($p['long']) ?></textarea></label>
   <div class="two">
-    <label>Precio en pesos (ARS)<input name="price" inputmode="decimal" value="<?= $p['price'] > 0 ? h((string)(fmod((float)$p['price'], 1) == 0.0 ? (int)$p['price'] : $p['price'])) : '' ?>" placeholder="4500"><small>Sin precio, el botón de compra no aparece.</small></label>
+<?php $dr = dolar_rate(); $rv = (float)($dr['valor'] ?? 0); ?>
+    <label>Precio en dólares (USD, opcional)<input name="price_usd" id="pusd" inputmode="decimal" value="<?= ($p['price_usd'] ?? 0) > 0 ? h(rtrim(rtrim(number_format((float)$p['price_usd'], 2, '.', ''), '0'), '.')) : '' ?>" placeholder="9.99" data-rate="<?= h((string)$rv) ?>">
+      <small><?php if ($rv > 0): ?>Dólar <?= h(strtolower(explode(' (', dolar_types()[$dr['tipo']] ?? 'oficial')[0])) ?> hoy: <b><?= h(format_price($rv)) ?></b><?= empty($dr['ok']) ? ' (última cotización guardada)' : '' ?>. El precio en pesos se recalcula solo cada día. <a href="ajustes.php">Cambiar tipo de dólar</a><?php else: ?>No se pudo leer la cotización ahora; cargá el precio en pesos.<?php endif; ?></small></label>
+        <label>Precio en pesos (ARS)<input name="price" id="pars" inputmode="decimal" value="<?= $p['price'] > 0 ? h((string)(fmod((float)$p['price'], 1) == 0.0 ? (int)$p['price'] : $p['price'])) : '' ?>" placeholder="4500"><small id="parsh">Sin precio, el botón de compra no aparece. Si cargás USD, este se calcula solo.</small></label>
   </div>
   <div class="two">
     <label>Tipo<select name="type"><?php foreach (types() as $k => $v): ?><option value="<?= h($k) ?>"<?= $p['type'] === $k ? ' selected' : '' ?>><?= h($v) ?></option><?php endforeach; ?></select></label>
@@ -146,4 +158,7 @@ admin_head($isNew ? 'Nuevo producto' : 'Editar producto'); ?>
   <div class="save"><button class="btn" type="submit"><?= $isNew ? 'Crear producto' : 'Guardar cambios' ?></button><a href="index.php" class="muted">Cancelar</a></div>
 </div>
 </form>
+<script>(function(){var u=document.getElementById('pusd'),a=document.getElementById('pars'),hh=document.getElementById('parsh');if(!u||!a)return;var r=parseFloat(u.dataset.rate)||0;
+function up(){var v=parseFloat((u.value||'').replace(',','.'));if(v>0&&r>0){var ars=Math.ceil(v*r/100)*100;a.value=ars;a.readOnly=true;a.style.background='#f3efe7';hh.textContent='Calculado: US$ '+v+' × $'+r.toLocaleString('es-AR')+' = $'+ars.toLocaleString('es-AR')+' (redondeado a la centena).'}else{a.readOnly=false;a.style.background='';hh.textContent='Sin precio, el botón de compra no aparece. Si cargás USD, este se calcula solo.'}}
+u.addEventListener('input',up);up()})();</script>
 <?php admin_foot();

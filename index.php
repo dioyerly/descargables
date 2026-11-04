@@ -33,7 +33,7 @@ $waMsg = fn(string $t) => $wa . '?text=' . rawurlencode($t);
 <link rel="preload" href="assets/fonts/bricolage-grotesque-latin-800-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="assets/css/site.css?v=<?= $v ?>">
 </head>
-<body>
+<body data-page="inicio" data-base="<?= h(base_path()) ?>">
 <header class="pad" id="hdr"><a class="logo" href="#top"><i>e</i>EstrategIA<small>Productos digitales</small></a>
 <nav class="nav"><a class="t" href="#agendas">Agendas</a><a class="t" href="#apps">Apps web</a><a class="t" href="#landings">Landings</a><a class="t" href="#micro">Micro apps</a><a class="btn" href="<?= h($waMsg('Hola! Quiero consultar por un producto a medida.')) ?>" target="_blank" rel="noopener">Pedí el tuyo</a></nav></header>
 
@@ -176,11 +176,12 @@ $askLand = fn($l) => [$l['link'] !== '' ? $l['link'] : $waMsg('Hola! Me gustó l
   <div class="wrap"><div class="k" style="color:var(--acc)">¿Necesitás algo a medida?</div><h2>Lo pensamos <span class="serif">juntos.</span></h2>
     <p>Landings, apps web y micro apps hechas para tu negocio. Contanos qué necesitás y te respondemos por WhatsApp.</p>
     <div class="row"><a class="btn" href="https://www.instagram.com/estrategia.datos/" target="_blank" rel="noopener">Instagram @estrategia.datos</a><a class="btn o" href="https://wa.me/5491126425994" target="_blank" rel="noopener">Escribinos por WhatsApp</a></div>
-    <footer><span>© <?= date('Y') ?> EstrategIA · Productos digitales</span><span>Productos digitales: no se envía nada físico.</span></footer></div>
+    <?php include __DIR__ . '/lib/footer.php'; ?></div>
 </section>
 </main>
 
 <div class="lb" id="lb" role="dialog" aria-modal="true" aria-label="Vista ampliada"><img id="lbi" alt=""><button class="x" id="lbx" aria-label="Cerrar">✕</button><button class="pv" id="lbp" aria-label="Anterior">‹</button><button class="nx" id="lbn" aria-label="Siguiente">›</button><div class="cap" id="lbc"></div></div>
 <script src="assets/js/site.js?v=<?= $v ?>" defer></script>
+<script src="assets/js/track.js?v=<?= $v ?>" defer></script>
 </body>
 </html>

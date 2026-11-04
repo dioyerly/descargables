@@ -37,4 +37,6 @@ $v = (string)@filemtime(__DIR__ . '/assets/js/site.js');
   <div class="k" style="color:var(--acc)">Compra</div><h1>No encontramos <span class="serif">ese pedido.</span></h1>
   <p class="row"><a class="btn" href="<?= h(base_path()) ?>/">Volver al catálogo</a></p>
 <?php endif; ?>
-</div></main></body></html>
+</div></main>
+<?php include __DIR__ . '/lib/footer.php'; ?>
+</body></html>

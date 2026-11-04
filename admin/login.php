@@ -12,11 +12,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (mb_strlen($pass) < 10) $err = 'La contraseña debe tener al menos 10 caracteres.';
         elseif ($pass !== (string)($_POST['pass2'] ?? '')) $err = 'Las contraseñas no coinciden.';
         elseif (!set_password($pass)) $err = 'No se pudo guardar. Revisá que la carpeta data/ tenga permisos de escritura.';
-        else { session_regenerate_id(true); $_SESSION['eia_ok'] = 1; header('Location: index.php'); exit; }
+        else { session_regenerate_id(true); $_SESSION['eia_ok'] = 1; mark_owner_device(true); header('Location: index.php'); exit; }
     } else {
         $wait = login_blocked();
         if ($wait > 0) $err = 'Demasiados intentos. Esperá ' . ceil($wait / 60) . ' minutos.';
-        elseif (check_password($pass)) { login_attempt(true); session_regenerate_id(true); $_SESSION['eia_ok'] = 1; header('Location: index.php'); exit; }
+        elseif (check_password($pass)) { login_attempt(true); session_regenerate_id(true); $_SESSION['eia_ok'] = 1; mark_owner_device(true); header('Location: index.php'); exit; }
         else { login_attempt(false); usleep(600000); $err = 'Contraseña incorrecta.'; }
     }
 }
