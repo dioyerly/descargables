@@ -7,7 +7,7 @@ const UPLOAD_DIR = APP_ROOT . '/uploads';
 const PRIVATE_DIR = APP_ROOT . '/private/files';
 const SEED_FILE = APP_ROOT . '/seed/products.json';
 const AUTH_FILE = DATA_DIR . '/auth.json';
-const MAX_IMAGES = 6;
+const MAX_IMAGES = 10;
 const MAX_UPLOAD_BYTES = 8 * 1024 * 1024;
 
 require_once __DIR__ . '/config.php';

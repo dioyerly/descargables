@@ -80,6 +80,21 @@ function db_install(PDO $pdo): void {
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci");
 }
 
+/** Aplica las fichas de seed/fichas/*.json a productos que ya existen (no toca precio, archivo ni visibilidad). Devuelve los títulos actualizados. */
+function db_apply_fichas(): array {
+    $done = [];
+    foreach (glob(APP_ROOT . '/seed/fichas/*.json') ?: [] as $f) {
+        $j = json_decode((string)file_get_contents($f), true);
+        if (!is_array($j) || empty($j['id'])) continue;
+        $p = find_product(load_products(), (string)$j['id']);
+        if (!$p) continue;
+        foreach (['title','kicker','type','theme','pages','ar','desc','long','meta','feats','images'] as $k) if (array_key_exists($k, $j)) $p[$k] = $j[$k];
+        product_update($p);
+        $done[] = strip_tags(str_replace('*', '', (string)$p['title']));
+    }
+    return $done;
+}
+
 /** Importa los productos del seed si la tabla está vacía. Devuelve cuántos importó. */
 function db_import_seed(PDO $pdo): int {
     if ((int)$pdo->query('SELECT COUNT(*) FROM products')->fetchColumn() > 0) return 0;

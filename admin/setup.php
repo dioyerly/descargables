@@ -7,7 +7,9 @@ $msg = ''; $err = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     csrf_check();
     $pdo = db();
-    if (!$pdo) $err = 'No hay conexión con MySQL: ' . ($GLOBALS['db_error'] ?? '');
+    if (($_POST['do'] ?? '') === 'fichas') {
+        try { $d = db_ready() ? db_apply_fichas() : []; $msg = $d ? 'Fichas aplicadas: ' . implode(', ', $d) . '.' : 'No había fichas para aplicar.'; } catch (Throwable $e) { $err = 'Error: ' . $e->getMessage(); }
+    } elseif (!$pdo) $err = 'No hay conexión con MySQL: ' . ($GLOBALS['db_error'] ?? '');
     else try { db_install($pdo); $n = db_import_seed($pdo); $msg = 'Tablas listas.' . ($n ? " Se importaron $n productos." : ''); }
     catch (Throwable $e) { $err = 'Error: ' . $e->getMessage(); }
 }
@@ -23,7 +25,10 @@ admin_head('Base de datos'); ?>
   <p><?= $ready ? '✅' : '❌' ?> Tablas <?= $ready ? 'creadas' : 'sin crear' ?></p>
   <p><?= mp_configured() ? '✅' : '❌' ?> Access Token de Mercado Pago <?= mp_configured() ? 'cargado' : 'sin cargar (en config.php)' ?></p>
   <p class="muted">Aviso automático (webhook) de Mercado Pago: <code><?= h(site_url('mp-webhook.php')) ?></code></p>
-  <?php if ($pdo): ?><form method="post" style="margin-top:16px"><?= csrf_field() ?><button class="btn" type="submit"><?= $ready ? 'Revisar tablas' : 'Crear tablas e importar mis productos' ?></button></form>
-  <p class="muted"><small>Es seguro repetirlo: no borra nada.</small></p><?php endif; ?>
+  <?php if ($pdo): ?><form method="post" style="margin-top:16px"><input type="hidden" name="do" value="tablas"><?= csrf_field() ?><button class="btn" type="submit"><?= $ready ? 'Revisar tablas' : 'Crear tablas e importar mis productos' ?></button></form>
+  <p class="muted"><small>Es seguro repetirlo: no borra nada.</small></p>
+  <?php if ($ready): ?><hr style="margin:18px 0;border:0;border-top:1px solid #ddd5c6"><h2>Fichas de productos</h2>
+  <p class="muted">Carga textos, etiquetas y fotos preparados en el repositorio. No toca el precio, el archivo ni si el producto está visible.</p>
+  <form method="post"><?= csrf_field() ?><input type="hidden" name="do" value="fichas"><button class="btn" type="submit">Aplicar fichas de productos</button></form><?php endif; ?><?php endif; ?>
 </div>
 <?php admin_foot();
