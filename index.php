@@ -44,12 +44,13 @@ $waMsg = fn(string $t) => $wa . '?text=' . rawurlencode($t);
   </div>
 </section>
 
-<nav class="tabs" id="tabs" aria-label="Categorías"><a href="#agendas" class="on">Agendas e imprimibles</a><a href="#apps">Apps web</a><a href="#landings">Landings a medida</a><a href="#micro">Micro apps a medida</a></nav>
+<nav class="tabs" id="tabs" aria-label="Categorías"><a href="#agendas" class="on">Agendas</a><a href="#apps">Apps web</a><a href="#landings">Landings</a><a href="#micro">Micro apps</a></nav>
+<div id="panels">
 
-<section id="agendas" aria-label="Agendas e imprimibles">
+<section id="agendas" class="panel" aria-label="Agendas e imprimibles">
 <div class="sechead pad"><div class="wrap"><div class="k" style="color:var(--acc)">01 · Agendas e imprimibles</div><h2>Papel bonito, <span class="serif">listo para usar.</span></h2><p>Agendas y planners para imprimir en casa o usar en tu tablet. Mirá las páginas por dentro y elegí la tuya.</p></div></div>
 <div id="catalogo">
-<div class="bar"><div class="chips" role="tablist" aria-label="Filtrar">
+<div class="bar pad"><div class="chips" role="tablist" aria-label="Filtrar">
   <button class="on" data-f="all">Todos</button><button data-f="print">Imprimibles</button><button data-f="digital">Para tablet</button></div></div>
 <div id="prods">
 <?php if (!$products): ?><p class="empty">Pronto vas a encontrar acá nuestros descargables.</p><?php endif; ?>
@@ -83,7 +84,7 @@ $waMsg = fn(string $t) => $wa . '?text=' . rawurlencode($t);
 </div>
 </section>
 
-<section id="apps" class="msec apps pad" aria-label="Apps web"><div class="wrap">
+<section id="apps" class="panel msec apps pad" hidden aria-label="Apps web"><div class="wrap">
   <div class="k">02 · Apps web</div><h2>Apps que <span class="serif">resuelven</span> tu día a día.</h2>
   <p class="lead">Sistemas web hechos para que un negocio se ordene: gestión, stock, turnos, cuentas. Se usan desde cualquier dispositivo.</p>
   <?php if (!$apps): ?><div class="soon"><b>Muy pronto</b><span>Acá vas a ver las apps web, con fotos y el link para probarlas.</span></div><?php endif; ?>
@@ -100,7 +101,7 @@ $waMsg = fn(string $t) => $wa . '?text=' . rawurlencode($t);
   </div>
 </div></section>
 
-<section id="landings" class="msec lands pad" aria-label="Landings a medida"><div class="wrap">
+<section id="landings" class="panel msec lands pad" hidden aria-label="Landings a medida"><div class="wrap">
   <div class="k" style="color:var(--acc)">03 · Landings a medida</div><h2>Landings que <span class="serif">convierten.</span></h2>
   <p class="lead">Páginas de una sola pantalla pensadas para vender o presentar tu negocio. Abajo las ves funcionando, tal cual quedan.</p>
   <?php if (!$landings): ?><div class="soon"><b>Muy pronto</b><span>Acá vas a ver ejemplos de landings funcionando, dentro de un visor.</span></div><?php endif; ?>
@@ -117,7 +118,7 @@ $waMsg = fn(string $t) => $wa . '?text=' . rawurlencode($t);
   <?php endif; ?>
 </div></section>
 
-<section id="micro" class="msec micro pad" aria-label="Micro apps a medida"><div class="wrap">
+<section id="micro" class="panel msec micro pad" hidden aria-label="Micro apps a medida"><div class="wrap">
   <div class="k">04 · Micro apps a medida</div><h2>Herramientas chicas, <span class="serif">hechas para vos.</span></h2>
   <p class="lead">Calculadoras, paneles, formularios y utilidades pensadas para una tarea puntual de tu negocio.</p>
   <?php if (!$micro): ?><div class="soon"><b>Muy pronto</b><span>Acá vas a ver capturas de las micro apps que ya hicimos.</span></div><?php endif; ?>
@@ -126,6 +127,8 @@ $waMsg = fn(string $t) => $wa . '?text=' . rawurlencode($t);
   <?php foreach ($mimgs as $i => $src): ?><button type="button" class="mtile" data-open="<?= $i ?>" aria-label="Ampliar: <?= h($mcap[$i]) ?>"><img src="<?= h($src) ?>" alt="<?= h($mcap[$i]) ?>" loading="lazy"><span><?= h($mcap[$i]) ?></span></button><?php endforeach; ?>
   </div>
 </div></section>
+
+</div>
 
 <section class="how top pad" id="como" aria-label="Cómo funciona">
   <div class="wrap"><div class="k" style="color:var(--acc)">Cómo funciona</div><h2>De la pantalla <span class="serif">a tu escritorio.</span></h2>
