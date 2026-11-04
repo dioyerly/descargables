@@ -133,14 +133,13 @@ function is_bot_ua(string $ua): bool {
     return $ua === '' || (bool)preg_match('~bot|crawl|spider|slurp|preview|facebookexternalhit|whatsapp|telegram|headless|lighthouse|pingdom|uptime|curl|wget|python|monitor~i', $ua);
 }
 
-/** Si el texto de precio es un monto en dólares ("USD 150", "U$S 150", "150 usd"), devuelve el número; si no, 0. */
+/** Busca un monto en dólares dentro del texto ("USD 150", "U$S 1.200", "150 usd", "USD 160 - ARS 185,000"); si no hay, 0. */
 function usd_amount(string $t): float {
-    $t = trim($t);
-    if (preg_match('~^(?:USD|US\$|U\$S|u\$s|us\$|dólares?|dolares?)\s*([0-9][0-9.,]*)$~iu', $t, $m) || preg_match('~^([0-9][0-9.,]*)\s*(?:USD|US\$|U\$S|u\$s|dólares?|dolares?)$~iu', $t, $m)) {
-        $n = $m[1];
-        $n = preg_match('/,\d{1,2}$/', $n) ? str_replace(',', '.', str_replace('.', '', $n)) : str_replace([',', '.'], ['', '.'], preg_match('/\.\d{3}(\D|$)/', $n) ? str_replace('.', '', $n) : $n);
-        return is_numeric($n) ? (float)$n : 0.0;
-    }
-    return 0.0;
+    $cur = '(?:USD|US\$|U\$S|u\$s|dólares?|dolares?)';
+    if (!preg_match('~' . $cur . '\s*([0-9][0-9.,]*)~iu', $t, $m) && !preg_match('~([0-9][0-9.,]*)\s*' . $cur . '~iu', $t, $m)) return 0.0;
+    $n = rtrim($m[1], '.,');
+    if (preg_match('/^\d{1,3}([.,]\d{3})+$/', $n)) $n = str_replace(['.', ','], '', $n);      // 1.200 / 1,200
+    elseif (preg_match('/^\d+,\d{1,2}$/', $n)) $n = str_replace(',', '.', $n);                // 99,90
+    return is_numeric($n) ? (float)$n : 0.0;
 }
 function usd_label(float $v): string { return 'USD ' . number_format($v, fmod($v, 1) == 0.0 ? 0 : 2, ',', '.'); }
