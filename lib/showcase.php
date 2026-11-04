@@ -7,7 +7,7 @@ const SHOWCASE_MAX_IMAGES = 8;
 
 function showcase_sections(): array {
     return [
-        'apps'     => ['label' => 'Apps web', 'single' => 'App web', 'hint' => 'Fotos de la app, una descripción y el link para verla.'],
+        'apps'     => ['label' => 'Apps web', 'single' => 'App web', 'hint' => 'Subís el HTML de la demo y se prueba en vivo en un visor (las fotos son opcionales), con descripción y el link a la app.'],
         'landings' => ['label' => 'Landings a medida', 'single' => 'Landing', 'hint' => 'Subís el HTML de la landing y el sitio la muestra en vivo, dentro de un visor.'],
         'micro'    => ['label' => 'Micro apps a medida', 'single' => 'Micro app', 'hint' => 'Solo fotos (y un título corto).'],
     ];

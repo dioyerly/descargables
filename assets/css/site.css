@@ -178,3 +178,13 @@ footer{margin-top:80px;padding-top:22px;border-top:1px solid var(--line);display
 .mtile:hover{transform:translateY(-4px)}.mtile img{width:100%;display:block}
 .mtile span{position:absolute;left:10px;bottom:10px;background:rgba(20,18,28,.8);color:#fff;font:600 12px var(--sans);padding:6px 11px;border-radius:99px;opacity:0;transition:opacity .25s}.mtile:hover span{opacity:1}
 @media(max-width:860px){.msec{padding-top:70px;padding-bottom:70px}.vp{height:68vh}.agrid{grid-template-columns:1fr}}
+
+/* demo de app: visor más compacto, sobre fondo oscuro */
+.vapp{max-width:960px}
+.vapp .vp{height:min(58vh,520px)}
+.apps .vtabs button{background:#1d1a29;border-color:#2e2940;color:#b9b4c9}.apps .vtabs button.on{background:#a893ff;color:#14121c;border-color:#a893ff}
+.apps .vname{color:#f4f1ea}.apps .vdev{background:#26223a}.apps .vdev button{color:#b9b4c9}.apps .vdev button.on{background:#a893ff;color:#14121c;box-shadow:none}
+.apps .btn.o{color:#f4f1ea;border-color:#4a4466;background:transparent}
+.apps .browser{border-color:#2e2940;box-shadow:0 40px 80px -40px #000}
+.apps .vfoot p{color:#b9b4c9}.vfoot .atags{margin-top:10px}
+@media(max-width:860px){.vapp .vp{height:62vh}}

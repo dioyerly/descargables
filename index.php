@@ -84,38 +84,39 @@ $waMsg = fn(string $t) => $wa . '?text=' . rawurlencode($t);
 </div>
 </section>
 
+<?php
+function viewer_block(array $items, string $kind, callable $ask): void {
+  if (!$items) return;
+  $c = $kind === 'apps' ? 'viewer vapp' : 'viewer'; ?>
+  <div class="<?= $c ?>" data-viewer>
+    <div class="vtabs" role="tablist"><?php foreach ($items as $i => $l):
+      $src = $l['html'] !== '' ? 'muestras/' . rawurlencode($l['html']) : '';
+      $im = array_map(fn($x) => 'uploads/' . rawurlencode($x), $l['images']);
+      [$ask_url, $ask_label] = $ask($l); ?>
+      <button type="button" role="tab" class="<?= $i === 0 ? 'on' : '' ?>" data-src="<?= h($src) ?>" data-imgs="<?= h(json_encode($im, JSON_UNESCAPED_SLASHES)) ?>" data-title="<?= h($l['title']) ?>" data-desc="<?= h($l['desc']) ?>" data-tags="<?= h(implode('|', $l['tags'])) ?>" data-link="<?= h($ask_url) ?>" data-label="<?= h($ask_label) ?>"><?= h($l['title']) ?></button>
+    <?php endforeach; ?></div>
+    <div class="vtools"><span class="vname"></span><div class="vdev"><button type="button" class="on" data-dev="d">Computadora</button><button type="button" data-dev="m">Celular</button></div><a class="btn o sm vopen" href="#" target="_blank" rel="noopener">Abrir completa ↗</a></div>
+    <div class="browser"><div class="bbar"><i></i><i></i><i></i><b class="vurl">tu-negocio.com</b></div>
+      <div class="vp"><div class="vfr"><div class="vph"></div></div></div></div>
+    <div class="vfoot"><div><p class="vdesc"></p><div class="atags vtags"></div></div><a class="btn vask" href="#" target="_blank" rel="noopener"></a></div>
+  </div>
+<?php } ?>
+<?php
+$askApp = fn($a) => $a['link'] !== '' ? [$a['link'], 'Ver app ↗'] : [$waMsg('Hola! Me interesa la app "' . $a['title'] . '".'), 'Me interesa'];
+$askLand = fn($l) => [$l['link'] !== '' ? $l['link'] : $waMsg('Hola! Me gustó la landing "' . $l['title'] . '". Quiero una para mi negocio.'), 'Quiero una igual'];
+?>
 <section id="apps" class="panel msec apps pad" hidden aria-label="Apps web"><div class="wrap">
   <div class="k">02 · Apps web</div><h2>Apps que <span class="serif">resuelven</span> tu día a día.</h2>
-  <p class="lead">Sistemas web hechos para que un negocio se ordene: gestión, stock, turnos, cuentas. Se usan desde cualquier dispositivo.</p>
-  <?php if (!$apps): ?><div class="soon"><b>Muy pronto</b><span>Acá vas a ver las apps web, con fotos y el link para probarlas.</span></div><?php endif; ?>
-  <div class="agrid">
-  <?php foreach ($apps as $a): $im = array_map(fn($x) => 'uploads/' . rawurlencode($x), $a['images']); ?>
-    <article class="acard" data-imgs="<?= h(json_encode($im, JSON_UNESCAPED_SLASHES)) ?>" data-title="<?= h($a['title']) ?>">
-      <button class="amain" type="button" data-open="0" aria-label="Ampliar foto de <?= h($a['title']) ?>" style="background-image:url('<?= h($im[0] ?? '') ?>')"></button>
-      <?php if (count($im) > 1): ?><div class="athumbs"><?php foreach (array_slice($im, 1, 4) as $i => $src): ?><button type="button" data-open="<?= $i + 1 ?>" aria-label="Ampliar foto <?= $i + 2 ?>" style="background-image:url('<?= h($src) ?>')"></button><?php endforeach; ?></div><?php endif; ?>
-      <div class="abody"><h3><?= h($a['title']) ?></h3><p><?= h($a['desc']) ?></p>
-        <?php if ($a['tags']): ?><div class="atags"><?php foreach ($a['tags'] as $t): ?><span><?= h($t) ?></span><?php endforeach; ?></div><?php endif; ?>
-        <?php if ($a['link'] !== ''): ?><a class="btn" href="<?= h($a['link']) ?>" target="_blank" rel="noopener">Ver app <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a><?php else: ?><span class="btn dis">Próximamente</span><?php endif; ?></div>
-    </article>
-  <?php endforeach; ?>
-  </div>
+  <p class="lead">Sistemas web hechos para que un negocio se ordene: gestión, stock, turnos, cuentas. Probá la demo, se usa desde cualquier dispositivo.</p>
+  <?php if (!$apps): ?><div class="soon"><b>Muy pronto</b><span>Acá vas a poder probar las demos de las apps web.</span></div><?php endif; ?>
+  <?php viewer_block($apps, 'apps', $askApp); ?>
 </div></section>
 
 <section id="landings" class="panel msec lands pad" hidden aria-label="Landings a medida"><div class="wrap">
   <div class="k" style="color:var(--acc)">03 · Landings a medida</div><h2>Landings que <span class="serif">convierten.</span></h2>
   <p class="lead">Páginas de una sola pantalla pensadas para vender o presentar tu negocio. Abajo las ves funcionando, tal cual quedan.</p>
   <?php if (!$landings): ?><div class="soon"><b>Muy pronto</b><span>Acá vas a ver ejemplos de landings funcionando, dentro de un visor.</span></div><?php endif; ?>
-  <?php if ($landings): ?>
-  <div class="viewer" id="viewer">
-    <div class="vtabs" role="tablist"><?php foreach ($landings as $i => $l): $src = $l['html'] !== '' ? 'muestras/' . rawurlencode($l['html']) : ''; ?>
-      <button type="button" role="tab" class="<?= $i === 0 ? 'on' : '' ?>" data-src="<?= h($src) ?>" data-img="<?= h(!empty($l['images'][0]) ? 'uploads/' . rawurlencode($l['images'][0]) : '') ?>" data-title="<?= h($l['title']) ?>" data-desc="<?= h($l['desc']) ?>" data-link="<?= h($l['link'] !== '' ? $l['link'] : $waMsg('Hola! Me gustó la landing "' . $l['title'] . '". Quiero una para mi negocio.')) ?>"><?= h($l['title']) ?></button>
-    <?php endforeach; ?></div>
-    <div class="vtools"><span class="vname" id="vname"></span><div class="vdev"><button type="button" class="on" data-dev="d" aria-label="Ver en computadora">Computadora</button><button type="button" data-dev="m" aria-label="Ver en celular">Celular</button></div><a id="vopen" class="btn o sm" href="#" target="_blank" rel="noopener">Abrir completa ↗</a></div>
-    <div class="browser"><div class="bbar"><i></i><i></i><i></i><b id="vurl">tu-negocio.com</b></div>
-      <div class="vp" id="vp"><div class="vfr" id="vfr"><div class="vph" id="vph"></div></div></div></div>
-    <div class="vfoot"><p id="vdesc"></p><a id="vask" class="btn" href="#" target="_blank" rel="noopener">Quiero una igual</a></div>
-  </div>
-  <?php endif; ?>
+  <?php viewer_block($landings, 'landings', $askLand); ?>
 </div></section>
 
 <section id="micro" class="panel msec micro pad" hidden aria-label="Micro apps a medida"><div class="wrap">

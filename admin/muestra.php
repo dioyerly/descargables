@@ -46,7 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         try { $s['html'] = showcase_store_html($_FILES['html'], $base); } catch (RuntimeException $e) { $errors[] = 'El HTML ' . $e->getMessage(); }
     }
     if ($secKey === 'micro' && !$s['images']) $errors[] = 'Subí al menos una foto.';
-    if ($secKey === 'apps' && !$s['images']) $errors[] = 'Subí al menos una foto de la app.';
+    if ($secKey === 'apps' && !$s['images'] && $s['html'] === '') $errors[] = 'Subí el HTML de la demo o al menos una foto de la app.';
     if ($secKey === 'landings' && $s['html'] === '' && !$s['images']) $warns[] = 'Todavía no subiste el HTML de la landing.';
     $s['section'] = $secKey;
     if (!$errors) {
@@ -75,14 +75,14 @@ admin_head($isNew ? 'Nueva muestra' : 'Editar muestra'); ?>
   <label class="chk"><input type="checkbox" name="visible" value="1"<?= $s['visible'] ? ' checked' : '' ?>> Visible en el sitio</label>
 </div>
 <div class="card">
-  <?php if ($secKey === 'landings'): ?>
-  <h2>HTML de la landing</h2>
+  <?php if ($secKey === 'landings' || $secKey === 'apps'): ?>
+  <h2><?= $secKey === 'apps' ? 'HTML de la demo' : 'HTML de la landing' ?></h2>
   <?php if ($s['html'] !== ''): ?><p class="muted" style="margin:6px 0">📄 <b><?= h($s['html']) ?></b> <a href="../muestras/<?= h(rawurlencode($s['html'])) ?>" target="_blank" rel="noopener">Ver ↗</a>
     <label class="mini rm"><input type="checkbox" name="rm_html" value="1"> Quitar</label></p><?php else: ?><p class="muted">Todavía no hay HTML.</p><?php endif; ?>
   <label class="drop"><?= $s['html'] !== '' ? 'Reemplazar el HTML' : 'Subir el HTML' ?><input type="file" name="html" accept=".html,.htm,text/html">
-    <small>Un solo archivo .html (hasta 12 MB). Conviene que tenga todo adentro: estilos, imágenes y fuentes. Se muestra en vivo dentro del visor del inicio, sin poder tocar el resto del sitio.</small></label>
+    <small>Un solo archivo .html (hasta 12 MB). Conviene que tenga todo adentro: estilos, imágenes y fuentes. Se muestra en vivo dentro del visor del inicio (la demo de la app se ve en un visor más chico), sin poder tocar el resto del sitio.</small></label>
   <?php endif; ?>
-  <h2 style="margin-top:22px"><?= $secKey === 'landings' ? 'Foto de portada (opcional)' : 'Fotos' ?> <small class="muted">(máximo <?= $secKey === 'landings' ? 1 : SHOWCASE_MAX_IMAGES ?>)</small></h2>
+  <h2 style="margin-top:22px"><?= $secKey === 'landings' ? 'Foto de portada (opcional)' : ($secKey === 'apps' ? 'Fotos (opcionales si subís la demo)' : 'Fotos') ?> <small class="muted">(máximo <?= $secKey === 'landings' ? 1 : SHOWCASE_MAX_IMAGES ?>)</small></h2>
   <?php if ($s['images']): ?><div class="imgs"><?php foreach ($s['images'] as $i => $im): ?>
     <div class="im"><img src="../uploads/<?= h(rawurlencode($im)) ?>" alt="">
       <label class="mini"><input type="radio" name="cover" value="<?= h($im) ?>"<?= $i === 0 ? ' checked' : '' ?>> Portada</label>
