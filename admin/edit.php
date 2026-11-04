@@ -9,7 +9,7 @@ $list = load_products();
 $id = (string)($_GET['id'] ?? $_POST['id'] ?? '');
 $p = $id !== '' ? find_product($list, $id) : null;
 $isNew = $p === null;
-$p = $p ?? ['id'=>'','visible'=>true,'type'=>'print','kicker'=>'','title'=>'','desc'=>'','long'=>'','price'=>0,'file'=>'','file_orig'=>'','ext_url'=>'','landing'=>'','meta'=>[],'feats'=>[],'theme'=>'lavanda','pages'=>0,'images'=>[],'ar'=>'3/4'];
+$p = $p ?? ['id'=>'','visible'=>true,'type'=>'print','kicker'=>'','title'=>'','desc'=>'','long'=>'','price'=>0,'file'=>'','file_orig'=>'','files'=>[],'ext_url'=>'','landing'=>'','meta'=>[],'feats'=>[],'theme'=>'lavanda','pages'=>0,'images'=>[],'ar'=>'3/4'];
 $errors = []; $warns = [];
 $lines = fn(string $s, int $max) => array_slice(array_values(array_filter(array_map('trim', preg_split('/\r?\n|,/', $s) ?: []), fn($x) => $x !== '')), 0, $max);
 
@@ -37,22 +37,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $p['ext_url'] = safe_url($rawUrl);
     if ($rawUrl !== '' && $p['ext_url'] === '') $errors[] = 'El link de descarga debe empezar con https://';
     if (mb_strlen($p['long']) > 8000) $errors[] = 'El detalle es muy largo (máximo 8000 caracteres).';
-    // archivo descargable (privado)
-    if (!empty($_POST['rm_file']) && $p['file'] !== '') { @unlink(PRIVATE_DIR . '/' . basename($p['file'])); $p['file'] = ''; $p['file_orig'] = ''; }
+    // archivos descargables (privados): se pueden subir varios (ej. HTML + manual PDF)
+    $files = $p['files']; $toDelete = [];
+    foreach ($files as $i => $fl) if (!empty($_POST['rm_files'][$fl['stored']])) { $toDelete[] = $fl['stored']; unset($files[$i]); }
+    $files = array_values($files);
     $uf = $_FILES['dl'] ?? null;
-    if ($uf && ($uf['error'] ?? UPLOAD_ERR_NO_FILE) !== UPLOAD_ERR_NO_FILE) {
-        $ext = strtolower(pathinfo((string)$uf['name'], PATHINFO_EXTENSION));
-        if ($uf['error'] !== UPLOAD_ERR_OK) $errors[] = 'No se pudo subir el archivo (' . ($uf['error'] === UPLOAD_ERR_INI_SIZE || $uf['error'] === UPLOAD_ERR_FORM_SIZE ? 'supera el límite de tu hosting; usá el link de descarga' : 'error ' . $uf['error']) . ').';
-        elseif (!in_array($ext, ['pdf','zip','html','epub','xlsx','docx'], true)) $errors[] = 'Archivo no permitido: subí PDF, ZIP, HTML, EPUB, XLSX o DOCX.';
-        else {
-            ensure_dirs();
-            $stored = bin2hex(random_bytes(12)) . '.dat';
-            if (move_uploaded_file($uf['tmp_name'], PRIVATE_DIR . '/' . $stored)) {
-                if ($p['file'] !== '') @unlink(PRIVATE_DIR . '/' . basename($p['file']));
-                $p['file'] = $stored; $p['file_orig'] = mb_substr(basename((string)$uf['name']), 0, 180);
-            } else $errors[] = 'No se pudo guardar el archivo en el servidor.';
-        }
+    if ($uf && is_array($uf['name'])) foreach ($uf['name'] as $i => $n) {
+        $er = $uf['error'][$i];
+        if ($er === UPLOAD_ERR_NO_FILE) continue;
+        $ext = strtolower(pathinfo((string)$n, PATHINFO_EXTENSION));
+        if ($er !== UPLOAD_ERR_OK) { $errors[] = $n . ': no se pudo subir (' . ($er === UPLOAD_ERR_INI_SIZE || $er === UPLOAD_ERR_FORM_SIZE ? 'supera el límite de tu hosting; usá el link de descarga' : 'error ' . $er) . ').'; continue; }
+        if (!in_array($ext, ['pdf','zip','html','epub','xlsx','docx'], true)) { $errors[] = $n . ': archivo no permitido (PDF, ZIP, HTML, EPUB, XLSX o DOCX).'; continue; }
+        if (count($files) >= 6) { $errors[] = 'Máximo 6 archivos por producto.'; break; }
+        ensure_dirs(); $stored = bin2hex(random_bytes(12)) . '.dat';
+        if (move_uploaded_file($uf['tmp_name'][$i], PRIVATE_DIR . '/' . $stored)) $files[] = ['stored' => $stored, 'orig' => mb_substr(basename((string)$n), 0, 180), 'size' => (int)$uf['size'][$i]];
+        else $errors[] = $n . ': no se pudo guardar en el servidor.';
     }
+    $p['files'] = $files;
     if ($p['title'] === '') $errors[] = 'Falta el nombre del producto.';
     if (mb_strlen($p['title']) > 80) $errors[] = 'El nombre es muy largo (máximo 80 caracteres).';
     if (mb_strlen($p['desc']) > 400) $errors[] = 'La descripción es muy larga (máximo 400 caracteres).';
@@ -81,6 +82,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $slug = $base; $n = 2; while (find_product($list, $slug)) $slug = $base . '-' . $n++;
                 $p['id'] = $slug; $p['order'] = product_next_order(); product_insert($p);
             } else product_update($p);
+            foreach ($toDelete as $d) @unlink(PRIVATE_DIR . '/' . basename($d));
             flash(($isNew ? 'Producto creado.' : 'Cambios guardados.') . ($warns ? ' Aviso: ' . implode(' ', $warns) : ''), $warns ? 'warn' : 'ok');
             header('Location: index.php'); exit;
         } catch (Throwable $e) { error_log('admin save: ' . $e->getMessage()); $errors[] = 'No se pudo guardar en la base de datos.'; }
@@ -124,10 +126,13 @@ admin_head($isNew ? 'Nuevo producto' : 'Editar producto'); ?>
   <?php endforeach; ?></div><?php endif; ?>
   <label class="drop">Agregar fotos<input type="file" name="imgs[]" accept="image/jpeg,image/png,image/webp" multiple>
     <small>JPG, PNG o WebP de hasta 8 MB. Se achican y optimizan solas. La primera es la portada.</small></label>
-  <h2 style="margin-top:22px">Archivo que recibe el comprador</h2>
-  <?php if ($p['file'] !== ''): ?><p class="muted">Archivo actual: <b><?= h($p['file_orig']) ?></b> <label class="mini rm"><input type="checkbox" name="rm_file" value="1"> Quitar</label></p><?php endif; ?>
-  <label class="drop"><?= $p['file'] !== '' ? 'Reemplazar archivo' : 'Subir archivo' ?> (PDF, ZIP, HTML, EPUB, XLSX, DOCX)<input type="file" name="dl">
-    <small>Queda guardado en una carpeta privada: solo se entrega a quien paga.</small></label>
+  <h2 style="margin-top:22px">Archivos que recibe el comprador</h2>
+  <?php if ($p['files']): ?><div class="imgs" style="display:block"><?php foreach ($p['files'] as $fl): ?>
+    <p class="muted" style="margin:6px 0">📄 <b><?= h($fl['orig']) ?></b> · <?= h(file_kind($fl['orig'])) ?> · <?= h(human_size((int)($fl['size'] ?? 0))) ?>
+      <label class="mini rm"><input type="checkbox" name="rm_files[<?= h($fl['stored']) ?>]" value="1"> Quitar</label></p>
+  <?php endforeach; ?></div><?php else: ?><p class="muted">Todavía no hay archivos subidos.</p><?php endif; ?>
+  <label class="drop"><?= $p['files'] ? 'Agregar más archivos' : 'Subir archivos' ?> (PDF, ZIP, HTML, EPUB, XLSX, DOCX)<input type="file" name="dl[]" multiple>
+    <small>Podés elegir varios a la vez (por ejemplo la agenda en HTML y el manual en PDF). Quedan en una carpeta privada: solo se entregan a quien paga. “Ningún archivo seleccionado” es normal: los ya subidos están en la lista de arriba.</small></label>
   <label>…o link de descarga (Drive, Dropbox, etc.)<input name="ext_url" type="url" value="<?= h($p['ext_url']) ?>" placeholder="https://..."><small>Úsalo si el archivo es muy pesado para subirlo. Se entrega solo después del pago. Si hay archivo subido, se usa el archivo.</small></label>
   <div class="save"><button class="btn" type="submit"><?= $isNew ? 'Crear producto' : 'Guardar cambios' ?></button><a href="index.php" class="muted">Cancelar</a></div>
 </div>

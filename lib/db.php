@@ -28,8 +28,12 @@ function db_ready(): bool {
     if ($ok !== null) return $ok;
     $pdo = db();
     if (!$pdo) return $ok = false;
-    try { $pdo->query('SELECT 1 FROM products LIMIT 1'); $pdo->query('SELECT 1 FROM orders LIMIT 1'); return $ok = true; }
+    try { $pdo->query('SELECT 1 FROM orders LIMIT 1'); $pdo->query('SELECT 1 FROM products LIMIT 1'); }
     catch (Throwable $e) { return $ok = false; }
+    // Actualiza solo la estructura si una versión nueva agregó columnas (no borra nada)
+    try { $pdo->query('SELECT landing_url, files FROM products LIMIT 1'); }
+    catch (Throwable $e) { try { db_install($pdo); } catch (Throwable $e2) { error_log('DB migrate: ' . $e2->getMessage()); return $ok = false; } }
+    return $ok = true;
 }
 
 function db_install(PDO $pdo): void {
@@ -54,11 +58,14 @@ function db_install(PDO $pdo): void {
         file_orig VARCHAR(190) NOT NULL DEFAULT '',
         ext_url VARCHAR(500) NOT NULL DEFAULT '',
         landing_url VARCHAR(500) NOT NULL DEFAULT '',
+        files MEDIUMTEXT NULL,
         created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
         updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci");
     $has = $pdo->query("SELECT COUNT(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME='products' AND COLUMN_NAME='landing_url'")->fetchColumn();
     if (!(int)$has) $pdo->exec("ALTER TABLE products ADD landing_url VARCHAR(500) NOT NULL DEFAULT '' AFTER ext_url");
+    $has = $pdo->query("SELECT COUNT(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME='products' AND COLUMN_NAME='files'")->fetchColumn();
+    if (!(int)$has) $pdo->exec("ALTER TABLE products ADD files MEDIUMTEXT NULL AFTER landing_url");
     $pdo->exec("CREATE TABLE IF NOT EXISTS orders (
         id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
         code CHAR(32) NOT NULL UNIQUE,
@@ -107,7 +114,7 @@ function db_import_seed(PDO $pdo): int {
     $n = 0;
     foreach ($list as $i => $p) {
         $p['id'] = (string)($p['id'] ?? slugify((string)($p['title'] ?? 'producto')));
-        $p['order'] = ($i + 1) * 10; $p['price'] = 0; $p['long'] = ''; $p['file'] = ''; $p['file_orig'] = ''; $p['ext_url'] = ''; $p['landing'] = safe_url((string)($p['url'] ?? ''));
+        $p['order'] = ($i + 1) * 10; $p['price'] = 0; $p['long'] = ''; $p['file'] = ''; $p['file_orig'] = ''; $p['ext_url'] = ''; $p['landing'] = safe_url((string)($p['url'] ?? '')); $p['files'] = [];
         product_insert($p); $n++;
     }
     return $n;

@@ -16,7 +16,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($act === 'down' && $idx < count($list) - 1) { [$list[$idx + 1], $list[$idx]] = [$list[$idx], $list[$idx + 1]]; products_resequence(array_column($list, 'id')); }
         if ($act === 'delete') {
             foreach ($list[$idx]['images'] ?? [] as $im) delete_upload($im);
-            if (($list[$idx]['file'] ?? '') !== '') @unlink(PRIVATE_DIR . '/' . basename($list[$idx]['file']));
+            foreach ($list[$idx]['files'] ?? [] as $fl) @unlink(PRIVATE_DIR . '/' . basename($fl['stored']));
             product_delete($id); flash('Producto eliminado.');
         }
     }
@@ -32,8 +32,9 @@ admin_head('Productos'); ?>
 <div class="pitem<?= empty($p['visible']) ? ' off' : '' ?>">
   <div class="thumb"><?php if ($img): ?><img src="../uploads/<?= h(rawurlencode($img)) ?>" alt=""><?php endif; ?></div>
   <div class="pinfo"><b><?= h(str_replace('*', '', (string)$p['title'])) ?></b>
+    <span class="muted"><?php foreach ($p['files'] as $fl): ?>📄 <?= h($fl['orig']) ?> (<?= h(file_kind($fl['orig'])) ?>, <?= h(human_size((int)($fl['size'] ?? 0))) ?>) · <?php endforeach; ?></span>
     <span class="muted"><?= h($types[$p['type'] ?? 'print'] ?? '') ?> · <?= count($p['images'] ?? []) ?> fotos · tema <?= h($themes[$p['theme'] ?? '']['label'] ?? '-') ?></span>
-    <span class="tags"><?php if (empty($p['visible'])): ?><em class="t-off">Oculto</em><?php endif; ?><?php if (!empty($p['landing'])): ?><em class="t-ok">Solo link externo</em><?php elseif ($p['price'] <= 0): ?><em class="t-warn">Falta el precio</em><?php else: ?><em class="t-ok"><?= h(format_price($p['price'])) ?></em><?php endif; ?><?php if (empty($p['landing']) && $p['file'] === '' && $p['ext_url'] === ''): ?><em class="t-warn">Falta el archivo</em><?php endif; ?></span></div>
+    <span class="tags"><?php if (empty($p['visible'])): ?><em class="t-off">Oculto</em><?php endif; ?><?php if (!empty($p['landing'])): ?><em class="t-ok">Solo link externo</em><?php elseif ($p['price'] <= 0): ?><em class="t-warn">Falta el precio</em><?php else: ?><em class="t-ok"><?= h(format_price($p['price'])) ?></em><?php endif; ?><?php if (empty($p['landing']) && empty($p['files']) && $p['ext_url'] === ''): ?><em class="t-warn">Falta el archivo</em><?php endif; ?></span></div>
   <div class="pact">
     <a class="btn sm" href="edit.php?id=<?= h(rawurlencode($p['id'])) ?>">Editar</a>
     <form method="post"><?= csrf_field() ?><input type="hidden" name="id" value="<?= h($p['id']) ?>">
