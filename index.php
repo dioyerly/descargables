@@ -8,9 +8,8 @@ $heroImgs = [];
 foreach ($products as $p) foreach ($p['images'] as $im) $heroImgs[] = 'uploads/' . rawurlencode($im);
 $v = (string)@filemtime(__DIR__ . '/assets/js/site.js');
 $apps = showcase_load('apps', true); $landings = showcase_load('landings', true); $micro = showcase_load('micro', true);
-$extra = [];
-foreach ([$apps, $landings, $micro] as $grp) foreach ($grp as $it) foreach (array_slice($it['images'] ?? [], 0, 2) as $im) $extra[] = 'uploads/' . rawurlencode($im);
-if ($extra) { $mix = []; $n = max(count($heroImgs), count($extra)); for ($i = 0; $i < $n; $i++) { if (isset($heroImgs[$i])) $mix[] = $heroImgs[$i]; if (isset($extra[$i])) $mix[] = $extra[$i]; } $heroImgs = $mix; }
+$imgsOf = function (array $items, int $per): array { $o = []; foreach ($items as $it) foreach (array_slice($it['images'] ?? [], 0, $per) as $im) $o[] = 'uploads/' . rawurlencode($im); return $o; };
+$heroSets = ['agendas' => array_slice($imgsOf($products, 2), 0, 7), 'apps' => $imgsOf($apps, 2), 'landings' => $imgsOf($landings, 2), 'micro' => $imgsOf($micro, 2)];
 $wa = 'https://wa.me/5491126425994';
 $waMsg = fn(string $t) => $wa . '?text=' . rawurlencode($t);
 ?><!doctype html>
@@ -32,17 +31,21 @@ $waMsg = fn(string $t) => $wa . '?text=' . rawurlencode($t);
 
 <main id="top">
 <section id="desk" aria-label="Presentación">
-  <div class="dstage" id="dstage" data-cover="assets/img/portada.webp" data-sheets="<?= h(json_encode($heroImgs, JSON_UNESCAPED_SLASHES)) ?>">
+  <div class="dstage" id="dstage" data-sets="<?= h(json_encode($heroSets, JSON_UNESCAPED_SLASHES)) ?>">
+    <div class="glowbg" id="glowbg"></div>
     <div class="htxt" id="htxt"><div class="k" style="color:var(--acc)">EstrategIA · Productos digitales</div>
       <h1>Productos digitales que <span class="rot serif" id="rot" aria-live="polite"><b class="on">organizan.</b><b>solucionan.</b><b>venden.</b></span></h1>
       <p>Agendas e imprimibles, apps web, landings y micro apps a medida. Todo listo para usar, mostrar y vender.</p>
       <div class="row"><a class="btn" href="#agendas">Ver los productos</a><a class="btn o" href="<?= h($waMsg('Hola! Quiero pedir algo a medida.')) ?>" target="_blank" rel="noopener">Pedí lo tuyo</a></div></div>
-    <div class="cats" id="cats">
-      <a href="#agendas"><b>01</b><span>Agendas e imprimibles</span><small><?= count($products) ?> productos</small></a>
-      <a href="#apps"><b>02</b><span>Apps web</span><small><?= count($apps) ?: 'Muy pronto' ?></small></a>
-      <a href="#landings"><b>03</b><span>Landings a medida</span><small><?= count($landings) ?: 'Muy pronto' ?></small></a>
-      <a href="#micro"><b>04</b><span>Micro apps a medida</span><small><?= count($micro) ?: 'Muy pronto' ?></small></a>
+    <div class="dtitle" id="dtitle"><div class="k">Cuatro formas de trabajar con EstrategIA</div>
+      <h2>Para <span class="rot2 serif" id="rot2"><b class="on">organizarte.</b><b>gestionar tu negocio.</b><b>vender más.</b><b>resolverlo en un toque.</b><b>hacer crecer tu idea.</b></span></h2></div>
+    <div class="devs" id="devs">
+      <a class="dev d-tab" href="#agendas" style="--c:#6a4fc4"><i class="halo"></i><div class="frame"><div class="scr"></div></div><div class="cap"><b>01</b><span>Agendas e imprimibles</span><small><?= count($products) ? count($products) . ' productos' : 'Muy pronto' ?></small></div></a>
+      <a class="dev d-lap" href="#apps" style="--c:#2f8f83"><i class="halo"></i><div class="frame"><div class="scr"></div></div><div class="cap"><b>02</b><span>Apps web</span><small><?= count($apps) ? count($apps) . ' apps' : 'Muy pronto' ?></small></div></a>
+      <a class="dev d-web" href="#landings" style="--c:#e0714f"><i class="halo"></i><div class="frame"><div class="scr"></div></div><div class="cap"><b>03</b><span>Landings a medida</span><small><?= count($landings) ? count($landings) . ' ejemplos' : 'Muy pronto' ?></small></div></a>
+      <a class="dev d-pho" href="#micro" style="--c:#c9962b"><i class="halo"></i><div class="frame"><div class="scr"></div></div><div class="cap"><b>04</b><span>Micro apps a medida</span><small><?= count($micro) ? count($micro) . ' ejemplos' : 'Muy pronto' ?></small></div></a>
     </div>
+    <div class="pieces" id="pieces"></div>
     <div class="stamp" id="stamp"><i></i>Bajá y mirá todo</div>
   </div>
 </section>
