@@ -5,27 +5,36 @@
     "visible": true,
     "url": "",
     "images": [
-      "meso-0.webp",
-      "meso-1.webp",
-      "meso-2.webp",
-      "meso-3.webp"
+      "agenda-mesopotamia-v1-01.webp",
+      "agenda-mesopotamia-v1-02.webp",
+      "agenda-mesopotamia-v1-03.webp",
+      "agenda-mesopotamia-v1-04.webp",
+      "agenda-mesopotamia-v1-05.webp",
+      "agenda-mesopotamia-v1-06.webp",
+      "agenda-mesopotamia-v1-07.webp",
+      "agenda-mesopotamia-v1-08.webp",
+      "agenda-mesopotamia-v1-09.webp",
+      "agenda-mesopotamia-v1-10.webp"
     ],
-    "ar": "720/1034",
+    "ar": "900/1000",
     "type": "print",
-    "kicker": "Imprimible · HTML · A4",
+    "kicker": "Agenda interactiva · HTML · Imprimible",
     "title": "Agenda *Mesopotamia* 2026",
     "theme": "noche",
     "pages": 141,
-    "desc": "Una agenda astral inspirada en la sabiduría babilónica: lunas, efemérides y tránsitos de cada mes, junto a tu planificación semanal y tus finanzas.",
+    "desc": "Una agenda astral inspirada en la sabiduría babilónica. Elegí el año (de 2026 a 2028) y tené en un solo lugar las lunas, los eclipses, los retrógrados y los tránsitos de cada mes, junto a tus metas, hábitos y finanzas. Escribí, dibujá y decorala con stickers, o imprimí solo lo que necesites.",
     "meta": [
-      "141 páginas",
-      "A4",
-      "Imprimí lo que quieras"
+      "532 páginas",
+      "Años 2026 a 2028",
+      "Modo claro y oscuro",
+      "Imprimible A4 · Carta · A5"
     ],
     "feats": [
-      "Visión del año con eclipses y retrogradaciones",
-      "Ingresos planetarios y fases lunares",
-      "Semanas, metas y finanzas mensuales"
+      "Mi cielo de nacimiento, metas y visión del año",
+      "Lunaciones, eclipses, retrógrados e ingresos planetarios",
+      "Cada mes con portada, calendario, hábitos y finanzas",
+      "Semanas y días con fases lunares, prioridades y tareas",
+      "Escribí, dibujá, poné stickers e imprimí en A4, Carta o A5"
     ]
   },
   {
@@ -34,27 +43,36 @@
     "visible": true,
     "url": "",
     "images": [
-      "michis-0.webp",
-      "michis-1.webp",
-      "michis-2.webp",
-      "michis-3.webp"
+      "mi-ano-de-michis-2027-01-9d243287.webp",
+      "mi-ano-de-michis-2027-02-0f7b08fb.webp",
+      "mi-ano-de-michis-2027-03-fbf8b45c.webp",
+      "mi-ano-de-michis-2027-04-eac02e11.webp",
+      "mi-ano-de-michis-2027-05-f239a57a.webp",
+      "mi-ano-de-michis-2027-06-2de852aa.webp",
+      "mi-ano-de-michis-2027-07-ac8084dc.webp",
+      "mi-ano-de-michis-2027-08-291b1127.webp",
+      "mi-ano-de-michis-2027-09-e5d4c1ad.webp",
+      "mi-ano-de-michis-2027-10-bf096f7b.webp"
     ],
     "ar": "720/1019",
     "type": "print",
-    "kicker": "Imprimible · PDF + HTML · A4",
+    "kicker": "Imprimible · HTML + PDF · A4",
     "title": "Mi Año de *Michis* 2027",
     "theme": "rosa",
     "pages": 387,
-    "desc": "Para quienes organizan su año con un gato al lado. Calendarios con retos michi, páginas diarias fechadas, hábitos, finanzas y la libreta de salud de tu gato.",
+    "desc": "Para quienes organizan su año con un gato al lado. Calendarios de 2027 con retos michi, una página diaria fechada para cada día, hábitos, finanzas y la libreta de salud de tu michi. Imprimí solo lo que necesites.",
     "meta": [
       "387 páginas",
       "365 días fechados",
-      "A4"
+      "A4 vertical",
+      "Incluye guía de uso PDF"
     ],
     "feats": [
-      "Metas, datos personales y 12 meses",
-      "Planificador semanal, hábitos y finanzas",
-      "Salud y veterinario de tu michi"
+      "Metas, datos personales y 12 calendarios mensuales",
+      "Planificador semanal, hábitos y finanzas Michi",
+      "Salud y veterinario de tu michi",
+      "Una página diaria fechada para cada día de 2027",
+      "Elegí qué imprimir, con vista previa"
     ]
   },
   {
@@ -120,33 +138,39 @@
     "order": 50,
     "visible": true,
     "type": "both",
-    "kicker": "Agenda interactiva · HTML · Imprimible",
+    "kicker": "Agenda interactiva · HTML · Manual PDF",
     "title": "Agenda Mesopotamia V2",
-    "desc": "Una agenda astral inspirada en la sabiduría babilónica. Lunas, eclipses, retrógrados y tránsitos de cada mes, junto a tus metas, hábitos y finanzas. Escribí, dibujá y decorala con stickers desde la pantalla, o imprimí las páginas que quieras.",
+    "desc": "Una agenda astral para organizar tu vida mirando el cielo. Elegí el año y el mes y tené la carátula del mes, el almanaque con las fases de la Luna y los retrógrados, la semana y una ficha para cada día. Escribí, decorala con más de 200 stickers e imprimí lo que necesites.",
     "meta": [
-      "522 páginas",
-      "Años 2016 a 2028",
-      "315 stickers",
-      "Imprimible"
+      "Años 2026 a 2028",
+      "Modo oscuro y claro",
+      "200+ stickers",
+      "Impresión A4",
+      "Incluye manual PDF"
     ],
     "feats": [
-      "Mi cielo de nacimiento, metas y visión del año",
-      "Lunaciones, eclipses e ingresos planetarios",
-      "Cada mes con portada, calendario, hábitos y finanzas",
-      "Semanas y días con fases lunares",
-      "Guía de los 12 signos, planetas y retrógrados"
+      "Carátula de cada mes con ritual e intenciones",
+      "Almanaque con fases lunares y planetas retrógrados",
+      "Semana a la vista con hábitos y finanzas",
+      "Ficha de cada día con horario de 06:00 a 22:00",
+      "Más de 200 stickers, modo claro y oscuro, impresión A4"
     ],
     "url": "",
     "theme": "salvia",
     "pages": 522,
     "images": [
-      "agenda-mesopotamia-v2-89730d1b5b.webp",
-      "agenda-mesopotamia-v2-d54a91c288.webp",
-      "agenda-mesopotamia-v2-71a22754e2.webp",
-      "agenda-mesopotamia-v2-ff1d564dbb.webp",
-      "agenda-mesopotamia-v2-64e589ec4b.webp"
+      "agenda-mesopotamia-v2-01-ab42bb69.webp",
+      "agenda-mesopotamia-v2-02-d9bdfdfb.webp",
+      "agenda-mesopotamia-v2-03-4c8e1b4b.webp",
+      "agenda-mesopotamia-v2-04-8f59de98.webp",
+      "agenda-mesopotamia-v2-05-e386e0ae.webp",
+      "agenda-mesopotamia-v2-06-3a60e43f.webp",
+      "agenda-mesopotamia-v2-07-7039e7e2.webp",
+      "agenda-mesopotamia-v2-08-d46670bb.webp",
+      "agenda-mesopotamia-v2-09-59a37afb.webp",
+      "agenda-mesopotamia-v2-10-1b7b5f43.webp"
     ],
-    "ar": "900/1350"
+    "ar": "900/1200"
   },
   {
     "id": "mesopotamia-v3-2026-2028",
