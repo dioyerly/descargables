@@ -47,7 +47,8 @@ $v = '1';
   $ar = preg_match('~^\d+/\d+$~', (string)($p['ar'] ?? '')) ? $p['ar'] : '3/4';
   [$aw, $ah] = array_map('intval', explode('/', $ar));
   $wide = $ah > 0 && $aw / $ah > 0.74;
-  $detail = product_url((string)$p['id']);
+  $ext = safe_url((string)($p['landing'] ?? ''));
+  $detail = $ext ?: product_url((string)$p['id']);
   $plain = strip_tags(str_replace('*', '', (string)$p['title']));
   $imgs = array_map(fn($im) => 'uploads/' . rawurlencode($im), $p['images']);
 ?>
@@ -58,7 +59,7 @@ $v = '1';
    <?php if (!empty($p['meta'])): ?><div class="meta"><?php foreach ($p['meta'] as $m): ?><span><?= h($m) ?></span><?php endforeach; ?></div><?php endif; ?>
    <?php if (!empty($p['feats'])): ?><ul class="feats"><?php foreach ($p['feats'] as $f): ?><li><?= h($f) ?></li><?php endforeach; ?></ul><?php endif; ?>
    <div class="row">
-    <a class="btn" href="<?= h($detail) ?>">Ver detalle <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+    <a class="btn" href="<?= h($detail) ?>"<?= $ext ? ' target="_blank" rel="noopener"' : '' ?>>Ver detalle <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
     <button class="btn o" data-zoom="<?= h($p['id']) ?>">Ver páginas</button></div></div>
   <div class="fan">
    <?php foreach ($imgs as $i => $src): ?><div class="pg<?= $wide ? ' land' : '' ?>" style="--ar:<?= h($ar) ?>;background-image:url('<?= h($src) ?>')" data-i="<?= $i ?>" data-p="<?= h($p['id']) ?>" role="button" tabindex="0" aria-label="Ampliar página <?= $i + 1 ?>"></div><?php endforeach; ?>

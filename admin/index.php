@@ -33,7 +33,7 @@ admin_head('Productos'); ?>
   <div class="thumb"><?php if ($img): ?><img src="../uploads/<?= h(rawurlencode($img)) ?>" alt=""><?php endif; ?></div>
   <div class="pinfo"><b><?= h(str_replace('*', '', (string)$p['title'])) ?></b>
     <span class="muted"><?= h($types[$p['type'] ?? 'print'] ?? '') ?> · <?= count($p['images'] ?? []) ?> fotos · tema <?= h($themes[$p['theme'] ?? '']['label'] ?? '-') ?></span>
-    <span class="tags"><?php if (empty($p['visible'])): ?><em class="t-off">Oculto</em><?php endif; ?><?php if ($p['price'] <= 0): ?><em class="t-warn">Falta el precio</em><?php else: ?><em class="t-ok"><?= h(format_price($p['price'])) ?></em><?php endif; ?><?php if ($p['file'] === '' && $p['ext_url'] === ''): ?><em class="t-warn">Falta el archivo</em><?php endif; ?></span></div>
+    <span class="tags"><?php if (empty($p['visible'])): ?><em class="t-off">Oculto</em><?php endif; ?><?php if (!empty($p['landing'])): ?><em class="t-ok">Solo link externo</em><?php elseif ($p['price'] <= 0): ?><em class="t-warn">Falta el precio</em><?php else: ?><em class="t-ok"><?= h(format_price($p['price'])) ?></em><?php endif; ?><?php if (empty($p['landing']) && $p['file'] === '' && $p['ext_url'] === ''): ?><em class="t-warn">Falta el archivo</em><?php endif; ?></span></div>
   <div class="pact">
     <a class="btn sm" href="edit.php?id=<?= h(rawurlencode($p['id'])) ?>">Editar</a>
     <form method="post"><?= csrf_field() ?><input type="hidden" name="id" value="<?= h($p['id']) ?>">

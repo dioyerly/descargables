@@ -9,7 +9,7 @@ $list = load_products();
 $id = (string)($_GET['id'] ?? $_POST['id'] ?? '');
 $p = $id !== '' ? find_product($list, $id) : null;
 $isNew = $p === null;
-$p = $p ?? ['id'=>'','visible'=>true,'type'=>'print','kicker'=>'','title'=>'','desc'=>'','long'=>'','price'=>0,'file'=>'','file_orig'=>'','ext_url'=>'','meta'=>[],'feats'=>[],'theme'=>'lavanda','pages'=>0,'images'=>[],'ar'=>'3/4'];
+$p = $p ?? ['id'=>'','visible'=>true,'type'=>'print','kicker'=>'','title'=>'','desc'=>'','long'=>'','price'=>0,'file'=>'','file_orig'=>'','ext_url'=>'','landing'=>'','meta'=>[],'feats'=>[],'theme'=>'lavanda','pages'=>0,'images'=>[],'ar'=>'3/4'];
 $errors = []; $warns = [];
 $lines = fn(string $s, int $max) => array_slice(array_values(array_filter(array_map('trim', preg_split('/\r?\n|,/', $s) ?: []), fn($x) => $x !== '')), 0, $max);
 
@@ -24,6 +24,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $p['visible'] = !empty($_POST['visible']);
     $p['meta'] = $lines((string)($_POST['meta'] ?? ''), 4);
     $p['feats'] = array_slice(array_values(array_filter(array_map('trim', preg_split('/\r?\n/', (string)($_POST['feats'] ?? '')) ?: []))), 0, 5);
+    $lu = trim((string)($_POST['landing'] ?? ''));
+    $p['landing'] = safe_url($lu);
+    if ($lu !== '' && $p['landing'] === '') $errors[] = 'El link de la página del producto debe empezar con https://';
     $p['long'] = trim((string)($_POST['long'] ?? ''));
     $priceRaw = str_replace(['$', ' '], '', (string)($_POST['price'] ?? '0'));
     $priceRaw = preg_match('/,\d{1,2}$/', $priceRaw) ? str_replace(',', '.', str_replace('.', '', $priceRaw)) : str_replace(['.', ','], '', $priceRaw);
@@ -94,6 +97,8 @@ admin_head($isNew ? 'Nuevo producto' : 'Editar producto'); ?>
     <small>Poné entre *asteriscos* la palabra que querés en cursiva. Ej: Agenda *Michis* 2027</small></label>
   <label>Línea superior (chiquita)<input name="kicker" maxlength="60" value="<?= h($p['kicker']) ?>" placeholder="Imprimible · PDF · A4"></label>
   <label>Descripción<textarea name="desc" rows="4" maxlength="400" placeholder="Para quién es y qué tiene, en 2 o 3 frases."><?= h($p['desc']) ?></textarea></label>
+  <label>Link de la página propia del producto (opcional)<input name="landing" type="url" value="<?= h($p['landing']) ?>" placeholder="https://miapp.estrategia.site">
+    <small>Si lo completás, el botón “Ver detalle” lleva a ese link (por ejemplo una app que ya tiene su propia página) y no se usa la página de detalle ni la compra de acá. Dejalo vacío para vender con detalle y Mercado Pago.</small></label>
   <label>Detalle completo (se ve en la página del producto)<textarea name="long" rows="8" maxlength="8000" placeholder="Contá todo: para quién es, cómo se usa, qué hojas trae. Separá los párrafos con una línea en blanco."><?= h($p['long']) ?></textarea></label>
   <div class="two">
     <label>Precio en pesos (ARS)<input name="price" inputmode="decimal" value="<?= $p['price'] > 0 ? h((string)(fmod((float)$p['price'], 1) == 0.0 ? (int)$p['price'] : $p['price'])) : '' ?>" placeholder="4500"><small>Sin precio, el botón de compra no aparece.</small></label>

@@ -53,9 +53,12 @@ function db_install(PDO $pdo): void {
         file_name VARCHAR(190) NOT NULL DEFAULT '',
         file_orig VARCHAR(190) NOT NULL DEFAULT '',
         ext_url VARCHAR(500) NOT NULL DEFAULT '',
+        landing_url VARCHAR(500) NOT NULL DEFAULT '',
         created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
         updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci");
+    $has = $pdo->query("SELECT COUNT(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME='products' AND COLUMN_NAME='landing_url'")->fetchColumn();
+    if (!(int)$has) $pdo->exec("ALTER TABLE products ADD landing_url VARCHAR(500) NOT NULL DEFAULT '' AFTER ext_url");
     $pdo->exec("CREATE TABLE IF NOT EXISTS orders (
         id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
         code CHAR(32) NOT NULL UNIQUE,
@@ -89,7 +92,7 @@ function db_import_seed(PDO $pdo): int {
     $n = 0;
     foreach ($list as $i => $p) {
         $p['id'] = (string)($p['id'] ?? slugify((string)($p['title'] ?? 'producto')));
-        $p['order'] = ($i + 1) * 10; $p['price'] = 0; $p['long'] = ''; $p['file'] = ''; $p['file_orig'] = ''; $p['ext_url'] = '';
+        $p['order'] = ($i + 1) * 10; $p['price'] = 0; $p['long'] = ''; $p['file'] = ''; $p['file_orig'] = ''; $p['ext_url'] = ''; $p['landing'] = safe_url((string)($p['url'] ?? ''));
         product_insert($p); $n++;
     }
     return $n;
