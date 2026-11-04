@@ -16,11 +16,27 @@ const MOCK={
  landings:j=>`<div class="mk mk-land v${j}"><i class="nv"></i><div class="hx"><b>${j?'Tu estudio,<br>online.':'Café de<br>barrio.'}</b><i class="bt"></i></div><i class="ph"></i></div>`,
  micro:j=>`<div class="mk mk-mic v${j}"><b>${j?'Pedidos':'Turnos'}</b>${'<p><i></i><span></span></p>'.repeat(4)}<i class="fab"></i></div>`};
 const PS=[];const layer=$('pieces');
-CAT.forEach((c,ci)=>{let l=(SETS[c]||[]).slice(0,c==='agendas'?7:4);const vv=c==='landings'?ds.dataset.vland:c==='micro'?ds.dataset.vmicro:'';if(vv)l=l.slice(0,3).concat(['vid:'+vv]);const mock=!l.length;if(mock)l=[0,1];
-  l.forEach((u,j)=>{const e=document.createElement('div');e.className='piece p-'+c+(mock?' mock':'');
-    if(mock)e.innerHTML=MOCK[c](j);else if(typeof u==='string'&&u.startsWith('vid:')){e.classList.add('vid');e.innerHTML=`<video src="${u.slice(4)}" poster="${u.slice(4).replace('.mp4','.jpg')}" muted loop playsinline autoplay preload="auto"></video>`}else e.style.backgroundImage=`url('${u}')`;layer.appendChild(e);
-    PS.push({e,c,ci,j,n:l.length,x:R(),y:R(),r:(R()-.5)*44,d:R(),w:0,h:0})})});
-PS.sort((a,b)=>a.d-b.d).forEach((s,i)=>s.z=i);
+const SEEN=new Set();CAT.forEach((c,ci)=>{let l=(SETS[c]||[]).map(x=>typeof x==='string'?{u:x,g:x}:x).filter(x=>!SEEN.has(x.u)&&SEEN.add(x.u));
+  const vv=c==='landings'?ds.dataset.vland:c==='micro'?ds.dataset.vmicro:'';if(vv)l=l.concat([{u:'vid:'+vv,g:'vid-'+c}]);
+  const mock=!l.length;if(mock)l=[{m:0,g:c+'m0'},{m:1,g:c+'m1'}];
+  l.forEach((it,j)=>{const e=document.createElement('div');e.className='piece p-'+c+(mock?' mock':'');const u=it.u||'';
+    if(mock)e.innerHTML=MOCK[c](j);else if(u.startsWith('vid:')){e.classList.add('vid');e.innerHTML=`<video src="${u.slice(4)}" poster="${u.slice(4).replace('.mp4','.jpg')}" muted loop playsinline autoplay preload="auto"></video>`}else e.style.backgroundImage=`url('${u}')`;
+    layer.appendChild(e);PS.push({e,c,ci,j,n:l.length,g:c+':'+it.g,r:0,d:R(),w:0,h:0,cx:0,cy:0})})});
+PS.forEach((s,i)=>s.z=i);const SF=Math.min(1,Math.sqrt(15/Math.max(1,PS.length)));
+/* reparto ordenado-desordenado: grilla con variación, sin dos piezas del mismo producto juntas */
+let LK='';
+function layout(W,H,M){const k=W+'x'+H;if(k===LK)return;LK=k;const Rl=(s=>()=>(s=(s*16807)%2147483647)/2147483647)(7);
+  const x0=M?10:W*.5,x1=M?W-10:W*.95,y0=M?90:H*.17,y1=M?H*.32:H*.8;const N=PS.length,a=(x1-x0)/(y1-y0);
+  let cols=Math.max(2,Math.round(Math.sqrt(N*a))),rows=Math.ceil(N/cols);const cw=(x1-x0)/cols,rh=(y1-y0)/rows;
+  const groups={};PS.forEach(s=>(groups[s.g]=groups[s.g]||[]).push(s));const gk=Object.keys(groups).sort(()=>Rl()-.5);
+  const q=[];let more=true;while(more){more=false;gk.forEach(g=>{if(groups[g].length){q.push(groups[g].shift());more=true}})}
+  const cells=[];for(let r=0;r<rows;r++)for(let c=0;c<cols;c++)cells.push([r,c]);
+  while(cells.length>N)cells.splice(Math.floor(Rl()*cells.length),1);
+  const at={};cells.forEach(([r,c])=>{const nb=[[r,c-1],[r-1,c],[r-1,c-1],[r-1,c+1],[r,c-2]].map(([a,b])=>at[a+','+b]).filter(Boolean);
+    let i=q.findIndex(s=>!nb.includes(s.g));if(i<0)i=0;const s=q.splice(i,1)[0];at[r+','+c]=s.g;
+    const off=(r%2?.25:-.25)*cw;s.cx=x0+(c+.5)*cw+off+(Rl()-.5)*cw*.3;s.cy=y0+(r+.5)*rh+(Rl()-.5)*rh*.3;s.r=(Rl()-.5)*28;s.z=Math.floor(Rl()*N)});
+  GRP=groups}
+let GRP={};
 const rot=$('rot'),words=rot?$$('b',rot):[],w2=$$('#rot2 b');let wi=0,w2i=0;
 function setWord(i){if(i===wi)return;wi=i;words.forEach((w,k)=>w.classList.toggle('on',k===i))}
 function setW2(i){if(i===w2i)return;w2i=i;w2.forEach((w,k)=>w.classList.toggle('on',k===i))}
@@ -40,12 +56,11 @@ function hero(){const r=$('desk').getBoundingClientRect();if(r.bottom<0)return;
     const cv=ss(st(i)+.16,st(i)+.24,p);const cap=d.querySelector('.cap');cap.style.opacity=cv;cap.style.translate=`0 ${(1-cv)*14}px`});
   const g=$('glowbg');const gi=act<0?0:act>3?0:act;g.style.setProperty('--g',GL[gi]);g.style.opacity=act<0||act>3?.5:1;
   const rects=scrs.map(e=>{const q=e.getBoundingClientRect();return {x:q.left-sr.left,y:q.top-sr.top,w:q.width,h:q.height}});
-  PS.forEach(s=>{const t=rects[s.ci];if(!t.w)return;
+  layout(W,H,M);PS.forEach(s=>{const t=rects[s.ci];if(!t.w)return;
     if(Math.abs(s.w-t.w)>.5||Math.abs(s.h-t.h)>.5){s.w=t.w;s.h=t.h;s.e.style.width=t.w+'px';s.e.style.height=t.h+'px'}
     const a=st(s.ci)+(s.j/s.n)*.07+s.d*.02;const k=ss(a,a+.13,p);
-    const s0=(SCAT[s.c]*(M?.55:1))/t.w,dw=t.w*s0,dh=t.h*s0;
-    const sx=M?(-dw*.15+s.x*(W-dw*.7)):(W*.5+s.x*(W*.48-dw*.6)),sy=M?(64+s.y*(H*.34-dh*.6)):(70+s.y*(H-dh-110));
-    const x0=sx+dw/2,y0=sy+dh/2,x1=t.x+t.w/2,y1=t.y+t.h/2;
+    const s0=(SCAT[s.c]*(M?.46:1)*SF)/t.w,dw=t.w*s0,dh=t.h*s0;
+    const x0=cl(s.cx,dw*.3,W-dw*.3),y0=cl(s.cy,dh*.35+50,H-dh*.45),x1=t.x+t.w/2,y1=t.y+t.h/2;
     const x=lerp(x0,x1,k),y=lerp(y0,y1,k)-Math.sin(Math.PI*k)*(M?40:90),sc=lerp(s0,1,k),rr=lerp(s.r,0,k);
     s.e.style.transform=`translate(${x-t.w/2}px,${y-t.h/2}px) rotate(${rr}deg) scale(${sc})`;
     const landed=k>.985;s.e.classList.toggle('in',landed);s.e.style.zIndex=landed?100+s.ci*10+s.j:(k>0?60+s.z:s.z);

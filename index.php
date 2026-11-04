@@ -8,8 +8,16 @@ $heroImgs = [];
 foreach ($products as $p) foreach ($p['images'] as $im) $heroImgs[] = 'uploads/' . rawurlencode($im);
 $v = (string)@filemtime(__DIR__ . '/assets/js/site.js');
 $apps = showcase_load('apps', true); $landings = showcase_load('landings', true); $micro = showcase_load('micro', true);
-$imgsOf = function (array $items, int $per): array { $o = []; foreach ($items as $it) foreach (array_slice($it['images'] ?? [], 0, $per) as $im) $o[] = 'uploads/' . rawurlencode($im); return $o; };
-$heroSets = ['agendas' => array_slice($imgsOf($products, 2), 0, 7), 'apps' => $imgsOf($apps, 2), 'landings' => $imgsOf($landings, 2), 'micro' => $imgsOf($micro, 2)];
+/* imágenes del inicio: una de cada producto primero (no falta ninguno), después segundas fotos hasta el tope */
+$pick = function (array $items, int $cap): array {
+    $o = []; $max = 0; foreach ($items as $it) $max = max($max, count($it['images'] ?? []));
+    for ($k = 0; $k < min($max, 3) && count($o) < $cap; $k++) foreach ($items as $it) {
+        if (count($o) >= $cap) break; $im = $it['images'][$k] ?? null; if ($im === null) continue;
+        $o[] = ['u' => 'uploads/' . rawurlencode($im), 'g' => (string)($it['id'] ?? $it['slug'] ?? md5(json_encode($it)))];
+    }
+    return $o;
+};
+$heroSets = ['agendas' => $pick($products, max(8, count($products))), 'apps' => $pick($apps, max(6, count($apps))), 'landings' => $pick($landings, max(3, count($landings))), 'micro' => $pick($micro, max(3, count($micro)))];
 $wa = 'https://wa.me/5491126425994';
 $waMsg = fn(string $t) => $wa . '?text=' . rawurlencode($t);
 ?><!doctype html>
