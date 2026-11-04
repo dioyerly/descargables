@@ -26,7 +26,7 @@ $v = '1';
 
 <main id="top">
 <section id="desk" aria-label="Presentación">
-  <div class="dstage" id="dstage" data-sheets="<?= h(json_encode($heroImgs, JSON_UNESCAPED_SLASHES)) ?>">
+  <div class="dstage" id="dstage" data-cover="<?= 'assets/img/portada.webp' ?>" data-sheets="<?= h(json_encode($heroImgs, JSON_UNESCAPED_SLASHES)) ?>">
     <div class="htxt" id="htxt"><div class="k" style="color:var(--acc)">Agendas · planners · imprimibles</div>
       <h1>Papel bonito para <span class="serif">organizar tu vida.</span></h1>
       <p>Descargables listos para imprimir en casa o usar en tu tablet. Elegí el que va con vos, miralo por dentro y llevátelo.</p>
