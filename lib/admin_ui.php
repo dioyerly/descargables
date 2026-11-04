@@ -5,7 +5,7 @@ function admin_head(string $title, bool $nav = true): void { ?>
 <meta name="robots" content="noindex,nofollow"><title><?= h($title) ?> · Panel EstrategIA</title>
 <link rel="stylesheet" href="../assets/css/admin.css?v=1"></head><body>
 <?php if ($nav): ?><header class="top"><a class="brand" href="index.php"><i>e</i>EstrategIA <small>Panel de descargables</small></a>
-<nav><a href="index.php">Productos</a><a href="edit.php" class="b">+ Nuevo producto</a><a href="pedidos.php">Pedidos</a><a href="setup.php">Base de datos</a><a href="password.php">Contraseña</a><a href="../" target="_blank" rel="noopener">Ver sitio ↗</a><a href="logout.php">Salir</a></nav></header><?php endif; ?>
+<nav><a href="index.php">Productos</a><a href="edit.php" class="b">+ Nuevo producto</a><a href="muestras.php">Muestras</a><a href="pedidos.php">Pedidos</a><a href="setup.php">Base de datos</a><a href="password.php">Contraseña</a><a href="../" target="_blank" rel="noopener">Ver sitio ↗</a><a href="logout.php">Salir</a></nav></header><?php endif; ?>
 <main class="wrap">
 <?php }
 function admin_foot(): void { ?></main></body></html><?php }
