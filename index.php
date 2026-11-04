@@ -44,14 +44,12 @@ $waMsg = fn(string $t) => $wa . '?text=' . rawurlencode($t);
   </div>
 </section>
 
-<nav class="tabs" id="tabs" aria-label="Categorías"><a href="#agendas" class="on">Agendas</a><a href="#apps">Apps web</a><a href="#landings">Landings</a><a href="#micro">Micro apps</a></nav>
+<nav class="tabs" id="tabs" aria-label="Categorías"><a href="#agendas" class="on"><span class="tl">Agendas e imprimibles</span><span class="ts">Agendas</span></a><a href="#apps">Apps web</a><a href="#landings">Landings</a><a href="#micro">Micro apps</a></nav>
 <div id="panels">
 
 <section id="agendas" class="panel" aria-label="Agendas e imprimibles">
 <div class="sechead pad"><div class="wrap"><div class="k" style="color:var(--acc)">01 · Agendas e imprimibles</div><h2>Papel bonito, <span class="serif">listo para usar.</span></h2><p>Agendas y planners para imprimir en casa o usar en tu tablet. Mirá las páginas por dentro y elegí la tuya.</p></div></div>
 <div id="catalogo">
-<div class="bar pad"><div class="chips" role="tablist" aria-label="Filtrar">
-  <button class="on" data-f="all">Todos</button><button data-f="print">Imprimibles</button><button data-f="digital">Para tablet</button></div></div>
 <div id="prods">
 <?php if (!$products): ?><p class="empty">Pronto vas a encontrar acá nuestros descargables.</p><?php endif; ?>
 <?php foreach ($products as $p):
