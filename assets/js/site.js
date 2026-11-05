@@ -126,9 +126,6 @@ function activate(id,jump){if(!IDS.includes(id))id='apps';IDS.forEach(k=>{const 
   if(jump)goTop(null)}
 document.addEventListener('click',e=>{const a=e.target.closest('a[href^="#"]');if(!a)return;const id=a.getAttribute('href').slice(1);if(!id)return;e.preventDefault();
   if(IDS.includes(id))activate(id,true);else if(id==='top')scrollTo({top:0,behavior:'instant'});else{const t=$(id);if(t)scrollTo({top:t.getBoundingClientRect().top+scrollY-hdrH(),behavior:'instant'})}});
-/* Próximamente: deslizar las fotos de cada tarjeta */
-document.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('.soon-media .sn');if(!b)return;var m=b.closest('.soon-media'),t=m.querySelector('.soon-track'),w=t.clientWidth,dir=b.classList.contains('sn-n')?1:-1;t.scrollBy({left:dir*w,behavior:'smooth'})});
-document.addEventListener('scroll',function(e){var t=e.target;if(!t||!t.classList||!t.classList.contains('soon-track'))return;var m=t.closest('.soon-media'),c=m&&m.querySelector('.sn-count b');if(c)c.textContent=Math.round(t.scrollLeft/Math.max(1,t.clientWidth))+1},true);
 /* “Avisame cuando esté”: guarda el mail y muestra el mensaje sin recargar la página */
 document.addEventListener('submit',function(e){var f=e.target.closest&&e.target.closest('form[data-aviso]');if(!f)return;e.preventDefault();
   var m=f.querySelector('.msg'),b=f.querySelector('button'),em=f.querySelector('input[type=email]');

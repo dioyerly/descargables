@@ -324,22 +324,7 @@ footer{margin-top:80px;padding-top:22px;border-top:1px solid var(--line);display
 
 .aprice .ars{display:block;font:600 12px var(--sans);color:var(--acc);margin-top:3px;letter-spacing:.02em}
 
-/* Próximamente */
-.soon-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:22px;padding-bottom:90px}
-.soon-card{background:#fff;border-radius:22px;overflow:hidden;box-shadow:0 30px 60px -36px rgba(30,20,80,.35);display:flex;flex-direction:column}
-.soon-media{position:relative;background:#f4f1ea;aspect-ratio:4/3}
-.soon-track{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;height:100%;scrollbar-width:none}.soon-track::-webkit-scrollbar{display:none}
-.soon-track img{flex:0 0 100%;width:100%;height:100%;object-fit:contain;scroll-snap-align:center;background:#f4f1ea}
-.soon-empty{height:100%;display:grid;place-items:center;color:var(--mut);font:600 14px var(--sans)}
-.soon-media .sn{position:absolute;top:50%;translate:0 -50%;width:38px;height:38px;border-radius:50%;border:0;background:rgba(255,255,255,.9);box-shadow:0 4px 14px -4px rgba(0,0,0,.35);display:grid;place-items:center;cursor:pointer;color:var(--ink)}
-.soon-media .sn-p{left:10px}.soon-media .sn-n{right:10px}
-.sn-count{position:absolute;right:12px;bottom:10px;font:700 12px var(--mono);background:rgba(0,0,0,.55);color:#fff;padding:4px 9px;border-radius:99px}
-.soon-badge{position:absolute;left:14px;top:14px;z-index:2;font:700 11px var(--sans);letter-spacing:.14em;text-transform:uppercase;background:var(--ink);color:#fff;padding:7px 11px;border-radius:99px}
-.soon-body{padding:22px 22px 24px;display:flex;flex-direction:column;gap:8px;flex:1}
-.soon-body .k{color:var(--acc);font:600 13px var(--sans);letter-spacing:.16em}
-.soon-body h3{font:800 28px/1.05 var(--sans);letter-spacing:-.03em}
-.soon-body p{color:var(--mut);font-size:15.5px}
-.soon-body .atags{margin-top:2px}
+/* Próximamente: formulario de aviso (la tarjeta usa el mismo diseño que las apps) */
 .aviso-form{margin-top:auto;padding-top:14px;display:flex;flex-wrap:wrap;gap:10px;align-items:center;position:relative}
 .aviso-form input[type=email]{flex:1 1 180px;min-width:0;font:500 15px var(--sans);padding:12px 14px;border-radius:12px;border:1px solid var(--line);background:#fbfaf7}
 .aviso-form .btn{cursor:pointer;border:0}
@@ -349,5 +334,3 @@ footer{margin-top:80px;padding-top:22px;border-top:1px solid var(--line);display
 .aviso-form .msg.err{color:#b3261e}
 .aviso-form .hp{position:absolute;left:-9999px;width:1px;height:1px;opacity:0}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
-.soon-body .atags{display:flex;flex-wrap:wrap;gap:6px}
-.soon-body .atags span{background:#ece8f6;color:#4b3a8f;font:600 12.5px var(--sans);padding:5px 10px;border-radius:99px}

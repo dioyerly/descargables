@@ -101,13 +101,21 @@ function app_band(array $a, int $n, string $kind, callable $ask): void {
   $im = array_map(fn($x) => 'uploads/' . rawurlencode($x), $a['images']);
   $src = ($a['html'] !== '' && is_file(SHOWCASE_DIR . '/' . basename($a['html']))) ? 'muestras/' . rawurlencode($a['html']) : '';
   [$askUrl, $askLabel] = $ask($a);
-  $label = ['micro' => 'Micro app', 'landings' => 'Landing'][$kind] ?? 'App web'; ?>
+  $label = ['micro' => 'Micro app', 'landings' => 'Landing', 'soon' => 'Próximamente'][$kind] ?? 'App web'; ?>
   <article class="app pad" data-app data-src="<?= h($src) ?>" data-imgs="<?= h(json_encode($im, JSON_UNESCAPED_SLASHES)) ?>" data-title="<?= h($a['title']) ?>">
     <div class="app-info"><div class="k"><?= $label ?> · <?= str_pad((string)($n + 1), 2, '0', STR_PAD_LEFT) ?></div>
       <h3><?= h($a['title']) ?></h3><p><?= h($a['desc']) ?></p>
       <?php if (($a['price'] ?? '') !== ''): $uv = usd_amount((string)$a['price']); $ars = $uv > 0 ? usd_to_ars($uv) : 0; ?><div class="aprice"><small>Desde aprox.</small><b><?= h($uv > 0 ? usd_label($uv) . ($ars > 0 ? ' - ARS ' . number_format($ars, 0, ',', '.') : '') : $a['price']) ?></b><?php if ($ars > 0): ?><span class="ars">Pesos al dólar <?= h(strtolower(explode(' (', dolar_types()[dolar_type()] ?? 'oficial')[0])) ?> de hoy</span><?php endif; ?><em>Es una aproximación: depende de qué tan a medida sea el pedido.</em></div><?php endif; ?>
       <?php if ($a['tags']): ?><div class="atags"><?php foreach ($a['tags'] as $t): ?><span><?= h($t) ?></span><?php endforeach; ?></div><?php endif; ?>
-      <div class="row"><a class="btn" href="<?= h($askUrl) ?>" target="_blank" rel="noopener"><?= h($askLabel) ?></a>
+      <?php if ($kind === 'soon'): ?><form class="aviso-form" data-aviso="<?= h($a['id']) ?>" action="aviso.php" method="post" novalidate>
+          <input type="email" name="email" required maxlength="190" placeholder="Tu mail" autocomplete="email" aria-label="Tu mail">
+          <input type="text" name="web" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+          <input type="hidden" name="slug" value="<?= h($a['id']) ?>">
+          <button class="btn" type="submit" data-trk="aviso:<?= h($a['id']) ?>">Avisame cuando esté</button>
+          <p class="msg" role="status" aria-live="polite"></p>
+        </form>
+      <?php endif; ?>
+      <div class="row"><?php if ($kind !== 'soon'): ?><a class="btn" href="<?= h($askUrl) ?>" target="_blank" rel="noopener"><?= h($askLabel) ?></a><?php endif; ?>
         <?php if ($src !== ''): ?><a class="btn o vopen" href="demo.php?f=<?= h(rawurlencode(basename($a['html']))) ?>" target="_blank" rel="noopener">Abrir demo completa ↗</a><?php endif; ?>
         <?php if (count($im) > 1 || ($src !== '' && $im)): ?><button type="button" class="btn o" data-open="0">Ver fotos</button><?php endif; ?></div></div>
     <div class="app-demo">
@@ -121,6 +129,7 @@ function app_band(array $a, int $n, string $kind, callable $ask): void {
 <?php
 $askApp = fn($a) => $a['link'] !== '' ? [$a['link'], 'Ver app ↗'] : [$waMsg('Hola! Me interesa la app "' . $a['title'] . '".'), 'Me interesa'];
 $askMicro = fn($m) => [$waMsg('Hola! Me gustó la micro app "' . $m['title'] . '". Quiero algo así para mi negocio.'), 'Quiero algo así'];
+$askSoon = fn($x) => ['#', ''];
 $askLand = fn($l) => [$l['link'] !== '' ? $l['link'] : $waMsg('Hola! Me gustó la landing "' . $l['title'] . '". Quiero una para mi negocio.'), 'Quiero una igual'];
 ?>
 <section id="apps" class="panel apps" aria-label="Apps web">
@@ -164,37 +173,7 @@ $askLand = fn($l) => [$l['link'] !== '' ? $l['link'] : $waMsg('Hola! Me gustó l
 <section id="proximamente" class="panel soonp apps" hidden aria-label="Próximamente">
   <div class="sechead pad"><div class="k">05 · Próximamente</div><h2>Lo que <span class="serif">se viene.</span></h2><p>Productos que todavía estamos terminando. Dejá tu mail y te avisamos apenas estén disponibles, una sola vez.</p></div>
   <?php if (!$soon): ?><div class="soon pad"><b>Muy pronto</b><span>Acá vas a ver lo que estamos preparando.</span></div><?php endif; ?>
-  <div class="soon-grid pad">
-  <?php foreach ($soon as $n => $p): $im = $p['images'][0] ?? ''; ?>
-    <article class="soon-card" data-title="<?= h($p['title']) ?>">
-      <div class="soon-media">
-        <span class="soon-badge">Próximamente</span>
-        <?php if ($p['images']): ?>
-        <div class="soon-track" tabindex="0" aria-label="Fotos de <?= h($p['title']) ?>">
-          <?php foreach ($p['images'] as $im): ?><img src="uploads/<?= h(rawurlencode($im)) ?>" alt="<?= h($p['title']) ?>" loading="lazy"><?php endforeach; ?>
-        </div>
-        <?php if (count($p['images']) > 1): ?>
-        <button type="button" class="sn sn-p" aria-label="Foto anterior"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button><button type="button" class="sn sn-n" aria-label="Foto siguiente"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M9 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-        <span class="sn-count"><b>1</b> / <?= count($p['images']) ?></span>
-        <?php endif; ?>
-        <?php else: ?><div class="soon-empty">Fotos pronto</div><?php endif; ?>
-      </div>
-      <div class="soon-body">
-        <div class="k"><?= str_pad((string)($n + 1), 2, '0', STR_PAD_LEFT) ?></div>
-        <h3><?= h($p['title']) ?></h3>
-        <?php if ($p['desc'] !== ''): ?><p><?= h($p['desc']) ?></p><?php endif; ?>
-        <?php if ($p['tags']): ?><div class="atags"><?php foreach ($p['tags'] as $t): ?><span><?= h($t) ?></span><?php endforeach; ?></div><?php endif; ?>
-        <form class="aviso-form" data-aviso="<?= h($p['id']) ?>" action="aviso.php" method="post" novalidate>
-          <input type="email" name="email" required maxlength="190" placeholder="tu@mail.com" autocomplete="email" aria-label="Tu mail">
-          <input type="text" name="web" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
-          <input type="hidden" name="slug" value="<?= h($p['id']) ?>">
-          <button class="btn" type="submit" data-trk="aviso:<?= h($p['id']) ?>">Avisame cuando esté</button>
-          <p class="msg" role="status" aria-live="polite"></p>
-        </form>
-      </div>
-    </article>
-  <?php endforeach; ?>
-  </div>
+  <?php foreach ($soon as $n => $p) app_band($p, $n, 'soon', $askSoon); ?>
 </section>
 
 
