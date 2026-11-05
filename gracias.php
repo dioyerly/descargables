@@ -15,7 +15,7 @@ $state = !$order ? 'none' : ($order['status'] === 'paid' ? 'paid' : ($order['sta
 $v = (string)@filemtime(__DIR__ . '/assets/js/site.js');
 ?><!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex,nofollow"><title>Tu compra · EstrategIA Descargables</title>
-<link rel="stylesheet" href="<?= h(base_path()) ?>/assets/css/site.css?v=<?= $v ?>"><link rel="stylesheet" href="<?= h(base_path()) ?>/assets/css/detalle.css?v=<?= $v ?>"></head>
+<link rel="stylesheet" href="<?= h(base_path()) ?>/assets/css/site.css?v=<?= $v ?>"><link rel="stylesheet" href="<?= h(base_path()) ?>/assets/css/detalle.css?v=<?= $v ?>"><?php require __DIR__ . "/lib/tiktok.php"; ?></head>
 <body class="solo">
 <header class="pad solid" id="hdr"><a class="logo" href="<?= h(base_path()) ?>/"><i>e</i>EstrategIA<small>Descargables</small></a></header>
 <main class="thanks"><div class="card">

@@ -7,7 +7,7 @@ if (!$p || !$p['visible'] || !$p['images']) { http_response_code(404); $nf = tru
 if ($p && !empty($p['landing']) && safe_url((string)$p['landing'])) { header('Location: ' . $p['landing'], true, 302); exit; }
 $v = (string)@filemtime(__DIR__ . '/assets/js/site.js'); $B = base_path();
 if (!empty($nf)) { ?><!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>No encontrado · EstrategIA Descargables</title>
-<link rel="stylesheet" href="<?= h($B) ?>/assets/css/site.css?v=<?= $v ?>"><link rel="stylesheet" href="<?= h($B) ?>/assets/css/detalle.css?v=<?= $v ?>"></head><body class="solo">
+<link rel="stylesheet" href="<?= h($B) ?>/assets/css/site.css?v=<?= $v ?>"><link rel="stylesheet" href="<?= h($B) ?>/assets/css/detalle.css?v=<?= $v ?>"><?php require __DIR__ . "/lib/tiktok.php"; ?></head><body class="solo">
 <header class="pad solid"><a class="logo" href="<?= h($B) ?>/"><i>e</i>EstrategIA<small>Descargables</small></a></header>
 <main class="thanks"><div class="card"><div class="k" style="color:var(--acc)">Error 404</div><h1>No encontramos <span class="serif">ese producto.</span></h1><p class="row"><a class="btn" href="<?= h($B) ?>/">Ver el catálogo</a></p></div></main></body></html><?php exit; }
 $plain = strip_tags(str_replace('*', '', (string)$p['title']));

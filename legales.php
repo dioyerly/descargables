@@ -11,7 +11,7 @@ $wa = '<a href="' . h($b['wa']) . '" target="_blank" rel="noopener">WhatsApp ' .
 ?><!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Legales · <?= h($b['name']) ?></title>
 <meta name="description" content="Términos y condiciones, política de privacidad, devoluciones y botón de arrepentimiento de <?= h($b['name']) ?>.">
-<link rel="stylesheet" href="<?= h($B) ?>/assets/css/site.css?v=<?= $v ?>"><link rel="stylesheet" href="<?= h($B) ?>/assets/css/legales.css?v=<?= $v ?>"></head>
+<link rel="stylesheet" href="<?= h($B) ?>/assets/css/site.css?v=<?= $v ?>"><link rel="stylesheet" href="<?= h($B) ?>/assets/css/legales.css?v=<?= $v ?>"><?php require __DIR__ . "/lib/tiktok.php"; ?></head>
 <body class="legal" data-page="legales" data-base="<?= h($B) ?>">
 <header class="pad solid" id="hdr"><a class="logo" href="<?= h($B) ?>/"><i>e</i>EstrategIA<small>Productos digitales</small></a><nav class="nav"><a class="btn" href="<?= h($B) ?>/">Volver a la tienda</a></nav></header>
 <main class="lg pad">
