@@ -20,7 +20,7 @@ a:focus-visible,button:focus-visible{outline:3px solid var(--acc);outline-offset
 header{position:fixed;inset:0 0 auto 0;z-index:50;display:flex;align-items:center;justify-content:space-between;padding-top:calc(14px + env(safe-area-inset-top,0px));padding-bottom:14px;transition:background .3s}
 header.solid{background:rgba(243,239,231,.9);backdrop-filter:blur(10px);box-shadow:0 1px 0 var(--line)}
 .logo{display:flex;align-items:center;gap:10px;font:800 21px/1 var(--sans);letter-spacing:-.02em}
-.logo i{width:30px;height:30px;border-radius:9px;background:var(--ink);display:grid;place-items:center;color:#fff;font:400 22px/1 var(--serif);font-style:italic}
+.logo .mark{width:34px;height:34px;border-radius:9px;object-fit:cover;flex:none;box-shadow:0 4px 14px -4px rgba(106,79,196,.55)}
 .logo small{font:600 11px var(--sans);letter-spacing:.18em;text-transform:uppercase;color:var(--mut);margin-left:4px}
 .nav{display:flex;gap:24px;align-items:center;font:600 15px var(--sans)}
 .nav .btn{padding:11px 18px;font-size:14px}
