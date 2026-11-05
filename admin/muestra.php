@@ -90,7 +90,7 @@ admin_head($isNew ? 'Nueva muestra' : 'Editar muestra'); ?>
   <label class="chk"><input type="checkbox" name="visible" value="1"<?= $s['visible'] ? ' checked' : '' ?>> Visible en el sitio</label>
 </div>
 <div class="card">
-  <?php if ($secKey !== ''): ?>
+  <?php if ($secKey !== '' && $secKey !== 'soon'): ?>
   <h2><?= $secKey === 'landings' ? 'HTML de la landing' : 'HTML de la demo (opcional)' ?></h2>
   <?php if ($s['html'] !== ''): ?><p class="muted" style="margin:6px 0">📄 <b><?= h($s['html']) ?></b> <a href="../demo.php?f=<?= h(rawurlencode($s['html'])) ?>" target="_blank" rel="noopener">Ver ↗</a>
     <label class="mini rm"><input type="checkbox" name="rm_html" value="1"> Quitar</label></p><?php else: ?><p class="muted">Todavía no hay HTML.</p><?php endif; ?>

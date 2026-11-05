@@ -17,7 +17,7 @@ send('pv',B.dataset.title||'');
 var title=function(el){var h=el&&el.closest('[data-title]');return h?h.dataset.title:''};
 document.addEventListener('click',function(e){var a=e.target.closest('a,button');if(!a)return;var h=a.getAttribute('href')||'',k=a.dataset.trk;
   if(k){var i=k.indexOf(':');send(i<0?k:k.slice(0,i),i<0?'':k.slice(i+1));return}
-  var m=h.match(/^#(agendas|apps|landings|micro)$/);if(m){send('tab',m[1]);return}
+  var m=h.match(/^#(agendas|apps|landings|micro|proximamente)$/);if(m){send('tab',m[1]);return}
   if(/wa\.me\//.test(h)){send('wa',title(a)||page);return}
   if(/demo\.php/.test(h)||a.closest('[data-app]')&&/demo/i.test(a.textContent)){send('demo',title(a));return}
   if(a.hasAttribute('data-open')||a.hasAttribute('data-zoom')||a.closest('.pg')){send('photos',title(a)||B.dataset.title||'');return}

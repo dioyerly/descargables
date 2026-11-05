@@ -10,6 +10,7 @@ function showcase_sections(): array {
         'apps'     => ['label' => 'Apps web', 'single' => 'App web', 'hint' => 'Subís el HTML de la demo y se prueba en vivo en un visor (las fotos son opcionales), con descripción y el link a la app.'],
         'landings' => ['label' => 'Landings a medida', 'single' => 'Landing', 'hint' => 'Subís el HTML de la landing y el sitio la muestra en vivo, dentro de un visor.'],
         'micro'    => ['label' => 'Micro apps a medida', 'single' => 'Micro app', 'hint' => 'Solo fotos (y un título corto).'],
+        'soon'     => ['label' => 'Próximamente', 'single' => 'Producto próximo', 'hint' => 'Lo que se viene. La gente deja su mail y, cuando lo publicás (botón Publicar), le llega un aviso. Solo título, descripción y fotos.'],
     ];
 }
 
@@ -104,4 +105,25 @@ function showcase_store_html(array $f, string $prefix): string {
     $name = $prefix . '-' . bin2hex(random_bytes(4)) . '.html';
     if (!move_uploaded_file($f['tmp_name'], SHOWCASE_DIR . '/' . $name)) throw new RuntimeException('no se pudo guardar en el servidor.');
     return $name;
+}
+
+/** Tabla de avisos de “Próximamente”: un mail por producto y persona (sent_at se completa cuando se publica el producto). */
+function avisos_ready(): bool {
+    static $ok = null;
+    if ($ok !== null) return $ok;
+    if (!db_ready()) return $ok = false;
+    try { db()->query('SELECT 1 FROM avisos LIMIT 1'); return $ok = true; }
+    catch (Throwable $e) {}
+    try {
+        db()->exec("CREATE TABLE IF NOT EXISTS avisos (
+            id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+            slug VARCHAR(120) NOT NULL,
+            email VARCHAR(190) NOT NULL,
+            ts DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            sent_at DATETIME NULL DEFAULT NULL,
+            UNIQUE KEY uniq_aviso (slug, email),
+            INDEX (slug, sent_at)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci");
+        return $ok = true;
+    } catch (Throwable $e) { error_log('avisos: ' . $e->getMessage()); return $ok = false; }
 }

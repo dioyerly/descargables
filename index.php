@@ -7,7 +7,7 @@ $totalPages = array_sum(array_map(fn($p) => (int)($p['pages'] ?? 0), $products))
 $heroImgs = [];
 foreach ($products as $p) foreach ($p['images'] as $im) $heroImgs[] = 'uploads/' . rawurlencode($im);
 $v = (string)@filemtime(__DIR__ . '/assets/js/site.js');
-$apps = showcase_load('apps', true); $landings = showcase_load('landings', true); $micro = showcase_load('micro', true);
+$apps = showcase_load('apps', true); $landings = showcase_load('landings', true); $micro = showcase_load('micro', true); $soon = showcase_load('soon', true);
 /* imágenes del inicio: una de cada producto primero (no falta ninguno), después segundas fotos hasta el tope */
 $pick = function (array $items, int $cap): array {
     $o = []; $max = 0; foreach ($items as $it) $max = max($max, count($it['images'] ?? []));
@@ -35,7 +35,7 @@ $waMsg = fn(string $t) => $wa . '?text=' . rawurlencode($t);
 </head>
 <body data-page="inicio" data-base="<?= h(base_path()) ?>">
 <header class="pad" id="hdr"><a class="logo" href="#top"><img class="mark" src="assets/img/logo-emblema.png" alt="EstrategIA" width="34" height="34">EstrategIA<small>Productos digitales</small></a>
-<nav class="nav"><a class="t" href="#apps">Apps web</a><a class="t" href="#landings">Landings</a><a class="t" href="#agendas">Agendas</a><a class="t" href="#micro">Micro apps</a><a class="btn" href="<?= h($waMsg('Hola! Quiero consultar por un producto a medida.')) ?>" target="_blank" rel="noopener">Pedí el tuyo</a></nav></header>
+<nav class="nav"><a class="t" href="#apps">Apps web</a><a class="t" href="#landings">Landings</a><a class="t" href="#agendas">Agendas</a><a class="t" href="#micro">Micro apps</a><a class="t" href="#proximamente">Próximamente</a><a class="btn" href="<?= h($waMsg('Hola! Quiero consultar por un producto a medida.')) ?>" target="_blank" rel="noopener">Pedí el tuyo</a></nav></header>
 
 <main id="top">
 <section id="desk" aria-label="Presentación">
@@ -58,7 +58,7 @@ $waMsg = fn(string $t) => $wa . '?text=' . rawurlencode($t);
   </div>
 </section>
 
-<nav class="tabs" id="tabs" aria-label="Categorías"><a href="#apps" class="on">Apps web</a><a href="#landings">Landings</a><a href="#agendas"><span class="tl">Agendas e imprimibles</span><span class="ts">Agendas</span></a><a href="#micro">Micro apps</a></nav>
+<nav class="tabs" id="tabs" aria-label="Categorías"><a href="#apps" class="on">Apps web</a><a href="#landings">Landings</a><a href="#agendas"><span class="tl">Agendas e imprimibles</span><span class="ts">Agendas</span></a><a href="#micro">Micro apps</a><a href="#proximamente">Próximamente</a></nav>
 <div id="panels">
 
 <section id="agendas" class="panel" hidden aria-label="Agendas e imprimibles">
@@ -160,6 +160,32 @@ $askLand = fn($l) => [$l['link'] !== '' ? $l['link'] : $waMsg('Hola! Me gustó l
   <?php if (!$micro): ?><div class="soon pad"><b>Muy pronto</b><span>Acá vas a ver las micro apps que ya hicimos.</span></div><?php endif; ?>
   <?php foreach ($micro as $n => $m) app_band($m, $n, 'micro', $askMicro); ?>
 </section>
+
+<section id="proximamente" class="panel soonp apps" hidden aria-label="Próximamente">
+  <div class="sechead pad"><div class="k">05 · Próximamente</div><h2>Lo que <span class="serif">se viene.</span></h2><p>Productos que todavía estamos terminando. Dejá tu mail y te avisamos apenas estén disponibles, una sola vez.</p></div>
+  <?php if (!$soon): ?><div class="soon pad"><b>Muy pronto</b><span>Acá vas a ver lo que estamos preparando.</span></div><?php endif; ?>
+  <div class="soon-grid pad">
+  <?php foreach ($soon as $n => $p): $im = $p['images'][0] ?? ''; ?>
+    <article class="soon-card" data-title="<?= h($p['title']) ?>">
+      <div class="soon-img"<?= $im !== '' ? ' style="background-image:url(\'uploads/' . h(rawurlencode($im)) . '\')"' : '' ?>><span class="soon-badge">Próximamente</span></div>
+      <div class="soon-body">
+        <div class="k"><?= str_pad((string)($n + 1), 2, '0', STR_PAD_LEFT) ?></div>
+        <h3><?= h($p['title']) ?></h3>
+        <?php if ($p['desc'] !== ''): ?><p><?= h($p['desc']) ?></p><?php endif; ?>
+        <?php if ($p['tags']): ?><div class="atags"><?php foreach ($p['tags'] as $t): ?><span><?= h($t) ?></span><?php endforeach; ?></div><?php endif; ?>
+        <form class="aviso-form" data-aviso="<?= h($p['id']) ?>" action="aviso.php" method="post" novalidate>
+          <input type="email" name="email" required maxlength="190" placeholder="tu@mail.com" autocomplete="email" aria-label="Tu mail">
+          <input type="text" name="web" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+          <input type="hidden" name="slug" value="<?= h($p['id']) ?>">
+          <button class="btn" type="submit" data-trk="aviso:<?= h($p['id']) ?>">Avisame cuando esté</button>
+          <p class="msg" role="status" aria-live="polite"></p>
+        </form>
+      </div>
+    </article>
+  <?php endforeach; ?>
+  </div>
+</section>
+
 
 </div>
 

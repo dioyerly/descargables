@@ -31,7 +31,7 @@ $visitorsPrev = $one('SELECT COUNT(DISTINCT vid) FROM events WHERE ts >= ? AND t
 $sessions = $one('SELECT COUNT(DISTINCT sid) FROM events WHERE ts >= ?', [$from]);
 $sessionsPrev = $one('SELECT COUNT(DISTINCT sid) FROM events WHERE ts >= ? AND ts < ?', [$prevFrom, $from]);
 $pageviews = $one("SELECT COUNT(*) FROM events WHERE t='pv' AND ts >= ?", [$from]);
-$clicks = $one("SELECT COUNT(*) FROM events WHERE t IN ('tab','click','demo','wa','photos','buy') AND ts >= ?", [$from]);
+$clicks = $one("SELECT COUNT(*) FROM events WHERE t IN ('tab','click','demo','wa','photos','buy','aviso') AND ts >= ?", [$from]);
 $sSeen = $one("SELECT COUNT(DISTINCT sid) FROM events WHERE ts >= ? AND (t='seen' OR page='detalle')", [$from]);
 $sDetail = $one("SELECT COUNT(DISTINCT sid) FROM events WHERE ts >= ? AND page='detalle' AND t='pv'", [$from]);
 $sBuy = $one("SELECT COUNT(DISTINCT sid) FROM events WHERE ts >= ? AND t='buy'", [$from]);
@@ -71,8 +71,8 @@ arsort($src); $src = array_slice($src, 0, 10, true);
 
 $dev = ['m' => 0, 'd' => 0]; foreach ($q("SELECT dev, COUNT(DISTINCT sid) c FROM events WHERE ts >= ? GROUP BY dev", [$from]) as $r) $dev[$r['dev'] === 'm' ? 'm' : 'd'] += (int)$r['c'];
 
-$tl = ['wa' => 'WhatsApp', 'demo' => 'Abrió demo', 'photos' => 'Vio fotos', 'click' => 'Botón', 'buy' => 'Comprar', 'tab' => 'Pestaña'];
-$topClicks = []; foreach ($q("SELECT t, n, COUNT(*) c FROM events WHERE ts >= ? AND t IN ('wa','demo','photos','click','buy') GROUP BY t, n ORDER BY c DESC LIMIT 12", [$from]) as $r) $topClicks[] = $r;
+$tl = ['wa' => 'WhatsApp', 'demo' => 'Abrió demo', 'photos' => 'Vio fotos', 'click' => 'Botón', 'buy' => 'Comprar', 'tab' => 'Pestaña', 'aviso' => 'Avisame'];
+$topClicks = []; foreach ($q("SELECT t, n, COUNT(*) c FROM events WHERE ts >= ? AND t IN ('wa','demo','photos','click','buy','aviso') GROUP BY t, n ORDER BY c DESC LIMIT 12", [$from]) as $r) $topClicks[] = $r;
 
 // últimas visitas: cada sesión con lo que hizo
 $recent = [];
@@ -92,6 +92,7 @@ if ($sids) {
             elseif ($e['t'] === 'demo') $x = 'Abrió la demo de ' . $e['n'];
             elseif ($e['t'] === 'photos') $x = 'Miró fotos' . ($e['n'] !== '' ? ' de ' . $e['n'] : '');
             elseif ($e['t'] === 'buy') $x = '🛒 Tocó Comprar en ' . $e['n'];
+            elseif ($e['t'] === 'aviso') $x = '🔔 Tocó «Avisame» en ' . $e['n'];
             else $x = 'Tocó «' . $e['n'] . '»';
             if ($x !== '' && end($acts) !== $x) $acts[] = $x;
         }
@@ -169,6 +170,38 @@ admin_head('Estadísticas'); ?>
   <div class="card st-card"><h2>Pestañas más vistas</h2><p class="muted sm">Veces que tocaron cada categoría.</p><?= $bars($tabs) ?></div>
   <div class="card st-card"><h2>Clics más tocados</h2><p class="muted sm">Botones, WhatsApp, demos y fotos.</p>
     <?php if (!$topClicks): ?><p class="muted sm">Todavía no hay datos en este período.</p><?php else: $rows = []; foreach ($topClicks as $r) $rows[($tl[$r['t']] ?? $r['t']) . ($r['n'] !== '' ? ' · ' . $r['n'] : '')] = (int)$r['c']; echo $bars($rows, '#e0714f'); endif; ?></div>
+</div>
+<?php
+// Próximamente: clics en “Avisame” y las personas que dejaron su mail
+$avClk = []; foreach ($q("SELECT n, COUNT(*) c FROM events WHERE t='aviso' AND ts >= ? GROUP BY n", [$from]) as $r) $avClk[(string)$r['n']] = (int)$r['c'];
+$avBy = avisos_ready() ? $q("SELECT slug, email, ts, sent_at FROM avisos ORDER BY ts DESC")->fetchAll() : [];
+$avRows = [];
+foreach ($avBy as $a) { $avRows[$a['slug']]['mails'][] = $a; }
+$avSlugs = array_unique(array_merge(array_keys($avClk), array_keys($avRows)));
+$avTable = [];
+foreach ($avSlugs as $sl) {
+    $x = showcase_find((string)$sl);
+    $mails = $avRows[$sl]['mails'] ?? [];
+    $pend = count(array_filter($mails, fn($m) => $m['sent_at'] === null));
+    $avTable[] = ['slug' => (string)$sl, 'title' => $x ? $x['title'] : (string)$sl, 'clk' => $avClk[$sl] ?? 0, 'mails' => $mails, 'pend' => $pend];
+}
+usort($avTable, fn($a, $b) => (count($b['mails']) <=> count($a['mails'])) ?: ($b['clk'] <=> $a['clk']));
+?>
+<style>.avt{display:grid;grid-template-columns:2.2fr 1fr 1fr 1fr 1fr;gap:8px;align-items:center;padding:10px 14px;font-size:14px}.avt-h{color:var(--mut);font-size:11px;letter-spacing:.12em;text-transform:uppercase;font-weight:700}.avt-r{background:#fbfaf7;border-radius:14px;margin:6px 0;box-shadow:inset 0 0 0 1px var(--line)}.avt-r summary{list-style:none;cursor:pointer}.avt-r summary::-webkit-details-marker{display:none}.avt-r ol{padding:4px 14px 12px 34px;display:grid;gap:4px;font-size:13.5px}@media(max-width:700px){.avt{grid-template-columns:1.6fr 1fr 1fr 1fr 1fr;font-size:12.5px}}</style>
+<div class="card st-card" style="margin-top:16px">
+  <h2>Próximamente · avisos</h2><p class="muted sm">Cuántas personas tocaron “Avisame” en el período y quiénes dejaron su mail para cada producto. Cuando lo publicás, les llega el aviso. Los mails no se borran al poner las estadísticas en cero.</p>
+  <?php if (!$avTable): ?><p class="muted sm">Todavía nadie tocó “Avisame”.</p><?php else: ?>
+  <div class="ptable">
+    <div class="avt avt-h"><span>Producto</span><span>Tocaron “Avisame”</span><span>Dejaron mail</span><span>Pendientes</span><span>Ya avisados</span></div>
+    <?php foreach ($avTable as $r): ?>
+    <details class="avt-r"><summary class="avt"><span><b><?= h($r['title']) ?></b></span><span><?= $fmt((float)$r['clk']) ?></span><span><?= count($r['mails']) ?></span><span><?= $r['pend'] ?></span><span><?= count($r['mails']) - $r['pend'] ?></span></summary>
+      <?php if (!$r['mails']): ?><p class="muted sm" style="padding:0 14px 12px">Todavía nadie dejó su mail.</p><?php else: ?>
+      <ol><?php foreach ($r['mails'] as $m): ?><li><?= h($m['email']) ?> · <?= h(date('d/m/Y H:i', strtotime($m['ts']))) ?> · <?= $m['sent_at'] === null ? '<em class="t-warn">pendiente</em>' : 'avisado el ' . h(date('d/m/Y', strtotime($m['sent_at']))) ?></li><?php endforeach; ?></ol>
+      <?php endif; ?>
+    </details>
+    <?php endforeach; ?>
+  </div>
+  <?php endif; ?>
 </div>
 <div class="card st-card" style="margin-top:16px">
   <h2>Últimas visitas</h2><p class="muted sm">Cada visita con la hora, el aparato, de dónde vino y qué hizo. Si reconocés una tuya, entrá al admin desde ese aparato para que no se cuente más.</p>

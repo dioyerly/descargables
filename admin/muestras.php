@@ -6,6 +6,7 @@ require __DIR__ . '/../lib/admin_ui.php';
 require_login();
 if (!db_ready() || !showcase_ready()) { header('Location: setup.php'); exit; }
 $secs = showcase_sections();
+$pendBy = []; if (avisos_ready()) foreach (db()->query('SELECT slug, COUNT(*) c FROM avisos WHERE sent_at IS NULL GROUP BY slug')->fetchAll() as $r) $pendBy[$r['slug']] = (int)$r['c'];
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     csrf_check();
     $s = showcase_find((string)($_POST['id'] ?? '')); $act = (string)($_POST['act'] ?? '');
@@ -22,7 +23,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     header('Location: muestras.php'); exit;
 }
 admin_head('Muestras'); ?>
-<div class="head"><div><h1>Muestras del inicio</h1><p class="muted">Apps web, landings y micro apps que se ven en el inicio. Las agendas se cargan en “Productos”.</p></div></div>
+<div class="head"><div><h1>Muestras del inicio</h1><p class="muted">Apps web, landings, micro apps y lo que se viene (Próximamente) que se ven en el inicio. Las agendas se cargan en “Productos”.</p></div></div>
 <?php show_flash(); ?>
 <?php foreach ($secs as $key => $sec): $items = showcase_load($key); ?>
 <div class="head" style="margin-top:28px"><div><h2><?= h($sec['label']) ?></h2><p class="muted"><?= h($sec['hint']) ?></p></div><a class="btn" href="muestra.php?s=<?= h($key) ?>">+ Agregar</a></div>
@@ -33,9 +34,10 @@ admin_head('Muestras'); ?>
   <div class="thumb"><?php if ($img): ?><img src="../uploads/<?= h(rawurlencode($img)) ?>" alt=""><?php endif; ?></div>
   <div class="pinfo"><b><?= h($s['title']) ?></b>
     <span class="muted"><?= count($s['images']) ?> fotos<?= $key === 'landings' ? ($s['html'] !== '' ? ' · HTML subido ✓' : ' · falta el HTML') : '' ?><?= $s['link'] !== '' ? ' · ' . h($s['link']) : '' ?></span>
-    <span class="tags"><?php if (!$s['visible']): ?><em class="t-off">Oculto</em><?php endif; ?><?php if ($key === 'landings' && $s['html'] === ''): ?><em class="t-warn">Falta el HTML</em><?php endif; ?><?php if ($key !== 'landings' && !$s['images']): ?><em class="t-warn">Faltan fotos</em><?php endif; ?></span></div>
+    <span class="tags"><?php if (!$s['visible']): ?><em class="t-off">Oculto</em><?php endif; ?><?php if ($key === 'landings' && $s['html'] === ''): ?><em class="t-warn">Falta el HTML</em><?php endif; ?><?php if ($key !== 'landings' && $key !== 'soon' && !$s['images']): ?><em class="t-warn">Faltan fotos</em><?php endif; ?><?php if ($key === 'soon'): ?><em class="t-off"><?= (int)($pendBy[$s['id']] ?? 0) ?> pidieron aviso</em><?php endif; ?></span></div>
   <div class="pact">
     <a class="btn sm" href="muestra.php?id=<?= h(rawurlencode($s['id'])) ?>">Editar</a>
+    <?php if ($key === 'soon'): ?><a class="btn sm" href="publicar.php?id=<?= h(rawurlencode($s['id'])) ?>">Publicar</a><?php endif; ?>
     <form method="post"><?= csrf_field() ?><input type="hidden" name="id" value="<?= h($s['id']) ?>">
       <button class="ic" name="act" value="up" title="Subir" <?= $i === 0 ? 'disabled' : '' ?>>↑</button>
       <button class="ic" name="act" value="down" title="Bajar" <?= $i === count($items) - 1 ? 'disabled' : '' ?>>↓</button>

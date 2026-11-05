@@ -9,7 +9,7 @@ $j = json_decode($raw, true);
 if (!is_array($j) || !extras_ready()) exit;
 if (is_owner_request((string)($j['v'] ?? ''))) exit; // el dueño no se cuenta
 $t = (string)($j['t'] ?? '');
-if (!in_array($t, ['pv', 'tab', 'seen', 'buy', 'click', 'demo', 'wa', 'photos'], true)) exit;
+if (!in_array($t, ['pv', 'tab', 'seen', 'buy', 'click', 'demo', 'wa', 'photos', 'aviso'], true)) exit;
 $clean = fn($v, int $n) => mb_substr(trim(preg_replace('/[\x00-\x1F]+/u', ' ', (string)$v) ?? ''), 0, $n);
 $id = fn($v) => preg_match('/^[a-z0-9]{6,16}$/', (string)$v) ? (string)$v : '';
 $page = in_array($j['p'] ?? '', ['inicio', 'detalle', 'gracias', 'legales'], true) ? $j['p'] : 'otra';

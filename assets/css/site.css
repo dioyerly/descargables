@@ -323,3 +323,25 @@ footer{margin-top:80px;padding-top:22px;border-top:1px solid var(--line);display
 @media(max-width:860px){.totop{width:44px;height:44px;padding:0;justify-content:center;opacity:0}.totop.on{opacity:.92}.totop span{display:none}}
 
 .aprice .ars{display:block;font:600 12px var(--sans);color:var(--acc);margin-top:3px;letter-spacing:.02em}
+
+/* Próximamente */
+.soon-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:22px;padding-bottom:90px}
+.soon-card{background:#fff;border-radius:22px;overflow:hidden;box-shadow:0 30px 60px -36px rgba(30,20,80,.35);display:flex;flex-direction:column}
+.soon-img{position:relative;aspect-ratio:16/10;background:radial-gradient(70% 90% at 30% 20%,#e7e0fb,#f3e6d6 70%);background-size:cover;background-position:center}
+.soon-badge{position:absolute;left:14px;top:14px;font:700 11px var(--sans);letter-spacing:.14em;text-transform:uppercase;background:var(--ink);color:#fff;padding:7px 11px;border-radius:99px}
+.soon-body{padding:22px 22px 24px;display:flex;flex-direction:column;gap:8px;flex:1}
+.soon-body .k{color:var(--acc);font:600 13px var(--sans);letter-spacing:.16em}
+.soon-body h3{font:800 28px/1.05 var(--sans);letter-spacing:-.03em}
+.soon-body p{color:var(--mut);font-size:15.5px}
+.soon-body .atags{margin-top:2px}
+.aviso-form{margin-top:auto;padding-top:14px;display:flex;flex-wrap:wrap;gap:10px;align-items:center;position:relative}
+.aviso-form input[type=email]{flex:1 1 180px;min-width:0;font:500 15px var(--sans);padding:12px 14px;border-radius:12px;border:1px solid var(--line);background:#fbfaf7}
+.aviso-form .btn{cursor:pointer;border:0}
+.aviso-form .btn:disabled{opacity:.6;cursor:default}
+.aviso-form .msg{flex-basis:100%;font-size:14px;color:var(--mut);min-height:0;margin:0}
+.aviso-form .msg.ok{color:#1d7a4d;font-weight:600}
+.aviso-form .msg.err{color:#b3261e}
+.aviso-form .hp{position:absolute;left:-9999px;width:1px;height:1px;opacity:0}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+.soon-body .atags{display:flex;flex-wrap:wrap;gap:6px}
+.soon-body .atags span{background:#ece8f6;color:#4b3a8f;font:600 12.5px var(--sans);padding:5px 10px;border-radius:99px}
