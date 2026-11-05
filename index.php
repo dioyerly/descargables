@@ -117,12 +117,13 @@ function app_band(array $a, int $n, string $kind, callable $ask): void {
       <?php endif; ?>
       <div class="row"><?php if ($kind !== 'soon'): ?><a class="btn" href="<?= h($askUrl) ?>" target="_blank" rel="noopener"><?= h($askLabel) ?></a><?php endif; ?>
         <?php if ($src !== ''): ?><a class="btn o vopen" href="demo.php?f=<?= h(rawurlencode(basename($a['html']))) ?>" target="_blank" rel="noopener">Abrir demo completa ↗</a><?php endif; ?>
-        <?php if (count($im) > 1 || ($src !== '' && $im)): ?><button type="button" class="btn o" data-open="0">Ver fotos</button><?php endif; ?></div></div>
+        <?php if ($kind !== 'soon' && (count($im) > 1 || ($src !== '' && $im))): ?><button type="button" class="btn o" data-open="0">Ver fotos</button><?php endif; ?></div></div>
     <div class="app-demo">
       <div class="vtools"><div class="vdev"><button type="button" class="on" data-dev="d">Computadora</button><button type="button" data-dev="m">Celular</button></div></div>
       <div class="browser"><div class="bbar"><i></i><i></i><i></i><b class="vurl"><?= h(trim(preg_replace('~[^a-z0-9]+~', '-', strtolower(iconv('UTF-8', 'ASCII//TRANSLIT', $a['title']) ?: 'app')), '-')) ?>.com</b></div>
-        <div class="vp"><div class="vfr"><div class="vph"<?= $src === '' && $im ? ' style="background-image:url(\'' . h($im[0]) . '\')" data-open="0"' : '' ?>></div></div></div></div>
-      <?php if (count($im) > 1): ?><div class="athumbs"><?php foreach (array_slice($im, 0, 6) as $i => $u): ?><button type="button" data-open="<?= $i ?>" aria-label="Ampliar foto <?= $i + 1 ?>" style="background-image:url('<?= h($u) ?>')"></button><?php endforeach; ?></div><?php endif; ?>
+        <div class="vp"><div class="vfr"><div class="vph"<?= $src === '' && $im ? ' style="background-image:url(\'' . h($im[0]) . '\')"' . ($kind === 'soon' ? '' : ' data-open="0"') : '' ?>></div></div></div>
+        <?php if ($kind === 'soon' && count($im) > 1): ?><button type="button" class="sarr sprev" aria-label="Foto anterior">&#8249;</button><button type="button" class="sarr snext" aria-label="Foto siguiente">&#8250;</button><div class="sdots"><?php foreach ($im as $_): ?><i></i><?php endforeach; ?></div><?php endif; ?></div>
+      <?php if ($kind !== 'soon' && count($im) > 1): ?><div class="athumbs"><?php foreach (array_slice($im, 0, 6) as $i => $u): ?><button type="button" data-open="<?= $i ?>" aria-label="Ampliar foto <?= $i + 1 ?>" style="background-image:url('<?= h($u) ?>')"></button><?php endforeach; ?></div><?php endif; ?>
     </div>
   </article>
 <?php } ?>

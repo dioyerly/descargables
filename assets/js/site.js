@@ -140,3 +140,20 @@ if(IDS.includes(location.hash.slice(1)))activate(location.hash.slice(1),false);
 if(location.hash){try{history.replaceState(null,'',location.pathname+location.search)}catch(e){}}
 scrollTo(0,0);addEventListener('load',()=>setTimeout(()=>scrollTo(0,0),0));addEventListener('pageshow',e=>{if(e.persisted)scrollTo(0,0)});
 })();
+
+/* Próximamente: pasar fotos con flechas, en la misma tarjeta */
+(function(){
+  document.querySelectorAll('.soonp [data-app]').forEach(function(card){
+    var imgs=[];try{imgs=JSON.parse(card.dataset.imgs||'[]')}catch(e){}
+    var ph=card.querySelector('.vph'),dots=card.querySelectorAll('.sdots i');
+    if(!ph||imgs.length<2)return;
+    var i=0;
+    function go(n){i=(n+imgs.length)%imgs.length;ph.style.backgroundImage="url('"+imgs[i]+"')";dots.forEach(function(d,k){d.classList.toggle('on',k===i)})}
+    go(0);
+    var pv=card.querySelector('.sprev'),nx=card.querySelector('.snext');
+    if(pv)pv.addEventListener('click',function(){go(i-1)});
+    if(nx)nx.addEventListener('click',function(){go(i+1)});
+    var x0=null;ph.addEventListener('touchstart',function(e){x0=e.touches[0].clientX},{passive:true});
+    ph.addEventListener('touchend',function(e){if(x0===null)return;var d=e.changedTouches[0].clientX-x0;if(Math.abs(d)>40)go(i+(d<0?1:-1));x0=null});
+  });
+})();

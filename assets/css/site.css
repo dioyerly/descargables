@@ -334,3 +334,12 @@ footer{margin-top:80px;padding-top:22px;border-top:1px solid var(--line);display
 .aviso-form .msg.err{color:#b3261e}
 .aviso-form .hp{position:absolute;left:-9999px;width:1px;height:1px;opacity:0}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+
+/* Próximamente: flechas en el mismo lugar */
+.soonp .browser{position:relative}
+.sarr{position:absolute;top:50%;transform:translateY(-50%);z-index:5;width:40px;height:40px;border-radius:50%;border:0;background:rgba(20,16,40,.62);color:#fff;font-size:26px;line-height:1;cursor:pointer;display:grid;place-items:center;padding:0 0 3px;transition:background .2s}
+.sarr:hover{background:rgba(20,16,40,.85)}
+.sprev{left:10px}.snext{right:10px}
+.sdots{position:absolute;left:50%;bottom:12px;transform:translateX(-50%);z-index:5;display:flex;gap:6px}
+.sdots i{width:18px;height:4px;border-radius:2px;background:#fff;opacity:.5;display:block;box-shadow:0 0 0 1px rgba(0,0,0,.15);transition:width .25s,opacity .25s}
+.sdots i.on{opacity:1;width:32px}
