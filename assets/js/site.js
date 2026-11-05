@@ -132,7 +132,7 @@ document.addEventListener('submit',function(e){var f=e.target.closest&&e.target.
   if(!em.value||!em.checkValidity()){m.textContent='Escribí un mail válido.';m.className='msg err';em.focus();return}
   b.disabled=true;m.textContent='Guardando…';m.className='msg';
   fetch('aviso.php',{method:'POST',body:new FormData(f)}).then(function(r){return r.json()}).then(function(j){
-    m.textContent=j.msg;m.className='msg '+(j.ok?'ok':'err');if(j.ok){em.value='';b.textContent='¡Anotado!'}else{b.disabled=false}
+    m.textContent=j.msg;m.className='msg '+(j.ok?'ok':'err');if(j.ok){if(window.ttEvent){var ar=f.closest('[data-title]');ttEvent('Lead',{contents:[{content_id:(f.dataset.aviso||''),content_type:'product',content_name:(ar&&ar.dataset.title)||''}]})}em.value='';b.textContent='¡Anotado!'}else{b.disabled=false}
   }).catch(function(){m.textContent='No pudimos guardar tu mail. Probá de nuevo.';m.className='msg err';b.disabled=false})});
 /* siempre empezar arriba: si la URL trae #agendas etc. se elige esa pestaña pero no se salta */
 try{history.scrollRestoration='manual'}catch(e){}

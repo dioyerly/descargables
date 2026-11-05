@@ -25,8 +25,8 @@ $typeLbl = types()[$p['type']] ?? '';
 <meta property="og:image" content="<?= h(site_url('uploads/' . rawurlencode($p['images'][0]))) ?>">
 <link rel="preload" href="<?= h($B) ?>/assets/fonts/bricolage-grotesque-latin-800-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="<?= h($B) ?>/assets/css/site.css?v=<?= $v ?>"><link rel="stylesheet" href="<?= h($B) ?>/assets/css/detalle.css?v=<?= $v ?>">
-</head>
-<body class="det" style="<?= h(theme_style((string)$p['theme'])) ?>" data-page="detalle" data-base="<?= h($B) ?>" data-title="<?= h($plain) ?>">
+<?php require __DIR__ . "/lib/tiktok.php"; ?></head>
+<body class="det" style="<?= h(theme_style((string)$p['theme'])) ?>" data-page="detalle" data-base="<?= h($B) ?>" data-title="<?= h($plain) ?>" data-pid="<?= h((string)$p['id']) ?>" data-price="<?= h((string)(float)$p['price']) ?>">
 <header class="pad solid" id="hdr"><a class="logo" href="<?= h($B) ?>/"><i>e</i>EstrategIA<small>Descargables</small></a>
 <nav class="nav"><a class="t" href="<?= h($B) ?>/#catalogo">← Catálogo</a><a class="btn" href="#comprar">Comprar</a></nav></header>
 
@@ -70,4 +70,6 @@ $typeLbl = types()[$p['type']] ?? '';
 <script>window.__IMGS=<?= json_encode($imgs, JSON_UNESCAPED_SLASHES) ?>;window.__TITLE=<?= json_encode($plain, JSON_UNESCAPED_UNICODE) ?>;</script>
 <script src="<?= h($B) ?>/assets/js/detalle.js?v=<?= $v ?>" defer></script>
 <script src="<?= h($B) ?>/assets/js/track.js?v=<?= $v ?>" defer></script>
+<script src="<?= h($B) ?>/assets/js/tt-events.js?v=<?= $v ?>" defer></script>
+<script>addEventListener("load",function(){if(window.ttEvent){var d=document.body.dataset,x={contents:[{content_id:d.pid,content_type:"product",content_name:d.title}]};if(+d.price>0){x.value=+d.price;x.currency="ARS"}ttEvent("ViewContent",x)}})</script>
 </body></html>

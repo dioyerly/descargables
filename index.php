@@ -200,5 +200,6 @@ $askLand = fn($l) => [$l['link'] !== '' ? $l['link'] : $waMsg('Hola! Me gustó l
 <div class="lb" id="lb" role="dialog" aria-modal="true" aria-label="Vista ampliada"><img id="lbi" alt=""><button class="x" id="lbx" aria-label="Cerrar">✕</button><button class="pv" id="lbp" aria-label="Anterior">‹</button><button class="nx" id="lbn" aria-label="Siguiente">›</button><div class="cap" id="lbc"></div></div>
 <script src="assets/js/site.js?v=<?= $v ?>" defer></script>
 <script src="assets/js/track.js?v=<?= $v ?>" defer></script>
+<script src="assets/js/tt-events.js?v=<?= $v ?>" defer></script>
 </body>
 </html>

@@ -39,4 +39,5 @@ $v = (string)@filemtime(__DIR__ . '/assets/js/site.js');
 <?php endif; ?>
 </div></main>
 <?php include __DIR__ . '/lib/footer.php'; ?>
+<?php if ($state === 'paid'): ?><script>(function(){var k='tt_p_<?= h((string)$order['code']) ?>';try{if(localStorage.getItem(k))return;localStorage.setItem(k,'1')}catch(e){}addEventListener('load',function(){try{if(window.ttq&&ttq.track)ttq.track('Purchase',{contents:[{content_id:<?= json_encode((string)$order['product_id']) ?>,content_type:'product',content_name:<?= json_encode((string)$order['product_title'], JSON_UNESCAPED_UNICODE) ?>}],value:<?= json_encode((float)$order['amount']) ?>,currency:<?= json_encode((string)($order['currency'] ?: 'ARS')) ?>},{event_id:'<?= h((string)$order['code']) ?>'})}catch(e){}})})()</script><?php endif; ?>
 </body></html>
