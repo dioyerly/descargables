@@ -4,6 +4,7 @@ function admin_head(string $title, bool $nav = true): void { ?>
 <!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex,nofollow"><title><?= h($title) ?> · Panel EstrategIA</title>
 <link rel="stylesheet" href="../assets/css/admin.css?v=<?= (int)@filemtime(__DIR__ . "/../assets/css/admin.css") ?>"></head><body>
+<?php if (function_exists('is_logged') && is_logged()): ?><script>/* este navegador es del dueño: no se cuenta en las estadísticas (queda guardado en el aparato, no depende de la cookie del servidor) */try{localStorage.setItem('est_owner','1')}catch(e){}try{document.cookie='est_owner=1; max-age=94608000; path=/; SameSite=Lax'+(location.protocol==='https:'?'; Secure':'')}catch(e){}</script><?php endif; ?>
 <?php if ($nav): ?><header class="top"><a class="brand" href="index.php"><i>e</i>EstrategIA <small>Panel de descargables</small></a>
 <nav><a href="estadisticas.php">Estadísticas</a><a href="index.php">Productos</a><a href="edit.php" class="b">+ Nuevo producto</a><a href="muestras.php">Muestras</a><a href="pedidos.php">Pedidos</a><a href="ajustes.php">Ajustes</a><a href="setup.php">Base de datos</a><a href="password.php">Contraseña</a><a href="../" target="_blank" rel="noopener">Ver sitio ↗</a><a href="logout.php">Salir</a></nav></header><?php endif; ?>
 <main class="wrap">

@@ -1,7 +1,8 @@
 /* Estadísticas propias y anónimas (sin cookies de terceros). El dueño queda excluido por la cookie est_owner. */
 (function(){'use strict';
 var B=document.body,base=B.dataset.base||'';
-if(/(^|;\s*)est_owner=1/.test(document.cookie)){window.trk=function(){};return}
+var own=false;try{own=/(^|;\s*)est_owner=1/.test(document.cookie)||localStorage.getItem('est_owner')==='1'}catch(e){}
+if(own){window.trk=function(){};return}
 function rid(k,st){try{var v=st.getItem(k);if(!v){v=(Math.random().toString(36).slice(2)+Math.random().toString(36).slice(2)).slice(0,14);st.setItem(k,v)}return v}catch(e){return ''}}
 var vid=rid('est_v',localStorage),sid=rid('est_s',sessionStorage),src='';
 try{src=sessionStorage.getItem('est_src')||''}catch(e){}

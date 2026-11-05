@@ -6,6 +6,8 @@ require_login();
 if (!db_ready()) { header('Location: setup.php'); exit; }
 extras_ready();
 mark_owner_device(true); // quien mira el panel no se cuenta
+// limpia lo que haya quedado registrado de los aparatos que ya marcaste como tuyos
+$ov = owner_vids(); if ($ov) { $in = implode(',', array_fill(0, count($ov), '?')); $cl = db()->prepare("DELETE FROM events WHERE vid IN ($in)"); $cl->execute($ov); }
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     csrf_check();
     $act = (string)($_POST['act'] ?? '');

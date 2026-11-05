@@ -90,9 +90,25 @@ function usd_to_ars(float $usd, ?float $rate = null): float {
 
 /* ---------- Estadísticas ---------- */
 function is_owner_device(): bool { return ($_COOKIE[OWNER_COOKIE] ?? '') === '1'; }
+/** IP real de la persona. Detrás del CDN de Hostinger, REMOTE_ADDR es la del CDN: la de la persona viene en un encabezado. */
+function client_ip(): string {
+    foreach (['HTTP_CF_CONNECTING_IP', 'HTTP_TRUE_CLIENT_IP', 'HTTP_X_REAL_IP', 'HTTP_X_FORWARDED_FOR'] as $h) {
+        $v = trim(explode(',', (string)($_SERVER[$h] ?? ''))[0]);
+        if ($v !== '' && filter_var($v, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE)) {
+            // IPv6: la red de la casa es el prefijo (los últimos 64 bits cambian solos)
+            if (str_contains($v, ':')) { $p = @inet_pton($v); if ($p !== false && strlen($p) === 16) return bin2hex(substr($p, 0, 8)); }
+            return $v;
+        }
+    }
+    return (string)($_SERVER['REMOTE_ADDR'] ?? '');
+}
 /** Huella de la conexión (IP con sal, nunca la IP en claro) */
-function ip_hash(): string { return substr(hash('sha256', 'est|' . ($_SERVER['REMOTE_ADDR'] ?? '') . '|' . (string)cfg('db.name', '')), 0, 20); }
-function owner_ips(): array { $a = json_decode(setting('owner_ips', '{}'), true); return is_array($a) ? $a : []; }
+function ip_hash(): string { return substr(hash('sha256', 'est|' . client_ip() . '|' . (string)cfg('db.name', '')), 0, 20); }
+function owner_ips(): array {
+    // Una sola vez: las conexiones guardadas antes se calcularon con la IP del CDN (no la tuya) y podían tapar visitas reales. Se vuelven a registrar al entrar al panel.
+    if (setting('owner_ips_v', '') !== '2') { setting_set('owner_ips', '{}'); setting_set('owner_ips_v', '2'); return []; }
+    $a = json_decode(setting('owner_ips', '{}'), true); return is_array($a) ? $a : [];
+}
 function owner_vids(): array { $a = json_decode(setting('owner_vids', '[]'), true); return is_array($a) ? $a : []; }
 /** Recuerda la conexión del dueño 45 días (así tampoco cuentan el celular o el navegador de Instagram en el mismo wifi) */
 function remember_owner_ip(): void {
