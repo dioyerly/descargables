@@ -35,7 +35,7 @@ $waMsg = fn(string $t) => $wa . '?text=' . rawurlencode($t);
 </head>
 <body data-page="inicio" data-base="<?= h(base_path()) ?>">
 <header class="pad" id="hdr"><a class="logo" href="#top"><img class="mark" src="assets/img/logo-emblema.png" alt="EstrategIA" width="34" height="34">EstrategIA<small>Productos digitales</small></a>
-<nav class="nav"><a class="t" href="#agendas">Agendas</a><a class="t" href="#apps">Apps web</a><a class="t" href="#landings">Landings</a><a class="t" href="#micro">Micro apps</a><a class="btn" href="<?= h($waMsg('Hola! Quiero consultar por un producto a medida.')) ?>" target="_blank" rel="noopener">Pedí el tuyo</a></nav></header>
+<nav class="nav"><a class="t" href="#apps">Apps web</a><a class="t" href="#landings">Landings</a><a class="t" href="#agendas">Agendas</a><a class="t" href="#micro">Micro apps</a><a class="btn" href="<?= h($waMsg('Hola! Quiero consultar por un producto a medida.')) ?>" target="_blank" rel="noopener">Pedí el tuyo</a></nav></header>
 
 <main id="top">
 <section id="desk" aria-label="Presentación">
