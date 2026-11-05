@@ -58,10 +58,10 @@ $waMsg = fn(string $t) => $wa . '?text=' . rawurlencode($t);
   </div>
 </section>
 
-<nav class="tabs" id="tabs" aria-label="Categorías"><a href="#agendas" class="on"><span class="tl">Agendas e imprimibles</span><span class="ts">Agendas</span></a><a href="#apps">Apps web</a><a href="#landings">Landings</a><a href="#micro">Micro apps</a></nav>
+<nav class="tabs" id="tabs" aria-label="Categorías"><a href="#apps" class="on">Apps web</a><a href="#landings">Landings</a><a href="#agendas"><span class="tl">Agendas e imprimibles</span><span class="ts">Agendas</span></a><a href="#micro">Micro apps</a></nav>
 <div id="panels">
 
-<section id="agendas" class="panel" aria-label="Agendas e imprimibles">
+<section id="agendas" class="panel" hidden aria-label="Agendas e imprimibles">
 <div class="sechead pad"><div class="wrap"><div class="k" style="color:var(--acc)">01 · Agendas e imprimibles</div><h2>Papel bonito, <span class="serif">listo para usar.</span></h2><p>Agendas y planners para imprimir en casa o usar en tu tablet. Mirá las páginas por dentro y elegí la tuya.</p></div></div>
 <div id="catalogo">
 <div id="prods">
@@ -123,7 +123,7 @@ $askApp = fn($a) => $a['link'] !== '' ? [$a['link'], 'Ver app ↗'] : [$waMsg('H
 $askMicro = fn($m) => [$waMsg('Hola! Me gustó la micro app "' . $m['title'] . '". Quiero algo así para mi negocio.'), 'Quiero algo así'];
 $askLand = fn($l) => [$l['link'] !== '' ? $l['link'] : $waMsg('Hola! Me gustó la landing "' . $l['title'] . '". Quiero una para mi negocio.'), 'Quiero una igual'];
 ?>
-<section id="apps" class="panel apps" hidden aria-label="Apps web">
+<section id="apps" class="panel apps" aria-label="Apps web">
   <div class="sechead pad"><div class="k">02 · Apps web</div><h2>Apps que <span class="serif">resuelven</span> tu día a día.</h2><p>Sistemas web hechos para que un negocio se ordene: gestión, stock, turnos, cuentas. Probá la demo, se usa desde cualquier dispositivo.</p></div>
   <?php if (!$apps): ?><div class="soon pad"><b>Muy pronto</b><span>Acá vas a poder probar las demos de las apps web.</span></div><?php endif; ?>
   <?php foreach ($apps as $n => $a) app_band($a, $n, 'apps', $askApp); ?>

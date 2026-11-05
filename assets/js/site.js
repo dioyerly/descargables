@@ -118,10 +118,10 @@ $$('[data-app]').forEach(ap=>{const fr=ap.querySelector('.vfr'),vp=ap.querySelec
   new MutationObserver(load).observe(ap.closest('.panel'),{attributes:true,attributeFilter:['hidden']});
   $$('.vdev button',ap).forEach(b=>b.addEventListener('click',()=>{$$('.vdev button',ap).forEach(x=>x.classList.toggle('on',x===b));vp.classList.toggle('mob',b.dataset.dev==='m')}))});
 /* categorías: se cambia el panel en el lugar, sin recorrer la página */
-const IDS=['agendas','apps','landings','micro'],tabsEl=$('tabs'),tl=$$('a',tabsEl);
+const IDS=['apps','landings','agendas','micro'],tabsEl=$('tabs'),tl=$$('a',tabsEl);
 function hdrH(){return $('hdr').offsetHeight||64}
 function goTop(el,inner){const base=inner&&el?el.getBoundingClientRect().top+scrollY-tabsEl.offsetHeight-hdrH()-8:$('desk').offsetTop+$('desk').offsetHeight-hdrH()+1;scrollTo({top:Math.max(0,base),behavior:'instant'})}
-function activate(id,jump){if(!IDS.includes(id))id='agendas';IDS.forEach(k=>{const e=$(k);const on=k===id;if(on&&e.hidden){e.hidden=false;e.classList.remove('enter');void e.offsetWidth;if(!RM)e.classList.add('enter')}else if(!on)e.hidden=true});
+function activate(id,jump){if(!IDS.includes(id))id='apps';IDS.forEach(k=>{const e=$(k);const on=k===id;if(on&&e.hidden){e.hidden=false;e.classList.remove('enter');void e.offsetWidth;if(!RM)e.classList.add('enter')}else if(!on)e.hidden=true});
   tl.forEach(a=>a.classList.toggle('on',a.getAttribute('href')==='#'+id));
   if(jump)goTop(null)}
 document.addEventListener('click',e=>{const a=e.target.closest('a[href^="#"]');if(!a)return;const id=a.getAttribute('href').slice(1);if(!id)return;e.preventDefault();
