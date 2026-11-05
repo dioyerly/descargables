@@ -167,7 +167,18 @@ $askLand = fn($l) => [$l['link'] !== '' ? $l['link'] : $waMsg('Hola! Me gustó l
   <div class="soon-grid pad">
   <?php foreach ($soon as $n => $p): $im = $p['images'][0] ?? ''; ?>
     <article class="soon-card" data-title="<?= h($p['title']) ?>">
-      <div class="soon-img"<?= $im !== '' ? ' style="background-image:url(\'uploads/' . h(rawurlencode($im)) . '\')"' : '' ?>><span class="soon-badge">Próximamente</span></div>
+      <div class="soon-media">
+        <span class="soon-badge">Próximamente</span>
+        <?php if ($p['images']): ?>
+        <div class="soon-track" tabindex="0" aria-label="Fotos de <?= h($p['title']) ?>">
+          <?php foreach ($p['images'] as $im): ?><img src="uploads/<?= h(rawurlencode($im)) ?>" alt="<?= h($p['title']) ?>" loading="lazy"><?php endforeach; ?>
+        </div>
+        <?php if (count($p['images']) > 1): ?>
+        <button type="button" class="sn sn-p" aria-label="Foto anterior"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button><button type="button" class="sn sn-n" aria-label="Foto siguiente"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M9 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        <span class="sn-count"><b>1</b> / <?= count($p['images']) ?></span>
+        <?php endif; ?>
+        <?php else: ?><div class="soon-empty">Fotos pronto</div><?php endif; ?>
+      </div>
       <div class="soon-body">
         <div class="k"><?= str_pad((string)($n + 1), 2, '0', STR_PAD_LEFT) ?></div>
         <h3><?= h($p['title']) ?></h3>
