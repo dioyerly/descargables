@@ -18,6 +18,13 @@ $pick = function (array $items, int $cap): array {
     return $o;
 };
 $heroSets = ['agendas' => $pick($products, max(8, count($products))), 'apps' => $pick($apps, max(6, count($apps))), 'landings' => $pick($landings, max(3, count($landings))), 'micro' => $pick($micro, max(3, count($micro)))];
+/* inicio: portadas que orbitan el núcleo (una por producto, primero agendas, después apps, landings y micro apps) */
+$uniCards = [];
+$uniAdd = function (array $items, string $k, string $l, int $max) use (&$uniCards): void {
+    $n = 0; foreach ($items as $it) { if ($n >= $max || count($uniCards) >= 10) break; $im = $it['images'][0] ?? null; if (!$im) continue;
+        $uniCards[] = ['u' => 'uploads/' . rawurlencode($im), 't' => trim(str_replace('*', '', (string)($it['title'] ?? ''))), 'k' => $k, 'l' => $l]; $n++; }
+};
+$uniAdd($products, 'agenda', 'Agenda', 6); $uniAdd($apps, 'app', 'App web', 2); $uniAdd($landings, 'landing', 'Landing', 1); $uniAdd($micro, 'micro', 'Micro app', 1);
 $wa = 'https://wa.me/5491126425994';
 $waMsg = fn(string $t) => $wa . '?text=' . rawurlencode($t);
 ?><!doctype html>
@@ -32,29 +39,26 @@ $waMsg = fn(string $t) => $wa . '?text=' . rawurlencode($t);
 <?php if ($heroImgs): ?><meta property="og:image" content="<?= h($heroImgs[0]) ?>"><?php endif; ?>
 <link rel="preload" href="assets/fonts/bricolage-grotesque-latin-800-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="assets/css/site.css?v=<?= $v ?>">
+<link rel="preload" href="assets/img/nucleo.webp" as="image">
 <?php require __DIR__ . "/lib/tiktok.php"; ?></head>
 <body data-page="inicio" data-base="<?= h(base_path()) ?>">
 <header class="pad" id="hdr"><a class="logo" href="#top"><img class="mark" src="assets/img/logo-emblema.png" alt="EstrategIA" width="34" height="34">EstrategIA<small>Productos digitales</small></a>
 <nav class="nav"><a class="t" href="#apps">Apps web</a><a class="t" href="#landings">Landings</a><a class="t" href="#agendas">Agendas</a><a class="t" href="#micro">Micro apps</a><a class="t" href="#proximamente">Próximamente</a><a class="btn" href="<?= h($waMsg('Hola! Quiero consultar por un producto a medida.')) ?>" target="_blank" rel="noopener">Pedí el tuyo</a></nav></header>
 
 <main id="top">
-<section id="desk" aria-label="Presentación">
-  <div class="dstage" id="dstage" data-vland="assets/img/hero/landing-ember.mp4" data-vmicro="assets/img/hero/micro-nimm.mp4" data-sets="<?= h(json_encode($heroSets, JSON_UNESCAPED_SLASHES)) ?>">
-    <div class="glowbg" id="glowbg"></div>
-    <div class="htxt" id="htxt"><div class="k" style="color:var(--acc)">EstrategIA · Productos digitales</div>
+<section id="desk" class="uni pad" aria-label="Presentación">
+  <div class="uni-in">
+    <div class="uni-txt">
       <h1>Productos digitales que <span class="rot serif" id="rot" aria-live="polite"><b class="on">organizan.</b><b>solucionan.</b><b>venden.</b></span></h1>
       <p>Agendas e imprimibles, apps web, landings y micro apps a medida. Todo listo para usar, mostrar y vender.</p>
-      <div class="row"><a class="btn" href="#agendas">Ver los productos</a><a class="btn o" href="<?= h($waMsg('Hola! Quiero pedir algo a medida.')) ?>" target="_blank" rel="noopener">Pedí lo tuyo</a></div></div>
-    <div class="dtitle" id="dtitle"><div class="k">Cuatro formas de trabajar con EstrategIA</div>
-      <h2>Para <span class="rot2 serif" id="rot2"><b class="on">organizarte.</b><b>gestionar tu negocio.</b><b>vender más.</b><b>resolverlo en un toque.</b><b>hacer crecer tu idea.</b></span></h2></div>
-    <div class="devs" id="devs">
-      <a class="dev d-tab" href="#agendas" style="--c:#6a4fc4"><i class="halo"></i><div class="frame"><div class="scr"></div></div><div class="cap"><b>01</b><span>Agendas e imprimibles</span><small><?= count($products) ? count($products) . ' productos' : 'Muy pronto' ?></small></div></a>
-      <a class="dev d-lap" href="#apps" style="--c:#2f8f83"><i class="halo"></i><div class="frame"><div class="scr"></div></div><div class="cap"><b>02</b><span>Apps web</span><small><?= count($apps) ? count($apps) . ' apps' : 'Muy pronto' ?></small></div></a>
-      <a class="dev d-pho" href="#landings" style="--c:#e0714f"><i class="halo"></i><div class="frame"><div class="scr"></div></div><div class="cap"><b>03</b><span>Landings a medida</span><small><?= count($landings) ? count($landings) . ' ejemplos' : 'Muy pronto' ?></small></div></a>
-      <a class="dev d-web" href="#micro" style="--c:#c9962b"><i class="halo"></i><div class="frame"><div class="scr"></div></div><div class="cap"><b>04</b><span>Micro apps a medida</span><small><?= count($micro) ? count($micro) . ' ejemplos' : 'Muy pronto' ?></small></div></a>
+      <div class="row"><a class="btn" href="#agendas">Ver los productos</a><a class="btn o" href="<?= h($waMsg('Hola! Quiero pedir algo a medida.')) ?>" target="_blank" rel="noopener">Pedí lo tuyo</a></div>
+      <nav class="uni-cats" aria-label="Categorías"><a href="#agendas"><i style="--c:#6a4fc4"></i>Agendas e imprimibles</a><a href="#apps"><i style="--c:#2f8f83"></i>Apps web</a><a href="#landings"><i style="--c:#e0714f"></i>Landings</a><a href="#micro"><i style="--c:#c9962b"></i>Micro apps</a></nav>
     </div>
-    <div class="pieces" id="pieces"></div>
-    <div class="stamp" id="stamp"><i></i>Bajá y mirá todo</div>
+    <div class="uni-stage" id="uni" data-cards="<?= h(json_encode($uniCards, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE)) ?>" aria-label="El universo de EstrategIA: los productos orbitan alrededor del núcleo">
+      <canvas class="uni-back"></canvas>
+      <div class="uni-core"><img src="assets/img/nucleo.webp" alt="" width="1400" height="933" fetchpriority="high"></div>
+      <canvas class="uni-front"></canvas>
+    </div>
   </div>
 </section>
 
@@ -199,6 +203,7 @@ $askLand = fn($l) => [$l['link'] !== '' ? $l['link'] : $waMsg('Hola! Me gustó l
 
 <div class="lb" id="lb" role="dialog" aria-modal="true" aria-label="Vista ampliada"><img id="lbi" alt=""><button class="x" id="lbx" aria-label="Cerrar">✕</button><button class="pv" id="lbp" aria-label="Anterior">‹</button><button class="nx" id="lbn" aria-label="Siguiente">›</button><div class="cap" id="lbc"></div></div>
 <script src="assets/js/site.js?v=<?= $v ?>" defer></script>
+<script src="assets/js/universo.js?v=<?= (string)@filemtime(__DIR__ . "/assets/js/universo.js") ?>" defer></script>
 <script src="assets/js/track.js?v=<?= $v ?>" defer></script>
 <script src="assets/js/tt-events.js?v=<?= $v ?>" defer></script>
 </body>
