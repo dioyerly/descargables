@@ -26,6 +26,7 @@ admin_head('Base de datos'); ?>
   <p><?= mp_configured() ? '✅' : '❌' ?> Access Token de Mercado Pago <?= mp_configured() ? 'cargado' : 'sin cargar (en config.php)' ?></p>
   <p><?= pp_configured() ? '✅' : '⚪' ?> PayPal (pagos desde el exterior) <?= pp_configured() ? 'configurado (' . h((string)cfg('paypal.mode', 'live')) . ')' : 'sin configurar (opcional, en config.php)' ?></p>
   <p><?= filter_var((string)cfg('notify_email', ''), FILTER_VALIDATE_EMAIL) ? '✅' : '⚪' ?> Mail de avisos de pagos fallidos <?= filter_var((string)cfg('notify_email', ''), FILTER_VALIDATE_EMAIL) ? 'configurado' : 'sin configurar (poné notify_email en config.php)' ?></p>
+  <?php if (($le = setting('last_checkout_error', '')) !== ''): ?><p style="color:#b3261e"><b>Último error al iniciar un pago:</b> <?= h($le) ?></p><?php endif; ?>
   <p class="muted">Aviso automático (webhook) de Mercado Pago: <code><?= h(site_url('mp-webhook.php')) ?></code></p>
   <p class="muted">Aviso automático (webhook) de PayPal: <code><?= h(site_url('paypal-webhook.php')) ?></code> (eventos <code>PAYMENT.CAPTURE.*</code>)</p>
   <?php if ($pdo): ?><form method="post" style="margin-top:16px"><input type="hidden" name="do" value="tablas"><?= csrf_field() ?><button class="btn" type="submit"><?= $ready ? 'Revisar tablas' : 'Crear tablas e importar mis productos' ?></button></form>
