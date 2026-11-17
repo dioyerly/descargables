@@ -35,6 +35,12 @@ function db_ready(): bool {
     try { $pdo->query('SELECT landing_url, files FROM products LIMIT 1'); }
     catch (Throwable $e) { try { db_install($pdo); } catch (Throwable $e2) { error_log('DB migrate: ' . $e2->getMessage()); return $ok = false; } }
     $ok = true;
+    // Pedidos: medio de pago (Mercado Pago / PayPal) y motivo del rechazo
+    try { $pdo->query('SELECT method, pp_order_id, fail_reason FROM orders LIMIT 1'); }
+    catch (Throwable $e) {
+        try { $pdo->exec("ALTER TABLE orders ADD method VARCHAR(10) NOT NULL DEFAULT 'mp' AFTER ip, ADD pp_order_id VARCHAR(40) NOT NULL DEFAULT '' AFTER method, ADD fail_reason VARCHAR(190) NOT NULL DEFAULT '' AFTER pp_order_id"); }
+        catch (Throwable $e2) { error_log('DB migrate orders: ' . $e2->getMessage()); return $ok = false; }
+    }
     // Aplica solas las fichas de seed/fichas que cambiaron desde la última vez (así no hace falta apretar ningún botón)
     try { db_apply_fichas_nuevas(); } catch (Throwable $e) { error_log('Fichas: ' . $e->getMessage()); }
     return true;
@@ -99,6 +105,9 @@ function db_install(PDO $pdo): void {
         downloads INT NOT NULL DEFAULT 0,
         expires_at DATETIME NULL,
         ip VARCHAR(45) NOT NULL DEFAULT '',
+        method VARCHAR(10) NOT NULL DEFAULT 'mp',
+        pp_order_id VARCHAR(40) NOT NULL DEFAULT '',
+        fail_reason VARCHAR(190) NOT NULL DEFAULT '',
         created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
         paid_at DATETIME NULL,
         INDEX (status), INDEX (ip, created_at), INDEX (product_id)

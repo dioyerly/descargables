@@ -16,6 +16,12 @@ Entrá a `https://descargar.estrategia.site/admin/` (si es la primera vez te pid
 ## 4. Configurar el aviso de Mercado Pago
 Tus integraciones → tu aplicación → **Webhooks** → URL de producción: `https://descargar.estrategia.site/mp-webhook.php` → evento **Pagos**. (Opcional: copiá la "clave secreta" en `mp.webhook_secret`.)
 
+## 4b. PayPal (compradores del exterior) y avisos de pagos fallidos
+1. [developer.paypal.com](https://developer.paypal.com) → iniciá sesión con la cuenta Business → **Apps & Credentials** → pestaña **Live** → *Create App* → copiá **Client ID** y **Secret** en `config.php` (sección `paypal`). Para probar antes, usá la pestaña *Sandbox* y `'mode' => 'sandbox'`.
+2. (Opcional) En esa misma app → *Add Webhook* → URL `https://descargar.estrategia.site/paypal-webhook.php`, eventos **Payment capture completed / denied / refunded / reversed** → copiá el *Webhook ID* en `paypal.webhook_id`.
+3. Poné tu mail en `notify_email`: ahí te avisamos cada vez que un pago falla o se devuelve (también queda en Admin → Pedidos → *Sin cobrar*).
+4. El botón **Pagar desde el exterior** aparece en los productos que tengan precio en USD (o, si no, se convierte el de pesos). Cobra en dólares.
+
 ## 5. Cargar cada producto
 Admin → Editar: precio, detalle completo, fotos, y el archivo que recibe el comprador (o un link). Con precio + archivo + Mercado Pago configurado, aparece el botón **Comprar**.
 

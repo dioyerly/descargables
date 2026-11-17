@@ -2,13 +2,16 @@
 declare(strict_types=1);
 // Vuelta desde Mercado Pago: confirma el pago y muestra la descarga
 require __DIR__ . '/lib/bootstrap.php';
-$order = (db_ready() && mp_configured()) ? order_by_code((string)($_GET['o'] ?? '')) : null;
+$order = db_ready() ? order_by_code((string)($_GET['o'] ?? '')) : null;
 if ($order && $order['status'] !== 'paid') {
     try {
-        $pid = (string)($_GET['payment_id'] ?? $_GET['collection_id'] ?? '');
-        $o2 = $pid !== '' ? mp_sync_payment_id($pid) : null;
-        if (!$o2 || $o2['status'] !== 'paid') $o2 = mp_sync_by_reference($order['code']);
-        if ($o2) $order = $o2;
+        if ($order['method'] === 'pp') { $order = pp_capture_order($order); }
+        elseif (mp_configured()) {
+            $pid = (string)($_GET['payment_id'] ?? $_GET['collection_id'] ?? '');
+            $o2 = $pid !== '' ? mp_sync_payment_id($pid) : null;
+            if (!$o2 || $o2['status'] !== 'paid') $o2 = mp_sync_by_reference($order['code']);
+            if ($o2) $order = $o2;
+        }
     } catch (Throwable $e) { error_log('gracias: ' . $e->getMessage()); }
 }
 $state = !$order ? 'none' : ($order['status'] === 'paid' ? 'paid' : ($order['status'] === 'pending' ? 'pending' : 'fail'));
@@ -27,11 +30,11 @@ $v = (string)@filemtime(__DIR__ . '/assets/js/site.js');
   <small>El enlace dura <?= (int)cfg('download.days', 7) ?> días y permite hasta <?= (int)cfg('download.max', 5) ?> descargas. Guardá el archivo en un lugar seguro.</small>
 <?php elseif ($state === 'pending'): ?>
   <div class="k" style="color:var(--acc)">Pago en proceso</div><h1>Estamos <span class="serif">esperando</span> la confirmación.</h1>
-  <p>Mercado Pago todavía no confirmó el pago (con algunos medios tarda unos minutos). Apenas se apruebe te mandamos el enlace a <b><?= h($order['buyer_email']) ?></b>.</p>
+  <p><?= $order['method'] === 'pp' ? 'PayPal' : 'Mercado Pago' ?> todavía no confirmó el pago (con algunos medios tarda unos minutos). Apenas se apruebe te mandamos el enlace a <b><?= h($order['buyer_email']) ?></b>.</p>
   <p class="row"><a class="btn" href="">Actualizar</a><a class="btn o" href="<?= h(base_path()) ?>/">Volver al catálogo</a></p>
 <?php elseif ($state === 'fail'): ?>
   <div class="k" style="color:var(--acc)">No se completó</div><h1>El pago <span class="serif">no se aprobó.</span></h1>
-  <p>No se te cobró nada. Podés intentar de nuevo con otro medio de pago.</p>
+  <p>No se te cobró nada. Podés intentar de nuevo con otro medio de pago<?= $order['method'] === 'mp' && pp_configured() ? ' — si tu tarjeta es del exterior, elegí «Pagar desde el exterior (PayPal)»' : '' ?>.</p>
   <p class="row"><a class="btn" href="<?= h(base_path()) ?>/">Volver al catálogo</a></p>
 <?php else: ?>
   <div class="k" style="color:var(--acc)">Compra</div><h1>No encontramos <span class="serif">ese pedido.</span></h1>

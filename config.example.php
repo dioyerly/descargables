@@ -19,6 +19,18 @@ return [
         'webhook_secret' => '',            // opcional: "Clave secreta" de Webhooks
     ],
 
+    // PayPal — para compradores con tarjetas del exterior (opcional).
+    // developer.paypal.com → Apps & Credentials → Live → Create App → copiá Client ID y Secret
+    'paypal' => [
+        'client_id'  => 'PONER_AQUI',
+        'secret'     => 'PONER_AQUI',
+        'mode'       => 'live',   // 'sandbox' para probar con cuentas de prueba
+        'webhook_id' => '',       // opcional: ID del webhook (avisos de devoluciones / cobros demorados)
+    ],
+
+    // Mail donde te avisamos cuando un pago falla o se devuelve
+    'notify_email' => '',
+
     // Enlace de descarga que recibe el comprador
     'download' => [
         'days' => 7,   // días que dura el enlace

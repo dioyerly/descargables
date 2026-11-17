@@ -68,7 +68,7 @@ function product_next_order(): int { return (int)db()->query('SELECT COALESCE(MA
 
 /** ¿Se puede vender? (precio, archivo o link, y Mercado Pago configurado) */
 function product_for_sale(array $p): bool {
-    return $p['price'] > 0 && (!empty($p['files']) || $p['ext_url'] !== '') && db_ready() && mp_configured();
+    return $p['price'] > 0 && (!empty($p['files']) || $p['ext_url'] !== '') && db_ready() && (mp_configured() || pp_available($p));
 }
 function mp_configured(): bool {
     $t = (string)cfg('mp.access_token', '');

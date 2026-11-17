@@ -24,7 +24,10 @@ admin_head('Base de datos'); ?>
   <p><?= $pdo ? '✅' : '❌' ?> Conexión a MySQL <?= $pdo ? 'correcta' : '— ' . h((string)($GLOBALS['db_error'] ?? '')) ?></p>
   <p><?= $ready ? '✅' : '❌' ?> Tablas <?= $ready ? 'creadas' : 'sin crear' ?></p>
   <p><?= mp_configured() ? '✅' : '❌' ?> Access Token de Mercado Pago <?= mp_configured() ? 'cargado' : 'sin cargar (en config.php)' ?></p>
+  <p><?= pp_configured() ? '✅' : '⚪' ?> PayPal (pagos desde el exterior) <?= pp_configured() ? 'configurado (' . h((string)cfg('paypal.mode', 'live')) . ')' : 'sin configurar (opcional, en config.php)' ?></p>
+  <p><?= filter_var((string)cfg('notify_email', ''), FILTER_VALIDATE_EMAIL) ? '✅' : '⚪' ?> Mail de avisos de pagos fallidos <?= filter_var((string)cfg('notify_email', ''), FILTER_VALIDATE_EMAIL) ? 'configurado' : 'sin configurar (poné notify_email en config.php)' ?></p>
   <p class="muted">Aviso automático (webhook) de Mercado Pago: <code><?= h(site_url('mp-webhook.php')) ?></code></p>
+  <p class="muted">Aviso automático (webhook) de PayPal: <code><?= h(site_url('paypal-webhook.php')) ?></code> (eventos <code>PAYMENT.CAPTURE.*</code>)</p>
   <?php if ($pdo): ?><form method="post" style="margin-top:16px"><input type="hidden" name="do" value="tablas"><?= csrf_field() ?><button class="btn" type="submit"><?= $ready ? 'Revisar tablas' : 'Crear tablas e importar mis productos' ?></button></form>
   <p class="muted"><small>Es seguro repetirlo: no borra nada.</small></p>
   <?php if ($ready): ?><hr style="margin:18px 0;border:0;border-top:1px solid #ddd5c6"><h2>Fichas de productos</h2>

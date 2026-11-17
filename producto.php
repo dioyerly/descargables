@@ -52,9 +52,10 @@ $typeLbl = types()[$p['type']] ?? '';
         <input type="hidden" name="slug" value="<?= h($p['id']) ?>">
         <input type="text" name="web" value="" tabindex="-1" autocomplete="off" class="hp" aria-hidden="true">
         <label>Tu email<input type="email" name="email" required maxlength="190" placeholder="nombre@correo.com" autocomplete="email"><small>Ahí te mandamos el enlace de descarga.</small></label>
-        <button class="btn big" type="submit">Comprar · <?= h(format_price($p['price'])) ?></button>
+        <?php if (mp_configured()): ?><button class="btn big" type="submit" name="metodo" value="mp">Comprar · <?= h(format_price($p['price'])) ?></button><?php endif; ?>
+        <?php if (pp_available($p)): ?><button class="btn <?= mp_configured() ? 'o ' : 'big' ?>" type="submit" name="metodo" value="paypal" style="margin-top:10px;width:100%"><?= mp_configured() ? 'Pagar desde el exterior · USD ' . h(number_format(pp_usd_amount($p), 2)) . ' (PayPal)' : 'Comprar · USD ' . h(number_format(pp_usd_amount($p), 2)) . ' (PayPal)' ?></button><small>¿Tu tarjeta es de otro país? Pagá en dólares con PayPal: tarjeta internacional o cuenta PayPal.</small><?php endif; ?>
       </form>
-      <ul class="trust"><li>Pago seguro con Mercado Pago</li><li>Descarga al instante</li><li>Producto digital: no se envía nada físico</li></ul>
+      <ul class="trust"><li><?= mp_configured() ? 'Pago seguro con Mercado Pago' . (pp_available($p) ? ' o PayPal' : '') : 'Pago seguro con PayPal' ?></li><li>Descarga al instante</li><li>Producto digital: no se envía nada físico</li></ul>
     <?php else: ?>
       <button class="btn big" type="button" disabled aria-disabled="true"><?= $p['price'] > 0 ? 'Comprar · ' . h(format_price($p['price'])) : 'Comprar' ?></button>
       <p class="soon">No disponible por ahora. Si lo querés ya, escribinos y te lo pasamos.</p>
