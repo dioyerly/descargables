@@ -49,7 +49,7 @@ $waMsg = fn(string $t) => $wa . '?text=' . rawurlencode($t);
 <section id="desk" class="uni pad" aria-label="Presentación">
   <div class="uni-in">
     <div class="uni-txt">
-      <h1>Productos digitales que <span class="rot serif" id="rot" aria-live="polite"><b class="on">organizan.</b><b>solucionan.</b><b>venden.</b></span></h1>
+      <h1>Productos <span class="nw">digitales que</span> <span class="rot serif" id="rot" aria-live="polite"><b class="on">organizan.</b><b>solucionan.</b><b>venden.</b></span></h1>
       <p>Agendas e imprimibles, apps web, landings y micro apps a medida. Todo listo para usar, mostrar y vender.</p>
       <div class="row"><a class="btn" href="#agendas">Ver los productos</a><a class="btn o" href="<?= h($waMsg('Hola! Quiero pedir algo a medida.')) ?>" target="_blank" rel="noopener">Pedí lo tuyo</a></div>
       <nav class="uni-cats" aria-label="Categorías"><a href="#agendas"><i style="--c:#6a4fc4"></i>Agendas e imprimibles</a><a href="#apps"><i style="--c:#2f8f83"></i>Apps web</a><a href="#landings"><i style="--c:#e0714f"></i>Landings</a><a href="#micro"><i style="--c:#c9962b"></i>Micro apps</a></nav>

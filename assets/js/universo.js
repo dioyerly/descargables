@@ -20,10 +20,10 @@ const spawn=any=>({r:any?rnd(.35,1):rnd(.9,1.05),a:rnd(0,7),v:rnd(.05,.16),col:P
 const flow=Array.from({length:150},()=>spawn(true));
 function size(){const r=stage.getBoundingClientRect();W=r.width;H=r.height;const D=Math.min(2,devicePixelRatio||1);
   [bc,fc].forEach(c=>{c.width=Math.round(W*D);c.height=Math.round(H*D)});b.setTransform(D,0,0,D,0,0);f.setTransform(D,0,0,D,0,0);
-  cx=W/2;cy=H/2;R=Math.min(W,H)*.245;core.style.width=(R*2/.56)+'px';cw=Math.round(R*2*.26);
+  cx=W/2;cy=H/2;R=Math.min(W*.24,H*.28);core.style.width=(R*2/.56)+'px';cw=Math.round(R*2*.26);
   cards.forEach(c=>{c.e.style.width=cw+'px';c.h=c.e.offsetHeight})}
 size();addEventListener('resize',size);if(window.ResizeObserver)new ResizeObserver(size).observe(stage);
-function back(){const P=Math.min(W,H)*.5;b.clearRect(0,0,W,H);b.lineCap='round';
+function back(){const P=Math.min(W*.5,R*2.2);b.clearRect(0,0,W,H);b.lineCap='round';
   flow.forEach((p,i)=>{const r0=p.r*P,a0=p.a;p.r-=p.v*dt*(1.4-p.r);p.a+=dt*(.45+(1-p.r)*2);if(p.r<R/P*1.02){flow[i]=spawn(false);return}
     const r1=p.r*P,x0=cx+Math.cos(a0)*r0,y0=cy+Math.sin(a0)*r0*.62,x1=cx+Math.cos(p.a)*r1,y1=cy+Math.sin(p.a)*r1*.62,al=Math.min(1,(1-p.r)*2.2)*Math.min(1,(p.r*P-R)/(R*.4))*.55;
     if(al<=0)return;b.strokeStyle='rgba('+p.col+','+al.toFixed(2)+')';b.lineWidth=p.w;b.beginPath();b.moveTo(x0,y0);b.lineTo(x1,y1);b.stroke()});
@@ -32,12 +32,12 @@ function back(){const P=Math.min(W,H)*.5;b.clearRect(0,0,W,H);b.lineCap='round';
   if(t>nextWave){waves.push(0);nextWave=t+4}
   waves=waves.filter(v=>v<1);waves.forEach((v,i)=>{const rr=R*1.05+v*(P*.95-R);b.strokeStyle='rgba(106,79,196,'+((1-v)*.28).toFixed(2)+')';b.lineWidth=1.2;b.beginPath();b.ellipse(cx,cy,rr,rr*.62,0,0,7);b.stroke();waves[i]=v+dt*.28})}
 const tilt=-.18;
-function place(){const rx=Math.min(W,H)*.46,ry=rx*.34,ct=Math.cos(tilt),st=Math.sin(tilt);
+function place(){const rx=Math.min(W*.44,R*2.05),ry=rx*.34,ct=Math.cos(tilt),st=Math.sin(tilt);
   cards.forEach(c=>{const a=orb+c.ph,x=Math.cos(a)*rx,y=Math.sin(a)*ry,depth=Math.sin(a),near=(depth+1)/2;c.near=near;
     c.x=cx+x*ct-y*st;c.y=cy+x*st+y*ct;const sc=.62+near*.38;
     c.e.style.transform='translate3d('+(c.x-cw/2).toFixed(1)+'px,'+(c.y-c.h/2).toFixed(1)+'px,0) scale('+sc.toFixed(3)+')';
     c.e.style.opacity=(.55+near*.45).toFixed(2);c.e.style.filter='blur('+((1-near)*1.2).toFixed(1)+'px)';c.e.style.zIndex=depth>0?6:2})}
-function front(){const rx=Math.min(W,H)*.46,ry=rx*.34;f.clearRect(0,0,W,H);
+function front(){const rx=Math.min(W*.44,R*2.05),ry=rx*.34;f.clearRect(0,0,W,H);
   f.save();f.translate(cx,cy);f.rotate(tilt);const gr=f.createLinearGradient(-rx,0,rx,0);gr.addColorStop(0,'rgba(106,79,196,0)');gr.addColorStop(.5,'rgba(106,79,196,.35)');gr.addColorStop(1,'rgba(106,79,196,0)');
   f.strokeStyle=gr;f.lineWidth=1.2;f.beginPath();f.ellipse(0,0,rx,ry,0,0,Math.PI);f.stroke();f.restore();
   cards.forEach((c,i)=>{if(c.near<.55)return;const k=(c.near-.55)/.45,dx=c.x-cx,dy=c.y-cy,L=Math.hypot(dx,dy)||1,ux=dx/L,uy=dy/L,sx=cx+ux*R*1.02,sy=cy+uy*R*1.02;
