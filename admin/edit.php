@@ -41,12 +41,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $priceRaw = str_replace(['$', ' '], '', (string)($_POST['price'] ?? '0'));
     $priceRaw = preg_match('/,\d{1,2}$/', $priceRaw) ? str_replace(',', '.', str_replace('.', '', $priceRaw)) : str_replace(['.', ','], '', $priceRaw);
     $p['price'] = is_numeric($priceRaw) ? max(0, (float)$priceRaw) : 0;
+    // Los productos gratis no tienen precio: el campo puede quedar vacío
+    if ($p['gratis']) { $p['price'] = 0; $priceRaw = '0'; }
     if (!is_numeric($priceRaw)) $errors[] = 'El precio debe ser un número (por ejemplo 4500).';
     if ($p['price'] > 99999999) $errors[] = 'El precio es demasiado alto.';
     $usdRaw = str_replace(['US$', 'USD', 'u$s', '$', ' '], '', (string)($_POST['price_usd'] ?? ''));
     $usdRaw = str_replace(',', '.', $usdRaw);
     if ($usdRaw !== '' && (!is_numeric($usdRaw) || (float)$usdRaw < 0 || (float)$usdRaw > 100000)) $errors[] = 'El precio en dólares debe ser un número (por ejemplo 9.99).';
-    $p['price_usd'] = is_numeric($usdRaw) ? round(max(0, (float)$usdRaw), 2) : 0;
+    $p['price_usd'] = (!$p['gratis'] && is_numeric($usdRaw)) ? round(max(0, (float)$usdRaw), 2) : 0;
     if ($p['price_usd'] > 0) {
         $ars = usd_to_ars($p['price_usd']);
         if ($ars > 0) $p['price'] = $ars;
