@@ -34,7 +34,7 @@ admin_head('Pedidos'); ?>
 <?php foreach ($rows as $o): ?>
 <div class="pitem<?= $o['status'] === 'paid' ? '' : ' off' ?>">
   <div class="pinfo"><b><?= h($o['product_title']) ?></b>
-    <span class="muted"><?= h($o['buyer_email']) ?> · <?= h(($o['currency'] === 'USD' ? 'USD ' . number_format((float)$o['amount'], 2) : format_price((float)$o['amount']))) ?> · <?= $o['method'] === 'pp' ? 'PayPal' : 'Mercado Pago' ?> · <?= h($o['created_at']) ?></span>
+    <span class="muted"><?= h($o['buyer_email']) ?> · <?= h(($o['currency'] === 'USD' ? 'USD ' . number_format((float)$o['amount'], 2) : format_price((float)$o['amount']))) ?> · <?= $o['method'] === 'pp' ? 'PayPal' : ($o['method'] === 'gratis' ? 'Código gratis' : 'Mercado Pago') ?> · <?= h($o['created_at']) ?></span>
     <span class="tags"><em class="<?= $o['status'] === 'paid' ? 't-ok' : 't-warn' ?>"><?= h($lbl[$o['status']] ?? $o['status']) ?></em><?php if ($o['status'] === 'pending' && strtotime((string)$o['created_at']) < time() - 1800): ?><em class="t-warn">Sin completar</em><?php endif; ?><?php if ($o['fail_reason'] !== ''): ?><em class="t-warn"><?= h($o['fail_reason']) ?></em><?php endif; ?><?php if ($o['status'] === 'paid'): ?><em class="t-ok"><?= (int)$o['downloads'] ?> descargas · vence <?= h((string)$o['expires_at']) ?></em><?php endif; ?></span>
     <?php if ($o['status'] === 'paid'): ?><span class="muted"><small>Enlace: <?= h(download_link($o)) ?></small></span><?php endif; ?></div>
   <?php if ($o['status'] === 'paid'): ?><div class="pact"><form method="post"><?= csrf_field() ?><input type="hidden" name="code" value="<?= h($o['code']) ?>"><button class="btn sm" name="act" value="renew">Renovar enlace</button></form></div><?php endif; ?>

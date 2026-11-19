@@ -10,7 +10,7 @@ function row_to_product(array $r): array {
         'id' => $r['slug'], 'order' => (int)$r['sort_order'], 'visible' => (bool)$r['visible'], 'type' => $r['type'],
         'kicker' => $r['kicker'], 'title' => $r['title'], 'theme' => $r['theme'], 'pages' => (int)$r['pages'], 'ar' => $r['ar'],
         'desc' => $r['short_desc'], 'long' => $r['long_desc'], 'meta' => $j($r['meta']), 'feats' => $j($r['feats']), 'images' => $j($r['images']),
-        'price' => ((float)($r['price_usd'] ?? 0) > 0 && ($ars = usd_to_ars((float)$r['price_usd'])) > 0) ? $ars : (float)$r['price'], 'price_usd' => (float)($r['price_usd'] ?? 0), 'files' => $files, 'file' => $files[0]['stored'] ?? '', 'file_orig' => $files[0]['orig'] ?? '', 'ext_url' => $r['ext_url'], 'landing' => $r['landing_url'] ?? '', 'pk' => (int)$r['id'],
+        'price' => ((float)($r['price_usd'] ?? 0) > 0 && ($ars = usd_to_ars((float)$r['price_usd'])) > 0) ? $ars : (float)$r['price'], 'price_usd' => (float)($r['price_usd'] ?? 0), 'files' => $files, 'file' => $files[0]['stored'] ?? '', 'file_orig' => $files[0]['orig'] ?? '', 'ext_url' => $r['ext_url'], 'landing' => $r['landing_url'] ?? '', 'pk' => (int)$r['id'], 'gratis' => !empty($r['gratis']),
     ];
 }
 
