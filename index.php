@@ -45,7 +45,7 @@ $waMsg = fn(string $t) => $wa . '?text=' . rawurlencode($t);
 <?php require __DIR__ . "/lib/tiktok.php"; ?></head>
 <body data-page="inicio" data-base="<?= h(base_path()) ?>">
 <header class="pad" id="hdr"><a class="logo" href="#top"><img class="mark" src="assets/img/logo-emblema.png" alt="EstrategIA" width="34" height="34">EstrategIA<small>Productos digitales</small></a>
-<nav class="nav"><a class="t" href="#apps">Apps web</a><a class="t" href="#landings">Landings</a><a class="t" href="#agendas">Agendas</a><a class="t" href="#micro">Micro apps</a><a class="t" href="#proximamente">Próximamente</a><a class="btn" href="<?= h($waMsg('Hola! Quiero consultar por un producto a medida.')) ?>" target="_blank" rel="noopener">Pedí el tuyo</a></nav></header>
+<nav class="nav"><a class="t" href="#apps">Apps web</a><a class="t" href="#landings">Landings</a><a class="t" href="#agendas">Agendas</a><a class="t" href="#micro">Micro apps</a><a class="t" href="#gratis">Gratis</a><a class="t" href="#proximamente">Próximamente</a><a class="btn" href="<?= h($waMsg('Hola! Quiero consultar por un producto a medida.')) ?>" target="_blank" rel="noopener">Pedí el tuyo</a></nav></header>
 
 <main id="top">
 <section id="desk" class="uni pad" aria-label="Presentación">
@@ -128,7 +128,7 @@ function app_band(array $a, int $n, string $kind, callable $ask): void {
       <div class="vtools"><div class="vdev"><button type="button"<?= $kind === 'gratis' ? '' : ' class="on"' ?> data-dev="d">Computadora</button><button type="button"<?= $kind === 'gratis' ? ' class="on"' : '' ?> data-dev="m">Celular</button></div></div>
       <div class="browser"><div class="bbar"><i></i><i></i><i></i><b class="vurl"><?= h(trim(preg_replace('~[^a-z0-9]+~', '-', strtolower(iconv('UTF-8', 'ASCII//TRANSLIT', $a['title']) ?: 'app')), '-')) ?>.com</b></div>
         <div class="vp<?= $kind === 'gratis' ? ' mob' : '' ?>"><div class="vfr"><div class="vph"<?= $src === '' && $im ? ' style="background-image:url(\'' . h($im[0]) . '\')"' . ($kind === 'soon' ? '' : ' data-open="0"') : '' ?>></div></div></div>
-        <?php if ($kind === 'soon' && count($im) > 1): ?><button type="button" class="sarr sprev" aria-label="Foto anterior">&#8249;</button><button type="button" class="sarr snext" aria-label="Foto siguiente">&#8250;</button><div class="sdots"><?php foreach ($im as $_): ?><i></i><?php endforeach; ?></div><?php endif; ?></div>
+        <?php if (($kind === 'soon' || $kind === 'gratis') && count($im) > 1): ?><button type="button" class="sarr sprev" aria-label="Foto anterior">&#8249;</button><button type="button" class="sarr snext" aria-label="Foto siguiente">&#8250;</button><div class="sdots"><?php foreach ($im as $_): ?><i></i><?php endforeach; ?></div><?php endif; ?></div>
       <?php if ($kind !== 'soon' && count($im) > 1): ?><div class="athumbs"><?php foreach (array_slice($im, 0, 6) as $i => $u): ?><button type="button" data-open="<?= $i ?>" aria-label="Ampliar foto <?= $i + 1 ?>" style="background-image:url('<?= h($u) ?>')"></button><?php endforeach; ?></div><?php endif; ?>
     </div>
   </article>

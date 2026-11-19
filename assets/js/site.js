@@ -84,12 +84,12 @@ scrollTo(0,0);addEventListener('load',()=>setTimeout(()=>scrollTo(0,0),0));addEv
 
 /* Próximamente: pasar fotos con flechas, en la misma tarjeta */
 (function(){
-  document.querySelectorAll('.soonp [data-app]').forEach(function(card){
+  document.querySelectorAll('.soonp [data-app], .gratis-p [data-app]').forEach(function(card){
     var imgs=[];try{imgs=JSON.parse(card.dataset.imgs||'[]')}catch(e){}
     var ph=card.querySelector('.vph'),dots=card.querySelectorAll('.sdots i');
     if(!ph||imgs.length<2)return;
     var i=0;
-    function go(n){i=(n+imgs.length)%imgs.length;ph.style.backgroundImage="url('"+imgs[i]+"')";dots.forEach(function(d,k){d.classList.toggle('on',k===i)})}
+    function go(n){i=(n+imgs.length)%imgs.length;ph.style.backgroundImage="url('"+imgs[i]+"')";if(ph.hasAttribute('data-open'))ph.dataset.open=String(i);dots.forEach(function(d,k){d.classList.toggle('on',k===i)})}
     go(0);
     var pv=card.querySelector('.sprev'),nx=card.querySelector('.snext');
     if(pv)pv.addEventListener('click',function(){go(i-1)});
