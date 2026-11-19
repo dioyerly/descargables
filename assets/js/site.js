@@ -87,9 +87,13 @@ scrollTo(0,0);addEventListener('load',()=>setTimeout(()=>scrollTo(0,0),0));addEv
   document.querySelectorAll('.soonp [data-app], .gratis-p [data-app]').forEach(function(card){
     var imgs=[];try{imgs=JSON.parse(card.dataset.imgs||'[]')}catch(e){}
     var ph=card.querySelector('.vph'),dots=card.querySelectorAll('.sdots i');
+    var isG=!!card.closest('.gratis-p');
+    /* GRATIS: el visor toma la proporción de cada foto (no se estira ni se recorta) */
+    function ratio(u){if(!isG)return;var im=new Image();im.onload=function(){if(im.naturalHeight)card.style.setProperty('--ar',(im.naturalWidth/im.naturalHeight).toFixed(4))};im.src=u}
+    if(isG&&imgs.length===1)ratio(imgs[0]);
     if(!ph||imgs.length<2)return;
     var i=0;
-    function go(n){i=(n+imgs.length)%imgs.length;ph.style.backgroundImage="url('"+imgs[i]+"')";if(ph.hasAttribute('data-open'))ph.dataset.open=String(i);dots.forEach(function(d,k){d.classList.toggle('on',k===i)})}
+    function go(n){i=(n+imgs.length)%imgs.length;ph.style.backgroundImage="url('"+imgs[i]+"')";ratio(imgs[i]);if(ph.hasAttribute('data-open'))ph.dataset.open=String(i);dots.forEach(function(d,k){d.classList.toggle('on',k===i)})}
     go(0);
     var pv=card.querySelector('.sprev'),nx=card.querySelector('.snext');
     if(pv)pv.addEventListener('click',function(){go(i-1)});
