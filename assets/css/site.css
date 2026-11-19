@@ -373,11 +373,13 @@ footer{margin-top:80px;padding-top:22px;border-top:1px solid var(--line);display
 @media(prefers-reduced-motion:reduce){.uni-core img{animation:none}}
 
 /* ===== pestaña Gratis (aditivo) ===== */
-.gratis-p .gform{max-width:640px;margin:8px auto 40px;padding-top:0}
-.gratis-p .gform input[type=text],.gratis-p .gform input[type=email]{flex:1 1 200px;min-width:0;font:500 15px var(--sans);padding:12px 14px;border-radius:12px;border:1px solid var(--line);background:#fbfaf7}
-
-/* GRATIS: visor en vista de computadora; se adapta a la foto (sin estirar) y un poco más chico */
+.gratis-p .atags{display:flex;flex-wrap:wrap;gap:8px}
+.gratis-p .atags span{padding:8px 12px;border-radius:99px;font:600 13px var(--sans)}
+.gratis-p .app-info .gform{display:grid;gap:10px;margin-top:24px;padding:0;max-width:400px}
+.gratis-p .gform input[type=text],.gratis-p .gform input[type=email]{width:100%;min-width:0;font:500 15px var(--sans);padding:13px 14px;border-radius:12px;border:1px solid var(--line);background:#fbfaf7}
+.gratis-p .gform .btn{justify-content:center;width:100%}
+.gratis-p .app-demo .browser{position:relative;width:fit-content;max-width:100%;margin-inline:auto}
 .gratis-p .app-demo .vtools{display:none}
-.gratis-p .app-demo .vp{height:auto;padding:0}
-.gratis-p .app-demo .vfr,.gratis-p .app-demo .vp.mob .vfr{height:auto;aspect-ratio:var(--ar,1.6);width:min(100%,calc(400px * var(--ar,1.6)));max-width:100%}
+.gratis-p .app-demo .vp{height:auto;padding:0;background:#fff}
+.gratis-p .app-demo .vfr,.gratis-p .app-demo .vp.mob .vfr{height:auto;aspect-ratio:var(--ar,1.6);width:calc(min(46vh,420px) * var(--ar,1.6));max-width:100%}
 .gratis-p .app-demo .vph{background-size:100% 100%;background-position:center}

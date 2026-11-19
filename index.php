@@ -121,9 +121,15 @@ function app_band(array $a, int $n, string $kind, callable $ask): void {
           <p class="msg" role="status" aria-live="polite"></p>
         </form>
       <?php endif; ?>
+      <?php if ($kind === 'gratis'): ?><form class="aviso-form gform" method="post" action="gratis.php">
+          <input type="text" name="web" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+          <input type="text" name="codigo" required maxlength="40" autocomplete="off" placeholder="Tu código" aria-label="Tu código">
+          <input type="email" name="email" required maxlength="190" autocomplete="email" placeholder="Tu email (ahí va el enlace)" aria-label="Tu email">
+          <button class="btn" type="submit">Descargar gratis</button>
+        </form><?php endif; ?>
       <div class="row"><?php if ($kind !== 'soon' && $kind !== 'gratis'): ?><a class="btn" href="<?= h($askUrl) ?>" target="_blank" rel="noopener"><?= h($askLabel) ?></a><?php endif; ?>
         <?php if ($src !== ''): ?><a class="btn o vopen" href="demo.php?f=<?= h(rawurlencode(basename($a['html']))) ?>" target="_blank" rel="noopener">Abrir demo completa ↗</a><?php endif; ?>
-        <?php if ($kind !== 'soon' && (count($im) > 1 || ($src !== '' && $im))): ?><button type="button" class="btn o" data-open="0">Ver fotos</button><?php endif; ?></div></div>
+        <?php if ($kind !== 'soon' && $kind !== 'gratis' && (count($im) > 1 || ($src !== '' && $im))): ?><button type="button" class="btn o" data-open="0">Ver fotos</button><?php endif; ?></div></div>
     <div class="app-demo">
       <div class="vtools"><div class="vdev"><button type="button" class="on" data-dev="d">Computadora</button><button type="button" data-dev="m">Celular</button></div></div>
       <div class="browser"><div class="bbar"><i></i><i></i><i></i><b class="vurl"><?= h(trim(preg_replace('~[^a-z0-9]+~', '-', strtolower(iconv('UTF-8', 'ASCII//TRANSLIT', $a['title']) ?: 'app')), '-')) ?>.com</b></div>
@@ -181,13 +187,7 @@ $askLand = fn($l) => [$l['link'] !== '' ? $l['link'] : $waMsg('Hola! Me gustó l
   <div class="sechead pad"><div class="k" style="color:var(--acc)">Gratis</div><h2>Para llevarte <span class="serif">sin pagar.</span></h2><p>¿Tenés un código de Instagram o TikTok? Ponelo acá con tu email y descargá al instante. Cada email puede descargar cada producto una sola vez.</p></div>
   <?php if (!$gratisList): ?><div class="soon pad"><b>Muy pronto</b><span>Acá vas a encontrar lo que regalamos.</span></div><?php endif; ?>
   <?php if ($gratisList): ?>
-  <?php foreach ($gratisList as $n => $g) app_band(['id' => $g['id'], 'title' => strip_tags(str_replace('*', '', (string)$g['title'])), 'desc' => $g['desc'], 'tags' => array_slice(array_merge($g['meta'] ?? [], $g['feats'] ?? []), 0, 6), 'images' => $g['images'], 'html' => '', 'price' => ''], $n, 'gratis', $askMicro); ?>
-  <form class="aviso-form gform pad" method="post" action="gratis.php">
-    <input type="text" name="web" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
-    <input type="text" name="codigo" required maxlength="40" autocomplete="off" placeholder="Tu código" aria-label="Tu código">
-    <input type="email" name="email" required maxlength="190" autocomplete="email" placeholder="Tu email (ahí va el enlace)" aria-label="Tu email">
-    <button class="btn" type="submit">Descargar gratis</button>
-  </form>
+  <?php foreach ($gratisList as $n => $g) app_band(['id' => $g['id'], 'title' => strip_tags(str_replace('*', '', (string)$g['title'])), 'desc' => $g['desc'], 'tags' => array_slice($g['meta'] ?? [], 0, 4), 'images' => $g['images'], 'html' => '', 'price' => ''], $n, 'gratis', $askMicro); ?>
   <?php endif; ?>
 </section>
 
