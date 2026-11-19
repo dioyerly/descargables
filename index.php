@@ -107,7 +107,7 @@ function app_band(array $a, int $n, string $kind, callable $ask): void {
   $im = array_map(fn($x) => 'uploads/' . rawurlencode($x), $a['images']);
   $src = ($a['html'] !== '' && is_file(SHOWCASE_DIR . '/' . basename($a['html']))) ? 'muestras/' . rawurlencode($a['html']) : '';
   [$askUrl, $askLabel] = $ask($a);
-  $label = ['micro' => 'Micro app', 'landings' => 'Landing', 'soon' => 'Próximamente'][$kind] ?? 'App web'; ?>
+  $label = ['micro' => 'Micro app', 'landings' => 'Landing', 'soon' => 'Próximamente', 'gratis' => 'Gratis'][$kind] ?? 'App web'; ?>
   <article class="app pad" data-app data-src="<?= h($src) ?>" data-imgs="<?= h(json_encode($im, JSON_UNESCAPED_SLASHES)) ?>" data-title="<?= h($a['title']) ?>">
     <div class="app-info"><div class="k"><?= $label ?> · <?= str_pad((string)($n + 1), 2, '0', STR_PAD_LEFT) ?></div>
       <h3><?= h($a['title']) ?></h3><p><?= h($a['desc']) ?></p>
@@ -121,7 +121,7 @@ function app_band(array $a, int $n, string $kind, callable $ask): void {
           <p class="msg" role="status" aria-live="polite"></p>
         </form>
       <?php endif; ?>
-      <div class="row"><?php if ($kind !== 'soon'): ?><a class="btn" href="<?= h($askUrl) ?>" target="_blank" rel="noopener"><?= h($askLabel) ?></a><?php endif; ?>
+      <div class="row"><?php if ($kind !== 'soon' && $kind !== 'gratis'): ?><a class="btn" href="<?= h($askUrl) ?>" target="_blank" rel="noopener"><?= h($askLabel) ?></a><?php endif; ?>
         <?php if ($src !== ''): ?><a class="btn o vopen" href="demo.php?f=<?= h(rawurlencode(basename($a['html']))) ?>" target="_blank" rel="noopener">Abrir demo completa ↗</a><?php endif; ?>
         <?php if ($kind !== 'soon' && (count($im) > 1 || ($src !== '' && $im))): ?><button type="button" class="btn o" data-open="0">Ver fotos</button><?php endif; ?></div></div>
     <div class="app-demo">
@@ -181,24 +181,12 @@ $askLand = fn($l) => [$l['link'] !== '' ? $l['link'] : $waMsg('Hola! Me gustó l
   <div class="sechead pad"><div class="k" style="color:var(--acc)">Gratis</div><h2>Para llevarte <span class="serif">sin pagar.</span></h2><p>¿Tenés un código de Instagram o TikTok? Ponelo acá con tu email y descargá al instante. Cada email puede descargar cada producto una sola vez.</p></div>
   <?php if (!$gratisList): ?><div class="soon pad"><b>Muy pronto</b><span>Acá vas a encontrar lo que regalamos.</span></div><?php endif; ?>
   <?php if ($gratisList): ?>
-  <div class="gwrap pad">
-    <?php foreach ($gratisList as $g): $gplain = strip_tags(str_replace('*', '', (string)$g['title'])); ?>
-    <article class="gcard">
-      <div class="gimg"><img src="uploads/<?= h(rawurlencode($g['images'][0])) ?>" alt="<?= h($gplain) ?>" loading="lazy"></div>
-      <div class="gbody">
-        <div class="k"><?= h($g['kicker'] ?: 'Gratis') ?></div>
-        <h3><?= title_html((string)$g['title']) ?></h3>
-        <p><?= h($g['desc']) ?></p>
-        <?php if (!empty($g['feats'])): ?><ul class="feats"><?php foreach ($g['feats'] as $f): ?><li><?= h($f) ?></li><?php endforeach; ?></ul><?php endif; ?>
-      </div>
-    </article>
-    <?php endforeach; ?>
-  </div>
-  <form class="gform pad" method="post" action="gratis.php">
+  <?php foreach ($gratisList as $n => $g) app_band(['id' => $g['id'], 'title' => strip_tags(str_replace('*', '', (string)$g['title'])), 'desc' => $g['desc'], 'tags' => array_slice(array_merge($g['meta'] ?? [], $g['feats'] ?? []), 0, 6), 'images' => $g['images'], 'html' => '', 'price' => ''], $n, 'gratis', $askMicro); ?>
+  <form class="aviso-form gform pad" method="post" action="gratis.php">
     <input type="text" name="web" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
-    <label>Código<input type="text" name="codigo" required maxlength="40" autocomplete="off" placeholder="Tu código"></label>
-    <label>Tu email<input type="email" name="email" required maxlength="190" autocomplete="email" placeholder="nombre@correo.com"><small>Ahí te mandamos también el enlace de descarga.</small></label>
-    <button class="btn big" type="submit">Descargar gratis</button>
+    <input type="text" name="codigo" required maxlength="40" autocomplete="off" placeholder="Tu código" aria-label="Tu código">
+    <input type="email" name="email" required maxlength="190" autocomplete="email" placeholder="Tu email (ahí va el enlace)" aria-label="Tu email">
+    <button class="btn" type="submit">Descargar gratis</button>
   </form>
   <?php endif; ?>
 </section>
