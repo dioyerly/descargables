@@ -1,7 +1,9 @@
 <?php
 declare(strict_types=1);
 require __DIR__ . '/lib/bootstrap.php';
-$products = array_values(array_filter(load_products(), fn($p) => !empty($p['visible']) && !empty($p['images'])));
+gratis_ready(); // agrega la tabla de códigos y la marca «gratis» si faltan (no borra nada)
+$products = array_values(array_filter(load_products(), fn($p) => !empty($p['visible']) && !empty($p['images']) && empty($p['gratis'])));
+$gratisList = gratis_products();
 $themes = themes();
 $totalPages = array_sum(array_map(fn($p) => (int)($p['pages'] ?? 0), $products));
 $heroImgs = [];
@@ -62,7 +64,7 @@ $waMsg = fn(string $t) => $wa . '?text=' . rawurlencode($t);
   </div>
 </section>
 
-<nav class="tabs" id="tabs" aria-label="Categorías"><a href="#apps" class="on">Apps web</a><a href="#landings">Landings</a><a href="#agendas"><span class="tl">Agendas e imprimibles</span><span class="ts">Agendas</span></a><a href="#micro">Micro apps</a><a href="#proximamente">Próximamente</a></nav>
+<nav class="tabs" id="tabs" aria-label="Categorías"><a href="#apps" class="on">Apps web</a><a href="#landings">Landings</a><a href="#agendas"><span class="tl">Agendas e imprimibles</span><span class="ts">Agendas</span></a><a href="#micro">Micro apps</a><a href="#gratis">Gratis</a><a href="#proximamente">Próximamente</a></nav>
 <div id="panels">
 
 <section id="agendas" class="panel" hidden aria-label="Agendas e imprimibles">
@@ -173,6 +175,32 @@ $askLand = fn($l) => [$l['link'] !== '' ? $l['link'] : $waMsg('Hola! Me gustó l
   <div class="sechead pad"><div class="k">04 · Micro apps a medida</div><h2>Herramientas chicas, <span class="serif">hechas para vos.</span></h2><p>Calculadoras, paneles, formularios y utilidades pensadas para una tarea puntual de tu negocio. Mirá cómo funcionan.</p></div>
   <?php if (!$micro): ?><div class="soon pad"><b>Muy pronto</b><span>Acá vas a ver las micro apps que ya hicimos.</span></div><?php endif; ?>
   <?php foreach ($micro as $n => $m) app_band($m, $n, 'micro', $askMicro); ?>
+</section>
+
+<section id="gratis" class="panel gratis-p apps" hidden aria-label="Gratis">
+  <div class="sechead pad"><div class="k" style="color:var(--acc)">Gratis</div><h2>Para llevarte <span class="serif">sin pagar.</span></h2><p>¿Tenés un código de Instagram o TikTok? Ponelo acá con tu email y descargá al instante. Cada email puede descargar cada producto una sola vez.</p></div>
+  <?php if (!$gratisList): ?><div class="soon pad"><b>Muy pronto</b><span>Acá vas a encontrar lo que regalamos.</span></div><?php endif; ?>
+  <?php if ($gratisList): ?>
+  <div class="gwrap pad">
+    <?php foreach ($gratisList as $g): $gplain = strip_tags(str_replace('*', '', (string)$g['title'])); ?>
+    <article class="gcard">
+      <div class="gimg"><img src="uploads/<?= h(rawurlencode($g['images'][0])) ?>" alt="<?= h($gplain) ?>" loading="lazy"></div>
+      <div class="gbody">
+        <div class="k"><?= h($g['kicker'] ?: 'Gratis') ?></div>
+        <h3><?= title_html((string)$g['title']) ?></h3>
+        <p><?= h($g['desc']) ?></p>
+        <?php if (!empty($g['feats'])): ?><ul class="feats"><?php foreach ($g['feats'] as $f): ?><li><?= h($f) ?></li><?php endforeach; ?></ul><?php endif; ?>
+      </div>
+    </article>
+    <?php endforeach; ?>
+  </div>
+  <form class="gform pad" method="post" action="gratis.php">
+    <input type="text" name="web" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+    <label>Código<input type="text" name="codigo" required maxlength="40" autocomplete="off" placeholder="Tu código"></label>
+    <label>Tu email<input type="email" name="email" required maxlength="190" autocomplete="email" placeholder="nombre@correo.com"><small>Ahí te mandamos también el enlace de descarga.</small></label>
+    <button class="btn big" type="submit">Descargar gratis</button>
+  </form>
+  <?php endif; ?>
 </section>
 
 <section id="proximamente" class="panel soonp apps" hidden aria-label="Próximamente">
