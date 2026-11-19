@@ -61,6 +61,7 @@ admin_head('Gratis'); ?>
 
 <div class="card">
   <h2>Crear código</h2>
+  <p class="muted">¿Todavía no subiste el producto gratis? <a class="btn sm" href="edit.php?gratis=1">+ Subir producto gratis</a> (ahí sube el HTML y queda marcado como gratis).</p>
   <form method="post">
     <?= csrf_field() ?>
     <input type="hidden" name="act" value="crear">

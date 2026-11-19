@@ -9,7 +9,8 @@ $list = load_products();
 $id = (string)($_GET['id'] ?? $_POST['id'] ?? '');
 $p = $id !== '' ? find_product($list, $id) : null;
 $isNew = $p === null;
-$p = $p ?? ['id'=>'','visible'=>true,'type'=>'print','kicker'=>'','title'=>'','desc'=>'','long'=>'','price'=>0,'price_usd'=>0,'file'=>'','file_orig'=>'','files'=>[],'ext_url'=>'','landing'=>'','meta'=>[],'feats'=>[],'theme'=>'lavanda','pages'=>0,'images'=>[],'ar'=>'3/4'];
+gratis_ready();
+$p = $p ?? ['id'=>'','visible'=>true,'gratis'=>!empty($_GET['gratis']),'type'=>'print','kicker'=>'','title'=>'','desc'=>'','long'=>'','price'=>0,'price_usd'=>0,'file'=>'','file_orig'=>'','files'=>[],'ext_url'=>'','landing'=>'','meta'=>[],'feats'=>[],'theme'=>'lavanda','pages'=>0,'images'=>[],'ar'=>'3/4'];
 $errors = []; $warns = [];
 $lines = fn(string $s, int $max) => array_slice(array_values(array_filter(array_map('trim', preg_split('/\r?\n|,/', $s) ?: []), fn($x) => $x !== '')), 0, $max);
 
@@ -30,6 +31,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $p['theme'] = array_key_exists($_POST['theme'] ?? '', themes()) ? $_POST['theme'] : 'lavanda';
     $p['pages'] = max(0, (int)($_POST['pages'] ?? 0));
     $p['visible'] = !empty($_POST['visible']);
+    $p['gratis'] = !empty($_POST['gratis']);
     $p['meta'] = $lines((string)($_POST['meta'] ?? ''), 4);
     $p['feats'] = array_slice(array_values(array_filter(array_map('trim', preg_split('/\r?\n/', (string)($_POST['feats'] ?? '')) ?: []))), 0, 5);
     $lu = trim((string)($_POST['landing'] ?? ''));
@@ -133,6 +135,7 @@ admin_head($isNew ? 'Nuevo producto' : 'Editar producto'); ?>
   <label>Etiquetas (hasta 4, separadas por coma)<input name="meta" value="<?= h(implode(', ', $p['meta'])) ?>" placeholder="387 páginas, A4, 365 días fechados"></label>
   <label>Qué incluye (una por línea, hasta 5)<textarea name="feats" rows="4" placeholder="Metas y 12 meses&#10;Planificador semanal&#10;Hábitos y finanzas"><?= h(implode("\n", $p['feats'])) ?></textarea></label>
   <label class="chk"><input type="checkbox" name="visible" value="1"<?= !empty($p['visible']) ? ' checked' : '' ?>> Visible en el sitio</label>
+  <label class="chk"><input type="checkbox" name="gratis" value="1"<?= !empty($p['gratis']) ? ' checked' : '' ?>> Es gratis: va en la pestaña Gratis (se entrega con código, no se vende)</label>
 </div>
 <div class="card">
   <h2>Colores</h2>
