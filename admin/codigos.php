@@ -26,7 +26,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $db->prepare('INSERT INTO codigos_gratis (codigo, product_id, max_usos, vence, activo) VALUES (?,?,?,?,1)')
                    ->execute([$code, $pk, $max, $vence]);
                 $db->prepare('UPDATE products SET gratis=1 WHERE id=?')->execute([$pk]);
-                flash('Código «' . $code . '» creado. El producto ya aparece en la pestaña Gratis.');
+                flash('Código «' . $code . '» creado. El producto ya aparece en la pestaña Excels.');
             } catch (PDOException $e) {
                 flash('Ese código ya existe. Probá con otro.', 'err');
             }
@@ -38,7 +38,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } elseif ($act === 'quitar') {
         $pk = (int)($_POST['product_id'] ?? 0);
         $db->prepare('UPDATE products SET gratis=0 WHERE id=?')->execute([$pk]);
-        flash('El producto ya no está en la pestaña Gratis. Sus códigos siguen guardados.');
+        flash('El producto ya no está en la pestaña Excels. Sus códigos siguen guardados.');
     }
     header('Location: codigos.php'); exit;
 }

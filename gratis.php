@@ -2,7 +2,7 @@
 declare(strict_types=1);
 // Recibe código + email de la pestaña GRATIS → entrega el enlace de descarga (una vez por email)
 require __DIR__ . '/lib/bootstrap.php';
-if ($_SERVER['REQUEST_METHOD'] !== 'POST') { header('Location: ' . base_path() . '/#gratis'); exit; }
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') { header('Location: ' . base_path() . '/#excels'); exit; }
 if (!empty($_POST['web'])) exit; // trampa para bots
 
 $B = base_path();
@@ -13,7 +13,7 @@ $page = function (string $kicker, string $title, string $body) use ($B, $v): voi
 <body class="solo"><header class="pad solid"><a class="logo" href="<?= h($B) ?>/"><i>e</i>EstrategIA<small>Descargables</small></a></header>
 <main class="thanks"><div class="card"><div class="k" style="color:var(--acc)"><?= h($kicker) ?></div><h1><?= $title ?></h1><?= $body ?></div></main></body></html><?php exit; };
 
-$back = '<p class="row"><a class="btn o" href="' . h($B) . '/#gratis">Volver a Gratis</a></p>';
+$back = '<p class="row"><a class="btn o" href="' . h($B) . '/#excels">Volver a Excels</a></p>';
 
 if (!gratis_ready()) $page('Gratis', 'Por ahora <span class="serif">no está disponible.</span>', '<p>Probá de nuevo más tarde.</p>' . $back);
 

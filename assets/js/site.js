@@ -59,13 +59,13 @@ $$('[data-app]').forEach(ap=>{const fr=ap.querySelector('.vfr'),vp=ap.querySelec
   new MutationObserver(load).observe(ap.closest('.panel'),{attributes:true,attributeFilter:['hidden']});
   $$('.vdev button',ap).forEach(b=>b.addEventListener('click',()=>{$$('.vdev button',ap).forEach(x=>x.classList.toggle('on',x===b));vp.classList.toggle('mob',b.dataset.dev==='m')}))});
 /* categorías: se cambia el panel en el lugar, sin recorrer la página */
-const IDS=['apps','landings','agendas','micro','gratis','proximamente'],tabsEl=$('tabs'),tl=$$('a',tabsEl);
+const IDS=['apps','landings','agendas','micro','excels','proximamente'],ALIAS={gratis:'excels'},tabsEl=$('tabs'),tl=$$('a',tabsEl);
 function hdrH(){return $('hdr').offsetHeight||64}
 function goTop(el,inner){const base=inner&&el?el.getBoundingClientRect().top+scrollY-tabsEl.offsetHeight-hdrH()-8:$('desk').offsetTop+$('desk').offsetHeight-hdrH()+1;scrollTo({top:Math.max(0,base),behavior:'instant'})}
 function activate(id,jump){if(!IDS.includes(id))id='apps';IDS.forEach(k=>{const e=$(k);const on=k===id;if(on&&e.hidden){e.hidden=false;e.classList.remove('enter');void e.offsetWidth;if(!RM)e.classList.add('enter')}else if(!on)e.hidden=true});
   tl.forEach(a=>a.classList.toggle('on',a.getAttribute('href')==='#'+id));
   if(jump)goTop(null)}
-document.addEventListener('click',e=>{const a=e.target.closest('a[href^="#"]');if(!a)return;const id=a.getAttribute('href').slice(1);if(!id)return;e.preventDefault();
+document.addEventListener('click',e=>{const a=e.target.closest('a[href^="#"]');if(!a)return;let id=a.getAttribute('href').slice(1);if(!id)return;id=ALIAS[id]||id;e.preventDefault();
   if(IDS.includes(id))activate(id,true);else if(id==='top')scrollTo({top:0,behavior:'instant'});else{const t=$(id);if(t)scrollTo({top:t.getBoundingClientRect().top+scrollY-hdrH(),behavior:'instant'})}});
 /* “Avisame cuando esté”: guarda el mail y muestra el mensaje sin recargar la página */
 document.addEventListener('submit',function(e){var f=e.target.closest&&e.target.closest('form[data-aviso]');if(!f)return;e.preventDefault();
@@ -77,7 +77,7 @@ document.addEventListener('submit',function(e){var f=e.target.closest&&e.target.
   }).catch(function(){m.textContent='No pudimos guardar tu mail. Probá de nuevo.';m.className='msg err';b.disabled=false})});
 /* siempre empezar arriba: si la URL trae #agendas etc. se elige esa pestaña pero no se salta */
 try{history.scrollRestoration='manual'}catch(e){}
-if(IDS.includes(location.hash.slice(1)))activate(location.hash.slice(1),false);
+{const h0=ALIAS[location.hash.slice(1)]||location.hash.slice(1);if(IDS.includes(h0))activate(h0,false)}
 if(location.hash){try{history.replaceState(null,'',location.pathname+location.search)}catch(e){}}
 scrollTo(0,0);addEventListener('load',()=>setTimeout(()=>scrollTo(0,0),0));addEventListener('pageshow',e=>{if(e.persisted)scrollTo(0,0)});
 })();

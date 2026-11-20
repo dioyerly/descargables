@@ -137,7 +137,7 @@ admin_head($isNew ? 'Nuevo producto' : 'Editar producto'); ?>
   <label>Etiquetas (hasta 4, separadas por coma)<input name="meta" value="<?= h(implode(', ', $p['meta'])) ?>" placeholder="387 páginas, A4, 365 días fechados"></label>
   <label>Qué incluye (una por línea, hasta 5)<textarea name="feats" rows="4" placeholder="Metas y 12 meses&#10;Planificador semanal&#10;Hábitos y finanzas"><?= h(implode("\n", $p['feats'])) ?></textarea></label>
   <label class="chk"><input type="checkbox" name="visible" value="1"<?= !empty($p['visible']) ? ' checked' : '' ?>> Visible en el sitio</label>
-  <label class="chk"><input type="checkbox" name="gratis" value="1"<?= !empty($p['gratis']) ? ' checked' : '' ?>> Es gratis: va en la pestaña Gratis (se entrega con código, no se vende)</label>
+  <label class="chk"><input type="checkbox" name="gratis" value="1"<?= !empty($p['gratis']) ? ' checked' : '' ?>> Es gratis: va en la pestaña Excels (se entrega con código, no se vende). Para un Excel de pago, dejalo sin marcar y elegí Tipo «Excel».</label>
 </div>
 <div class="card">
   <h2>Colores</h2>

@@ -46,7 +46,7 @@ function theme_style(string $key): string {
     $all = themes(); $t = $all[$key] ?? reset($all);
     return "--bg:{$t['bg']};--bgsolid:{$t['bg']};--glow:{$t['glow']};--fg:{$t['fg']};--fg2:{$t['fg2']};--tag:{$t['tag']};--chip:{$t['chip']}";
 }
-function types(): array { return ['print'=>'Imprimible','digital'=>'Digital (tablet)','both'=>'Imprimible y digital']; }
+function types(): array { return ['print'=>'Imprimible','digital'=>'Digital (tablet)','both'=>'Imprimible y digital','excel'=>'Excel (va en la pestaña Excels)']; }
 
 function ensure_dirs(): void {
     foreach ([DATA_DIR, UPLOAD_DIR, PRIVATE_DIR] as $d) if (!is_dir($d)) @mkdir($d, 0755, true);

@@ -2,8 +2,14 @@
 declare(strict_types=1);
 require __DIR__ . '/lib/bootstrap.php';
 gratis_ready(); // agrega la tabla de códigos y la marca «gratis» si faltan (no borra nada)
-$products = array_values(array_filter(load_products(), fn($p) => !empty($p['visible']) && !empty($p['images']) && empty($p['gratis'])));
-$gratisList = gratis_products();
+$allProducts = load_products();
+$products = array_values(array_filter($allProducts, fn($p) => !empty($p['visible']) && !empty($p['images']) && empty($p['gratis']) && ($p['type'] ?? '') !== 'excel'));
+// Pestaña Excels: los gratis (se entregan con código) y los de pago (tipo Excel), mezclados por orden
+$excelList = array_merge(
+  array_map(fn($g) => $g + ['_free' => true], gratis_products()),
+  array_values(array_filter($allProducts, fn($p) => !empty($p['visible']) && !empty($p['images']) && empty($p['gratis']) && ($p['type'] ?? '') === 'excel'))
+);
+usort($excelList, fn($a, $b) => ((int)($a['order'] ?? 0) <=> (int)($b['order'] ?? 0)));
 $themes = themes();
 $totalPages = array_sum(array_map(fn($p) => (int)($p['pages'] ?? 0), $products));
 $heroImgs = [];
@@ -45,7 +51,7 @@ $waMsg = fn(string $t) => $wa . '?text=' . rawurlencode($t);
 <?php require __DIR__ . "/lib/tiktok.php"; ?></head>
 <body data-page="inicio" data-base="<?= h(base_path()) ?>">
 <header class="pad" id="hdr"><a class="logo" href="#top"><img class="mark" src="assets/img/logo-emblema.png" alt="EstrategIA" width="34" height="34">EstrategIA<small>Productos digitales</small></a>
-<nav class="nav"><a class="t" href="#apps">Apps web</a><a class="t" href="#landings">Landings</a><a class="t" href="#agendas">Agendas</a><a class="t" href="#micro">Micro apps</a><a class="t" href="#gratis">Gratis</a><a class="t" href="#proximamente">Próximamente</a><a class="btn" href="<?= h($waMsg('Hola! Quiero consultar por un producto a medida.')) ?>" target="_blank" rel="noopener">Pedí el tuyo</a></nav></header>
+<nav class="nav"><a class="t" href="#apps">Apps web</a><a class="t" href="#landings">Landings</a><a class="t" href="#agendas">Agendas</a><a class="t" href="#micro">Micro apps</a><a class="t" href="#excels">Excels</a><a class="t" href="#proximamente">Próximamente</a><a class="btn" href="<?= h($waMsg('Hola! Quiero consultar por un producto a medida.')) ?>" target="_blank" rel="noopener">Pedí el tuyo</a></nav></header>
 
 <main id="top">
 <section id="desk" class="uni pad" aria-label="Presentación">
@@ -64,7 +70,7 @@ $waMsg = fn(string $t) => $wa . '?text=' . rawurlencode($t);
   </div>
 </section>
 
-<nav class="tabs" id="tabs" aria-label="Categorías"><a href="#apps" class="on">Apps web</a><a href="#landings">Landings</a><a href="#agendas"><span class="tl">Agendas e imprimibles</span><span class="ts">Agendas</span></a><a href="#micro">Micro apps</a><a href="#gratis">Gratis</a><a href="#proximamente">Próximamente</a></nav>
+<nav class="tabs" id="tabs" aria-label="Categorías"><a href="#apps" class="on">Apps web</a><a href="#landings">Landings</a><a href="#agendas"><span class="tl">Agendas e imprimibles</span><span class="ts">Agendas</span></a><a href="#micro">Micro apps</a><a href="#excels">Excels</a><a href="#proximamente">Próximamente</a></nav>
 <div id="panels">
 
 <section id="agendas" class="panel" hidden aria-label="Agendas e imprimibles">
@@ -107,11 +113,12 @@ function app_band(array $a, int $n, string $kind, callable $ask): void {
   $im = array_map(fn($x) => 'uploads/' . rawurlencode($x), $a['images']);
   $src = ($a['html'] !== '' && is_file(SHOWCASE_DIR . '/' . basename($a['html']))) ? 'muestras/' . rawurlencode($a['html']) : '';
   [$askUrl, $askLabel] = $ask($a);
-  $label = ['micro' => 'Micro app', 'landings' => 'Landing', 'soon' => 'Próximamente', 'gratis' => 'Gratis'][$kind] ?? 'App web'; ?>
+  $label = ['micro' => 'Micro app', 'landings' => 'Landing', 'soon' => 'Próximamente', 'gratis' => 'Excel · Gratis', 'excel' => 'Excel'][$kind] ?? 'App web'; ?>
   <article class="app pad" data-app data-src="<?= h($src) ?>" data-imgs="<?= h(json_encode($im, JSON_UNESCAPED_SLASHES)) ?>" data-title="<?= h($a['title']) ?>">
     <div class="app-info"><div class="k"><?= $label ?> · <?= str_pad((string)($n + 1), 2, '0', STR_PAD_LEFT) ?></div>
       <h3><?= h($a['title']) ?></h3><p><?= h($a['desc']) ?></p>
       <?php if (($a['price'] ?? '') !== ''): $uv = usd_amount((string)$a['price']); $ars = $uv > 0 ? usd_to_ars($uv) : 0; ?><div class="aprice"><small>Desde aprox.</small><b><?= h($uv > 0 ? usd_label($uv) . ($ars > 0 ? ' - ARS ' . number_format($ars, 0, ',', '.') : '') : $a['price']) ?></b><?php if ($ars > 0): ?><span class="ars">Pesos al dólar <?= h(strtolower(explode(' (', dolar_types()[dolar_type()] ?? 'oficial')[0])) ?> de hoy</span><?php endif; ?><em>Es una aproximación: depende de qué tan a medida sea el pedido.</em></div><?php endif; ?>
+      <?php if ($kind === 'excel' && ($a['pr'] ?? 0) > 0): ?><div class="aprice"><b><?= h(format_price((float)$a['pr'])) ?></b></div><?php endif; ?>
       <?php if ($a['tags']): ?><div class="atags"><?php foreach ($a['tags'] as $t): ?><span><?= h($t) ?></span><?php endforeach; ?></div><?php endif; ?>
       <?php if ($kind === 'soon'): ?><form class="aviso-form" data-aviso="<?= h($a['id']) ?>" action="aviso.php" method="post" novalidate>
           <input type="email" name="email" required maxlength="190" placeholder="Tu mail" autocomplete="email" aria-label="Tu mail">
@@ -127,14 +134,14 @@ function app_band(array $a, int $n, string $kind, callable $ask): void {
           <input type="email" name="email" required maxlength="190" autocomplete="email" placeholder="Tu email (ahí va el enlace)" aria-label="Tu email">
           <button class="btn" type="submit">Descargar gratis</button>
         </form><?php endif; ?>
-      <div class="row"><?php if ($kind !== 'soon' && $kind !== 'gratis'): ?><a class="btn" href="<?= h($askUrl) ?>" target="_blank" rel="noopener"><?= h($askLabel) ?></a><?php endif; ?>
+      <div class="row"><?php if ($kind === 'excel'): ?><a class="btn" href="<?= h($a['detail']) ?>"<?= !empty($a['ext']) ? ' target="_blank" rel="noopener"' : '' ?>>Ver detalle <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a><?php endif; ?><?php if ($kind !== 'soon' && $kind !== 'gratis' && $kind !== 'excel'): ?><a class="btn" href="<?= h($askUrl) ?>" target="_blank" rel="noopener"><?= h($askLabel) ?></a><?php endif; ?>
         <?php if ($src !== ''): ?><a class="btn o vopen" href="demo.php?f=<?= h(rawurlencode(basename($a['html']))) ?>" target="_blank" rel="noopener">Abrir demo completa ↗</a><?php endif; ?>
-        <?php if ($kind !== 'soon' && $kind !== 'gratis' && (count($im) > 1 || ($src !== '' && $im))): ?><button type="button" class="btn o" data-open="0">Ver fotos</button><?php endif; ?></div></div>
+        <?php if ($kind !== 'soon' && $kind !== 'gratis' && $kind !== 'excel' && (count($im) > 1 || ($src !== '' && $im))): ?><button type="button" class="btn o" data-open="0">Ver fotos</button><?php endif; ?></div></div>
     <div class="app-demo">
       <div class="vtools"><div class="vdev"><button type="button" class="on" data-dev="d">Computadora</button><button type="button" data-dev="m">Celular</button></div></div>
       <div class="browser"><div class="bbar"><i></i><i></i><i></i><b class="vurl"><?= h(trim(preg_replace('~[^a-z0-9]+~', '-', strtolower(iconv('UTF-8', 'ASCII//TRANSLIT', $a['title']) ?: 'app')), '-')) ?>.com</b></div>
         <div class="vp"><div class="vfr"><div class="vph"<?= $src === '' && $im ? ' style="background-image:url(\'' . h($im[0]) . '\')"' . ($kind === 'soon' ? '' : ' data-open="0"') : '' ?>></div></div></div>
-        <?php if (($kind === 'soon' || $kind === 'gratis') && count($im) > 1): ?><button type="button" class="sarr sprev" aria-label="Foto anterior">&#8249;</button><button type="button" class="sarr snext" aria-label="Foto siguiente">&#8250;</button><div class="sdots"><?php foreach ($im as $_): ?><i></i><?php endforeach; ?></div><?php endif; ?></div>
+        <?php if (($kind === 'soon' || $kind === 'gratis' || $kind === 'excel') && count($im) > 1): ?><button type="button" class="sarr sprev" aria-label="Foto anterior">&#8249;</button><button type="button" class="sarr snext" aria-label="Foto siguiente">&#8250;</button><div class="sdots"><?php foreach ($im as $_): ?><i></i><?php endforeach; ?></div><?php endif; ?></div>
       <?php if ($kind !== 'soon' && count($im) > 1): ?><div class="athumbs"><?php foreach (array_slice($im, 0, 6) as $i => $u): ?><button type="button" data-open="<?= $i ?>" aria-label="Ampliar foto <?= $i + 1 ?>" style="background-image:url('<?= h($u) ?>')"></button><?php endforeach; ?></div><?php endif; ?>
     </div>
   </article>
@@ -183,12 +190,14 @@ $askLand = fn($l) => [$l['link'] !== '' ? $l['link'] : $waMsg('Hola! Me gustó l
   <?php foreach ($micro as $n => $m) app_band($m, $n, 'micro', $askMicro); ?>
 </section>
 
-<section id="gratis" class="panel gratis-p apps" hidden aria-label="Gratis">
-  <div class="sechead pad"><div class="k" style="color:var(--acc)">Gratis</div><h2>Para llevarte <span class="serif">sin pagar.</span></h2><p>¿Tenés un código de Instagram o TikTok? Ponelo acá con tu email y descargá al instante. Cada email puede descargar cada producto una sola vez.</p></div>
-  <?php if (!$gratisList): ?><div class="soon pad"><b>Muy pronto</b><span>Acá vas a encontrar lo que regalamos.</span></div><?php endif; ?>
-  <?php if ($gratisList): ?>
-  <?php foreach ($gratisList as $n => $g) app_band(['id' => $g['id'], 'title' => strip_tags(str_replace('*', '', (string)$g['title'])), 'desc' => $g['desc'], 'tags' => array_slice($g['meta'] ?? [], 0, 4), 'images' => $g['images'], 'html' => '', 'price' => ''], $n, 'gratis', $askMicro); ?>
-  <?php endif; ?>
+<section id="excels" class="panel gratis-p apps" hidden aria-label="Excels">
+  <div class="sechead pad"><div class="k" style="color:var(--acc)">Excels</div><h2>Planillas <span class="serif">listas para usar.</span></h2><p>Excels gratis y de pago. Los gratis se descargan con un código de Instagram o TikTok y tu email (cada email, una sola vez por producto); los de pago los comprás y los descargás al instante.</p></div>
+  <?php if (!$excelList): ?><div class="soon pad"><b>Muy pronto</b><span>Acá vas a encontrar nuestros Excels.</span></div><?php endif; ?>
+  <?php foreach ($excelList as $n => $g):
+    $plainT = strip_tags(str_replace('*', '', (string)$g['title']));
+    if (!empty($g['_free'])) app_band(['id' => $g['id'], 'title' => $plainT, 'desc' => $g['desc'], 'tags' => array_slice($g['meta'] ?? [], 0, 4), 'images' => $g['images'], 'html' => '', 'price' => ''], $n, 'gratis', $askMicro);
+    else { $extU = safe_url((string)($g['landing'] ?? '')); app_band(['id' => $g['id'], 'title' => $plainT, 'desc' => $g['desc'], 'tags' => array_slice($g['meta'] ?? [], 0, 4), 'images' => $g['images'], 'html' => '', 'price' => '', 'pr' => (float)$g['price'], 'detail' => $extU ?: product_url((string)$g['id']), 'ext' => (bool)$extU], $n, 'excel', $askMicro); }
+  endforeach; ?>
 </section>
 
 <section id="proximamente" class="panel soonp apps" hidden aria-label="Próximamente">
