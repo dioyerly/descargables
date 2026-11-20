@@ -8,10 +8,8 @@ body.det .btn{background:var(--fg);color:var(--bg)}
 body.det .btn.o{background:transparent;color:var(--fg)}
 .dwrap{max-width:1180px;margin:0 auto;padding:110px max(22px,4vw) 60px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(28px,5vw,72px);align-items:start}
 .gal{position:sticky;top:96px}
-/* foto horizontal (capturas de planillas, paneles): la galería ocupa más ancho */
-.dwrap.wide{grid-template-columns:minmax(0,1.45fr) minmax(0,1fr)}
-.dwrap.wide .gal .main{max-height:none}
-.gal .main{display:block;width:100%;border:0;padding:0;background:#fff;border-radius:8px;cursor:zoom-in;aspect-ratio:var(--ar,3/4);max-height:78vh;margin:0 auto;overflow:hidden;box-shadow:0 2px 4px rgba(0,0,0,.12),0 40px 70px -30px rgba(0,0,0,.55)}
+
+.gal .main{display:block;width:100%;border:0;padding:0;background:#fff;border-radius:8px;cursor:zoom-in;aspect-ratio:4/3;max-height:none;margin:0 auto;overflow:hidden;box-shadow:0 2px 4px rgba(0,0,0,.12),0 40px 70px -30px rgba(0,0,0,.55)}
 .gal .main img{width:100%;height:100%;object-fit:contain;display:block}
 .thumbs{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap;justify-content:center}
 .thumbs .th{width:64px;height:64px;border:2px solid transparent;border-radius:8px;padding:0;background:#fff;cursor:pointer;overflow:hidden;opacity:.7;transition:opacity .2s,border-color .2s}
