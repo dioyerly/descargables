@@ -1,5 +1,7 @@
 (function(){'use strict';
 const $=id=>document.getElementById(id);const imgs=window.__IMGS||[],title=window.__TITLE||'';let ci=0;const lb=$('lb');
+/* el marco toma la proporción real de cada foto (si no, una foto horizontal queda chica dentro de un marco vertical) */
+(function(){const im=$('gimg');function fitFrame(){if(im.naturalWidth&&im.naturalHeight)$('gmain').style.setProperty('--ar',im.naturalWidth+'/'+im.naturalHeight)}im.addEventListener('load',fitFrame);if(im.complete)fitFrame()})();
 function setMain(i){ci=i;$('gimg').src=imgs[i];$('gimg').alt=title+' — página '+(i+1);document.querySelectorAll('.thumbs .th').forEach((t,k)=>t.classList.toggle('on',k===i))}
 function show(){$('lbi').src=imgs[ci];$('lbi').alt='Página '+(ci+1)+' de '+title;$('lbc').textContent=title+' · '+(ci+1)+'/'+imgs.length}
 document.querySelectorAll('.thumbs .th').forEach(t=>t.addEventListener('click',()=>setMain(+t.dataset.i)));
