@@ -378,8 +378,8 @@ footer{margin-top:80px;padding-top:22px;border-top:1px solid var(--line);display
 .gratis-p .app-info .gform{display:grid;gap:10px;margin-top:24px;padding:0;max-width:400px}
 .gratis-p .gform input[type=text],.gratis-p .gform input[type=email]{width:100%;min-width:0;font:500 15px var(--sans);padding:13px 14px;border-radius:12px;border:1px solid var(--line);background:#fbfaf7}
 .gratis-p .gform .btn{justify-content:center;width:100%}
-.gratis-p .app-demo .browser{position:relative;width:fit-content;max-width:100%;margin-inline:auto}
+.gratis-p .app-demo .browser{position:relative;width:min(100%,720px);max-width:100%;margin-inline:auto}
 .gratis-p .app-demo .vtools{display:none}
 .gratis-p .app-demo .vp{height:auto;padding:0;background:#fff}
-.gratis-p .app-demo .vfr,.gratis-p .app-demo .vp.mob .vfr{height:auto;aspect-ratio:var(--ar,1.6);width:calc(min(46vh,420px) * var(--ar,1.6));max-width:100%}
-.gratis-p .app-demo .vph{background-size:100% 100%;background-position:center}
+.gratis-p .app-demo .vfr,.gratis-p .app-demo .vp.mob .vfr{height:auto;aspect-ratio:16/10;width:min(100%,720px)}
+.gratis-p .app-demo .vph{background-size:cover;background-position:top center}
