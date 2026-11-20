@@ -108,7 +108,7 @@ footer{margin-top:80px;padding-top:22px;border-top:1px solid var(--line);display
 /* lightbox */
 .lb{position:fixed;inset:0;z-index:100;background:rgba(20,18,15,.88);backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center;padding:24px}
 .lb.open{display:flex}
-.lb img{max-width:min(92vw,760px);max-height:86vh;border-radius:6px;box-shadow:0 30px 80px rgba(0,0,0,.6);background:#fff}
+.lb img{width:auto;height:auto;max-width:min(94vw,1400px);max-height:90vh;object-fit:contain;border-radius:6px;box-shadow:0 30px 80px rgba(0,0,0,.6);background:transparent}
 .lb button{position:absolute;border:0;background:#fff;color:var(--ink);width:52px;height:52px;border-radius:50%;font:600 22px var(--sans);cursor:pointer}
 .lb .x{top:20px;right:20px}.lb .pv{left:20px;top:50%;margin-top:-26px}.lb .nx{right:20px;top:50%;margin-top:-26px}
 .lb .cap{position:absolute;bottom:22px;left:0;right:0;text-align:center;color:#fff;font:600 14px var(--sans);letter-spacing:.1em;text-transform:uppercase}

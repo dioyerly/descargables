@@ -15,12 +15,12 @@ function store_upload(array $f, string $prefix): string {
         $src = @imagecreatefromstring((string)file_get_contents($f['tmp_name']));
         if ($src) {
             [$w, $hh] = [imagesx($src), imagesy($src)];
-            $tw = min(900, $w); $th = (int)round($hh * $tw / $w);
+            $tw = min(1600, $w); $th = (int)round($hh * $tw / $w);
             $dst = imagecreatetruecolor($tw, $th);
             imagefill($dst, 0, 0, imagecolorallocate($dst, 255, 255, 255));
             imagecopyresampled($dst, $src, 0, 0, 0, 0, $tw, $th, $w, $hh);
             $out = UPLOAD_DIR . "/$name.webp";
-            imagewebp($dst, $out, 82);
+            imagewebp($dst, $out, 88);
             imagedestroy($src); imagedestroy($dst);
             return "$name.webp";
         }
