@@ -28,6 +28,9 @@ return [
         'webhook_id' => '',       // opcional: ID del webhook (avisos de devoluciones / cobros demorados)
     ],
 
+    // Clave compartida con tu panel (panel.estrategia.site): 32+ caracteres, la misma en todas tus apps. Vacía = el panel no puede leer la tienda.
+    'ecosystem_key' => '',
+
     // Mail donde te avisamos cuando un pago falla o se devuelve
     'notify_email' => '',
 
