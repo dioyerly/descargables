@@ -8,7 +8,6 @@ header('Cache-Control: no-store');
 header('X-Robots-Tag: noindex');
 function out(int $c, array $b): never { http_response_code($c); echo json_encode($b, JSON_UNESCAPED_UNICODE | JSON_PARTIAL_OUTPUT_ON_ERROR); exit; }
 
-if (($_SERVER['REQUEST_METHOD'] ?? 'GET') !== 'GET') out(405, ['ok' => false, 'code' => 'method_not_allowed']);
 // Conexión por código: el panel manda el código de 8 dígitos (un solo uso, 10 min) y una clave nueva.
 if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
     $inP = json_decode((string)file_get_contents('php://input', false, null, 0, 1025), true);
@@ -26,6 +25,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
     }
 }
 
+if (($_SERVER['REQUEST_METHOD'] ?? 'GET') !== 'GET') out(405, ['ok' => false, 'code' => 'method_not_allowed']);
 $key = (string)cfg('ecosystem_key', '');
 $alt = (string)cfg('export_token', '');
 $hashSet = db_ready() && extras_ready() ? setting('centro_token_hash', '') : '';
