@@ -37,12 +37,40 @@ $ok = ($tok !== '') && ((strlen($key) >= 32 && hash_equals($key, $tok)) || (strl
 if (!$ok) { usleep(400000); out(401, ['ok' => false, 'code' => 'unauthorized']); }
 
 $view = (string)($_GET['view'] ?? 'summary');
-if (!in_array($view, ['summary', 'sistema'], true)) out(404, ['ok' => false, 'code' => 'view_not_found']);
+if (!in_array($view, ['summary', 'sistema', 'pedidos', 'catalogo'], true)) out(404, ['ok' => false, 'code' => 'view_not_found']);
 if (!db_ready()) out(503, ['ok' => false, 'code' => 'db_unavailable']);
 extras_ready();
 $pdo = db();
 $q = function (string $sql, array $a = []) use ($pdo) { $st = $pdo->prepare($sql); $st->execute($a); return $st; };
 $one = fn(string $sql, array $a = []) => (float)$q($sql, $a)->fetchColumn();
+
+if ($view === 'catalogo') {
+    $cat = [];
+    foreach (load_products() as $p) $cat[] = ['pk' => (int)$p['pk'], 'slug' => (string)$p['id'], 'titulo' => trim(strip_tags(str_replace('*', '', (string)$p['title']))), 'tipo' => (string)$p['type'], 'visible' => (bool)$p['visible'],
+        'precio_ars' => (float)$p['price'], 'precio_usd' => (float)($p['price_usd'] ?? 0), 'gratis' => !empty($p['gratis']), 'url' => product_url((string)$p['id']), 'landing' => (string)($p['landing'] ?? '')];
+    out(200, ['ok' => true, 'generado' => date('c'), 'productos' => $cat]);
+}
+
+if ($view === 'pedidos') {
+    $hasTrail = orders_trail_ready();
+    $cols = 'id, code, product_id, product_title, amount, currency, buyer_email, status, method, fail_reason, downloads, created_at, paid_at' . ($hasTrail ? ', trk_sid, trk_src, trk_own' : '');
+    $ped = [];
+    $evq = $pdo->prepare('SELECT ts, t, n, page, src, dev FROM events WHERE sid=? ORDER BY id LIMIT 40');
+    foreach ($q("SELECT $cols FROM orders ORDER BY id DESC LIMIT 80") as $r) {
+        $sid = (string)($r['trk_sid'] ?? ''); $propio = !empty($r['trk_own']); $est = false;
+        if ($sid === '' && !$propio) { /* pedido viejo: se estima por el clic en Comprar de ese producto justo antes */
+            $st = $q("SELECT sid FROM events WHERE t='buy' AND sid<>'' AND ts BETWEEN (? - INTERVAL 20 MINUTE) AND (? + INTERVAL 1 MINUTE) AND n LIKE ? ORDER BY ABS(TIMESTAMPDIFF(SECOND, ts, ?)) LIMIT 1", [$r['created_at'], $r['created_at'], '%' . mb_substr(trim(strip_tags(str_replace('*', '', (string)$r['product_title']))), 0, 40) . '%', $r['created_at']]);
+            $sid = (string)$st->fetchColumn(); $est = $sid !== '';
+        }
+        $rec = [];
+        if ($sid !== '') { $evq->execute([$sid]); foreach ($evq->fetchAll() as $e) $rec[] = ['ts' => (string)$e['ts'], 't' => (string)$e['t'], 'n' => (string)$e['n'], 'page' => (string)$e['page'], 'dev' => $e['dev'] === 'm' ? 'celular' : 'compu']; }
+        $ped[] = ['id' => (int)$r['id'], 'codigo' => substr((string)$r['code'], 0, 8), 'product_id' => (int)$r['product_id'], 'producto' => trim(strip_tags(str_replace('*', '', (string)$r['product_title']))),
+            'monto' => (float)$r['amount'], 'moneda' => (string)$r['currency'], 'estado' => (string)$r['status'], 'metodo' => (string)$r['method'], 'email' => (string)$r['buyer_email'],
+            'falla' => (string)$r['fail_reason'], 'descargas' => (int)$r['downloads'], 'creado' => (string)$r['created_at'], 'pagado' => $r['paid_at'] ? (string)$r['paid_at'] : null,
+            'origen' => source_label((string)($r['trk_src'] ?? '')) , 'propio' => $propio, 'recorrido' => $rec, 'recorrido_estimado' => $est];
+    }
+    out(200, ['ok' => true, 'generado' => date('c'), 'pedidos' => $ped]);
+}
 
 if ($view === 'sistema') {
     $al = [];

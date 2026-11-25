@@ -17,6 +17,6 @@ $st->execute([substr($_SERVER['REMOTE_ADDR'] ?? '', 0, 45)]);
 if ((int)$st->fetchColumn() >= 15) $fail('Demasiados intentos. Probá de nuevo en un rato.');
 $pp = ($_POST['metodo'] ?? '') === 'paypal';
 if ($pp ? !pp_available($p) : !mp_configured()) $fail('Ese medio de pago no está disponible para este producto.');
-try { $url = $pp ? pp_start_checkout($p, $email) : mp_start_checkout($p, $email); }
-catch (Throwable $e) { error_log('checkout: ' . $e->getMessage()); try { setting_set('last_checkout_error', date('d/m/Y H:i') . ' · ' . ($pp ? 'PayPal' : 'Mercado Pago') . ' · ' . mb_substr($e->getMessage(), 0, 300)); } catch (Throwable $e2) {} $fail('No pudimos iniciar el pago. Probá de nuevo en unos minutos.'); }
+try { $url = $pp ? pp_start_checkout($p, $email) : mp_start_checkout($p, $email); order_trail_save($email); }
+catch (Throwable $e) { order_trail_save($email); error_log('checkout: ' . $e->getMessage()); try { setting_set('last_checkout_error', date('d/m/Y H:i') . ' · ' . ($pp ? 'PayPal' : 'Mercado Pago') . ' · ' . mb_substr($e->getMessage(), 0, 300)); } catch (Throwable $e2) {} $fail('No pudimos iniciar el pago. Probá de nuevo en unos minutos.'); }
 header('Location: ' . $url); exit;

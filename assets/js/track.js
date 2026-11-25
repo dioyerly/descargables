@@ -1,3 +1,9 @@
+/* Al comprar, el formulario lleva la sesión anónima: así el pedido muestra el recorrido real de esa persona. */
+(function(){document.addEventListener('submit',function(e){var f=e.target;if(!/comprar\.php/.test(f.getAttribute('action')||''))return;
+  function add(n,v){var i=f.querySelector('input[name="'+n+'"]');if(!i){i=document.createElement('input');i.type='hidden';i.name=n;f.appendChild(i)}i.value=v}
+  var o=false;try{o=/(^|;\s*)est_owner=1/.test(document.cookie)||localStorage.getItem('est_owner')==='1'}catch(x){}
+  try{add('trk_sid',sessionStorage.getItem('est_s')||'');add('trk_vid',localStorage.getItem('est_v')||'');add('trk_src',sessionStorage.getItem('est_src')||'')}catch(x){}
+  add('trk_own',o?'1':'0')},true)})();
 /* Estadísticas propias y anónimas (sin cookies de terceros). El dueño queda excluido por la cookie est_owner. */
 (function(){'use strict';
 var B=document.body,base=B.dataset.base||'';

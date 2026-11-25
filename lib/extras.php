@@ -159,3 +159,29 @@ function usd_amount(string $t): float {
     return is_numeric($n) ? (float)$n : 0.0;
 }
 function usd_label(float $v): string { return 'USD ' . number_format($v, fmod($v, 1) == 0.0 ? 0 : 2, ',', '.'); }
+
+
+/** Agrega a orders las columnas del recorrido (sesion anonima) si faltan. */
+function orders_trail_ready(): bool {
+    static $ok = null;
+    if ($ok !== null) return $ok;
+    if (!db_ready()) return $ok = false;
+    $pdo = db();
+    try { $pdo->query('SELECT trk_sid FROM orders LIMIT 1'); return $ok = true; } catch (Throwable $e) {}
+    try { $pdo->exec("ALTER TABLE orders ADD trk_sid VARCHAR(16) NOT NULL DEFAULT '', ADD trk_vid VARCHAR(16) NOT NULL DEFAULT '', ADD trk_src VARCHAR(60) NOT NULL DEFAULT '', ADD trk_own TINYINT NOT NULL DEFAULT 0"); return $ok = true; }
+    catch (Throwable $e) { error_log('orders_trail_ready: ' . $e->getMessage()); return $ok = false; }
+}
+
+/** Guarda en el ultimo pedido de este email/IP la sesion anonima que vino del formulario de compra. */
+function order_trail_save(string $email): void {
+    try {
+        if (!orders_trail_ready()) return;
+        $id = fn($v) => preg_match('/^[a-z0-9]{6,16}$/', (string)$v) ? (string)$v : '';
+        $src = mb_substr(strtolower(trim(preg_replace('/[\x00-\x1F]+/u', ' ', (string)($_POST['trk_src'] ?? '')) ?? '')), 0, 60);
+        $st = db()->prepare('SELECT id FROM orders WHERE buyer_email=? AND ip=? ORDER BY id DESC LIMIT 1');
+        $st->execute([$email, substr($_SERVER['REMOTE_ADDR'] ?? '', 0, 45)]);
+        $oid = (int)$st->fetchColumn(); if ($oid < 1) return;
+        db()->prepare('UPDATE orders SET trk_sid=?, trk_vid=?, trk_src=?, trk_own=? WHERE id=?')
+            ->execute([$id($_POST['trk_sid'] ?? ''), $id($_POST['trk_vid'] ?? ''), $src, ($_POST['trk_own'] ?? '') === '1' ? 1 : 0, $oid]);
+    } catch (Throwable $e) { error_log('order_trail_save: ' . $e->getMessage()); }
+}
