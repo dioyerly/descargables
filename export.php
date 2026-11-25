@@ -9,13 +9,31 @@ header('X-Robots-Tag: noindex');
 function out(int $c, array $b): never { http_response_code($c); echo json_encode($b, JSON_UNESCAPED_UNICODE | JSON_PARTIAL_OUTPUT_ON_ERROR); exit; }
 
 if (($_SERVER['REQUEST_METHOD'] ?? 'GET') !== 'GET') out(405, ['ok' => false, 'code' => 'method_not_allowed']);
+// Conexión por código: el panel manda el código de 8 dígitos (un solo uso, 10 min) y una clave nueva.
+if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
+    $inP = json_decode((string)file_get_contents('php://input', false, null, 0, 1025), true);
+    if (is_array($inP) && ($inP['accion'] ?? '') === 'emparejar') {
+        if (!db_ready()) out(503, ['ok' => false, 'code' => 'db_unavailable']);
+        extras_ready();
+        $fl = explode('|', setting('emparejar_fallos', '0|0')) + [0, 0];
+        if ((int)$fl[1] > time() - 900 && (int)$fl[0] >= 5) out(429, ['ok' => false, 'code' => 'rate']);
+        $cod = preg_replace('/\D+/', '', (string)($inP['codigo'] ?? '')); $clave = (string)($inP['clave'] ?? '');
+        $p = explode('|', setting('centro_codigo', ''), 2);
+        $okP = count($p) === 2 && (int)$p[1] >= time() && hash_equals($p[0], hash('sha256', $cod)) && strlen($clave) >= 32 && strlen($clave) <= 200 && preg_match('/^[A-Za-z0-9_-]+$/', $clave);
+        if (!$okP) { setting_set('emparejar_fallos', ((int)$fl[1] > time() - 900 ? (int)$fl[0] + 1 : 1) . '|' . time()); usleep(400000); out(401, ['ok' => false, 'code' => 'codigo_incorrecto']); }
+        setting_set('centro_token_hash', hash('sha256', $clave)); setting_set('centro_codigo', ''); setting_set('emparejar_fallos', '0|0');
+        out(200, ['ok' => true]);
+    }
+}
+
 $key = (string)cfg('ecosystem_key', '');
 $alt = (string)cfg('export_token', '');
-if (strlen($key) < 32 && strlen($alt) < 32) out(503, ['ok' => false, 'code' => 'export_not_configured']);
+$hashSet = db_ready() && extras_ready() ? setting('centro_token_hash', '') : '';
+if (strlen($key) < 32 && strlen($alt) < 32 && $hashSet === '') out(503, ['ok' => false, 'code' => 'export_not_configured']);
 $auth = (string)($_SERVER['HTTP_AUTHORIZATION'] ?? $_SERVER['REDIRECT_HTTP_AUTHORIZATION'] ?? '');
 if ($auth === '' && function_exists('getallheaders')) foreach (getallheaders() as $k => $v) if (strtolower($k) === 'authorization') $auth = (string)$v;
 $tok = preg_match('/^Bearer\s+(\S+)$/i', $auth, $m) ? $m[1] : '';
-$ok = ($tok !== '') && ((strlen($key) >= 32 && hash_equals($key, $tok)) || (strlen($alt) >= 32 && hash_equals($alt, $tok)));
+$ok = ($tok !== '') && ((strlen($key) >= 32 && hash_equals($key, $tok)) || (strlen($alt) >= 32 && hash_equals($alt, $tok)) || ($hashSet !== '' && hash_equals($hashSet, hash('sha256', $tok))));
 if (!$ok) { usleep(400000); out(401, ['ok' => false, 'code' => 'unauthorized']); }
 
 $view = (string)($_GET['view'] ?? 'summary');

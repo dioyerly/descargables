@@ -14,6 +14,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $r = dolar_rate(true);
         flash(!empty($r['ok']) ? 'Listo. Dólar ' . $t . ': ' . format_price((float)$r['valor']) . '. Los precios en USD ya usan esta cotización.' : 'Guardado, pero no se pudo consultar la cotización ahora. Se reintenta solo.', !empty($r['ok']) ? 'ok' : 'err');
     } elseif ($act === 'owner_on') { mark_owner_device(true); flash('Este dispositivo ya no se cuenta en las estadísticas.'); }
+    elseif ($act === 'centro_codigo') { $cod = (string)random_int(10000000, 99999999); setting_set('centro_codigo', hash('sha256', $cod) . '|' . (time() + 600)); flash('Código de conexión: ' . substr($cod, 0, 4) . ' ' . substr($cod, 4) . ' — escribilo en tu panel (panel.estrategia.site) → Inicio → Conectar. Sirve una sola vez y vence en 10 minutos.'); }
     elseif ($act === 'owner_off') { mark_owner_device(false); flash('Este dispositivo vuelve a contarse en las estadísticas.'); }
     header('Location: ajustes.php'); exit;
 }
@@ -29,6 +30,11 @@ admin_head('Ajustes'); ?>
     <div><button class="btn" type="submit">Guardar y actualizar</button></div>
   </form>
   <p style="margin-top:12px"><?php if ((float)($dr['valor'] ?? 0) > 0): ?>Hoy: <b><?= h(format_price((float)$dr['valor'])) ?></b> por dólar<?= $dr['fecha'] ? ' · actualizado ' . h(date('d/m H:i', strtotime((string)$dr['fecha']) ?: time())) : '' ?><?= empty($dr['ok']) ? ' · <span class="muted">(última guardada, no se pudo actualizar ahora)</span>' : '' ?><?php else: ?><span class="muted">Todavía no se pudo leer la cotización.</span><?php endif; ?></p>
+</div>
+<div class="card">
+  <h2>Conectar con el Centro de operaciones</h2>
+  <p class="muted" style="margin-bottom:14px">Para ver las ventas y visitas de la tienda en tu panel (panel.estrategia.site). Estado: <b><?= setting('centro_token_hash', '') !== '' ? 'conectada' : 'sin conectar' ?></b>. Tocá el botón y escribí el código en el panel.</p>
+  <form method="post"><?= csrf_field() ?><input type="hidden" name="act" value="centro_codigo"><button class="btn" type="submit"><?= setting('centro_token_hash', '') !== '' ? 'Generar código para renovar' : 'Generar código de conexión' ?></button></form>
 </div>
 <div class="card">
   <h2>No contarme en las estadísticas</h2>
